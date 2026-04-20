@@ -187,9 +187,128 @@ function buildDashboardChart() {
   });
 }
 
+// ---- Profile dropdown ----
+function toggleProfileDropdown() {
+  const trigger = document.getElementById('profile-trigger');
+  const dropdown = document.getElementById('profile-dropdown');
+  if (!trigger || !dropdown) return;
+  const isOpen = dropdown.classList.toggle('open');
+  trigger.setAttribute('data-open', isOpen ? 'true' : 'false');
+}
+document.addEventListener('click', (e) => {
+  const container = document.getElementById('profile-container');
+  if (!container || container.contains(e.target)) return;
+  const dropdown = document.getElementById('profile-dropdown');
+  const trigger = document.getElementById('profile-trigger');
+  if (dropdown && dropdown.classList.contains('open')) {
+    dropdown.classList.remove('open');
+    if (trigger) trigger.setAttribute('data-open', 'false');
+  }
+});
+
+function openProfile() {
+  toggleProfileDropdown();
+  openOverlay('profile-modal');
+}
+
+function handleLogout() {
+  toggleProfileDropdown();
+  alert('Déconnexion (démo — la vraie déconnexion sera implémentée)');
+}
+
+// ---- Inject shared profile UI into every page ----
+function injectProfileUI() {
+  const existing = document.getElementById('profile-container');
+  if (!existing) return;
+  // Add dropdown if not already there
+  if (!document.getElementById('profile-dropdown')) {
+    const dd = document.createElement('div');
+    dd.id = 'profile-dropdown';
+    dd.className = 'profile-dropdown';
+    dd.innerHTML = `
+      <button onclick="openProfile()">
+        <i data-lucide="user" style="width:16px;height:16px"></i> Mon profil
+      </button>
+      <button onclick="toggleProfileDropdown(); alert('Paramètres linguistiques (à venir)')">
+        <i data-lucide="globe" style="width:16px;height:16px"></i> Langue
+      </button>
+      <div class="divider"></div>
+      <button class="danger" onclick="handleLogout()">
+        <i data-lucide="log-out" style="width:16px;height:16px"></i> Se déconnecter
+      </button>
+    `;
+    existing.appendChild(dd);
+  }
+  // Add profile modal to body if not there
+  if (!document.getElementById('profile-modal')) {
+    const modal = document.createElement('div');
+    modal.id = 'profile-modal';
+    modal.className = 'overlay';
+    modal.setAttribute('onclick', "if(event.target===this)closeOverlay('profile-modal')");
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h3 class="modal-title">Mon profil</h3>
+            <p class="modal-subtitle">Informations personnelles et préférences</p>
+          </div>
+          <button class="btn-ghost p-1" onclick="closeOverlay('profile-modal')"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="flex items-center gap-4 mb-6 pb-5 border-b border-slate-200">
+          <div class="w-14 h-14 rounded-full bg-blue-600 text-white font-semibold text-lg flex items-center justify-center">JD</div>
+          <div>
+            <div class="font-semibold text-base">Jean Dupont</div>
+            <div class="text-sm muted">jean@example.com</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="info-row">
+            <span class="info-row-label">Prénom</span>
+            <span class="info-row-value">Jean</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Nom</span>
+            <span class="info-row-value">Dupont</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Email</span>
+            <span class="info-row-value">jean@example.com</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Langue</span>
+            <span class="info-row-value">Français</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Type d'utilisateur</span>
+            <span class="info-row-value"><span class="badge badge-comp">Administrateur</span></span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-6">
+          <button class="btn btn-secondary">
+            <i data-lucide="key" style="width:14px;height:14px"></i> Modifier le mot de passe
+          </button>
+          <div class="flex gap-2">
+            <button class="btn btn-secondary" onclick="closeOverlay('profile-modal')">Fermer</button>
+            <button class="btn btn-primary">
+              <i data-lucide="edit-3" style="width:14px;height:14px"></i> Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  // Re-run icon init
+  initIcons();
+}
+
 // ---- Page init ----
 document.addEventListener('DOMContentLoaded', () => {
   initIcons();
+  injectProfileUI();
   if (document.getElementById('main-chart')) {
     // Defer to next tick so Chart.js has loaded from CDN
     setTimeout(buildDashboardChart, 0);

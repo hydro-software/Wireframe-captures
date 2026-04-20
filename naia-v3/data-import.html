@@ -29,12 +29,15 @@
       <a href="data-import.html" class="sidebar-item active"><i data-lucide="upload"></i> Données</a>
       <a href="settings.html" class="sidebar-item"><i data-lucide="settings"></i> Paramètres</a>
     </nav>
-    <div class="p-4 border-t border-white/5 flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center">JD</div>
-      <div class="min-w-0">
-        <div class="text-white text-sm font-medium truncate">Jean Dupont</div>
-        <div class="text-slate-400 text-xs truncate">jean@example.com</div>
-      </div>
+    <div id="profile-container" class="relative">
+      <button id="profile-trigger" class="profile-trigger" onclick="toggleProfileDropdown()" data-open="false">
+        <div class="w-9 h-9 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center flex-shrink-0">JD</div>
+        <div class="min-w-0 flex-1">
+          <div class="text-white text-sm font-medium truncate">Jean Dupont</div>
+          <div class="text-slate-400 text-xs truncate">jean@example.com</div>
+        </div>
+        <i data-lucide="chevron-up" class="chevron-up" style="width:16px;height:16px"></i>
+      </button>
     </div>
   </aside>
 

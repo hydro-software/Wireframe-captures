@@ -578,3 +578,79 @@ table.data-table { width: 100%; border-collapse: collapse; }
 
 /* Print / export hint */
 .chart-container { position: relative; min-height: 380px; }
+
+/* Profile area (sidebar bottom) */
+.profile-trigger {
+  width: 100%;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  color: white;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.profile-trigger:hover { background: rgba(255,255,255,0.04); }
+.profile-trigger .chevron-up {
+  margin-left: auto;
+  color: rgba(255,255,255,0.4);
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+.profile-trigger[data-open="true"] .chevron-up { transform: rotate(180deg); }
+
+.profile-dropdown {
+  position: absolute;
+  bottom: 72px;
+  left: 12px;
+  right: 12px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px -8px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.04);
+  padding: 6px;
+  z-index: 20;
+  display: none;
+  animation: slideUp 0.15s ease;
+}
+.profile-dropdown.open { display: block; }
+.profile-dropdown button {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--naia-text);
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.1s;
+  text-align: left;
+}
+.profile-dropdown button:hover { background: #f1f5f9; }
+.profile-dropdown button.danger { color: var(--naia-danger); }
+.profile-dropdown .divider {
+  height: 1px;
+  background: var(--naia-border);
+  margin: 4px 0;
+}
+
+/* Profile info rows (inside modal) */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--naia-border);
+  font-size: 14px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row-label { color: var(--naia-text-muted); }
+.info-row-value { font-weight: 500; }
