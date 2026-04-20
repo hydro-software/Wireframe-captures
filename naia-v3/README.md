@@ -2,7 +2,7 @@
 
 Working HTML prototype of the settings redesign (issue [#261](https://github.com/hydro-software/platform/issues/261) v3).
 
-**Live URL:** https://hydro-software.github.io/Wireframe-captures/naia-v3/
+**Live URL:** https://hydro-software.github.io/Designs-wireframes/naia-v3/
 
 ## Pages
 
@@ -31,4 +31,4 @@ Working HTML prototype of the settings redesign (issue [#261](https://github.com
 
 ## Iteration
 
-Source under `C:\Dev\Wireframe-captures\naia-v3\` on Jan's machine. Changes pushed to `main`; GitHub Pages auto-rebuilds.
+Source under `naia-v3/` in this repo (`hydro-software/Designs-wireframes`). Changes pushed to `main` auto-rebuild GitHub Pages.
