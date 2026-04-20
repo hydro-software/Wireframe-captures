@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Activités — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="activities" data-title="Activités" data-subtitle="Configuration des règles d'attribution de points">
+  <section id="page-content">
+
+    <div class="flex justify-between items-center mb-4">
+      <div class="filter-bar" style="margin:0">
+        <select class="select" style="width:180px"><option>Toutes catégories</option><option>Plateforme</option><option>Communauté</option><option>Apprentissage</option><option>Parrainage</option></select>
+        <select class="select" style="width:140px"><option>Toutes</option><option>Actives</option><option>Désactivées</option></select>
+      </div>
+      <button class="btn btn-primary" onclick="openOverlay('activity-modal')"><i data-lucide="plus"></i> Créer une activité</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-head-title">Règles d'attribution</div><div class="text-sm muted">23 règles · 20 actives</div></div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Activité</th><th>Catégorie</th><th>Points</th><th>Déclencheur</th><th>Limite</th><th>Occurrences (30 j)</th><th>Actif</th><th></th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="font-medium text-sm">Onboarding centrale complété</div><div class="text-xs muted">Première connexion SCADA/météo</div></td>
+            <td><span class="badge badge-cat-platform">Plateforme</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+500</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">1×/centrale</td>
+            <td class="num">3</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Analyse des pertes</div><div class="text-xs muted">Rapport généré sur Naia Insight</div></td>
+            <td><span class="badge badge-cat-platform">Plateforme</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+100</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">1×/semaine</td>
+            <td class="num">382</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Recommandation traitée</div><div class="text-xs muted">Clic sur une recommandation dans l'analyse</div></td>
+            <td><span class="badge badge-cat-platform">Plateforme</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+50</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">10×/mois</td>
+            <td class="num">148</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Maintenance journalisée</div><div class="text-xs muted">Intervention enregistrée</div></td>
+            <td><span class="badge badge-cat-platform">Plateforme</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+75</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">94</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Simulation BTM</div><div class="text-xs muted">Rapport BTM complété (Layer 2)</div></td>
+            <td><span class="badge badge-cat-platform">Simulate</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+150</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">12</td>
+            <td><span class="toggle"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Série de 30 j</div><div class="text-xs muted">Données sans rupture pendant 30 j</div></td>
+            <td><span class="badge badge-cat-platform">Plateforme</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+200</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">12×/an</td>
+            <td class="num">8</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Accueillir une visite</div><div class="text-xs muted">Visite confirmée par l'admin</div></td>
+            <td><span class="badge badge-cat-community">Communauté</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+500</td>
+            <td><span class="badge badge-amber">Admin</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">14</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Participer à une visite</div><div class="text-xs muted">Présence confirmée par l'hôte</div></td>
+            <td><span class="badge badge-cat-community">Communauté</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+200</td>
+            <td><span class="badge badge-amber">Admin</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">62</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Article de connaissance</div><div class="text-xs muted">Publication approuvée</div></td>
+            <td><span class="badge badge-cat-community">Communauté</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+150</td>
+            <td><span class="badge badge-amber">Admin</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">23</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Réponse forum</div><div class="text-xs muted">Post publié et approuvé</div></td>
+            <td><span class="badge badge-cat-community">Communauté</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+50</td>
+            <td><span class="badge badge-amber">Admin</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">184</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Lecture newsletter</div><div class="text-xs muted">Ouverture/clic tracké</div></td>
+            <td><span class="badge badge-cat-learning">Apprentissage</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+25</td>
+            <td><span class="badge badge-slate">Auto</span></td>
+            <td class="text-sm">1×/édition</td>
+            <td class="num">298</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Quiz marché</div><div class="text-xs muted">Score ≥ seuil requis</div></td>
+            <td><span class="badge badge-cat-learning">Apprentissage</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+150</td>
+            <td><span class="badge badge-slate">Auto</span></td>
+            <td class="text-sm">1×/quiz</td>
+            <td class="num">18</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Parrainage membre</div><div class="text-xs muted">Filleul activé via code personnel</div></td>
+            <td><span class="badge badge-cat-referral">Parrainage</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+100 (×2)</td>
+            <td><span class="badge badge-slate">Auto</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">24</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Parrainage association</div><div class="text-xs muted">Nouveau membre via code association</div></td>
+            <td><span class="badge badge-cat-referral">Parrainage</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+100 filleul</td>
+            <td><span class="badge badge-slate">Auto</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">8</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+          <tr>
+            <td><div class="font-medium text-sm">Nouveau abonné Naia référé</div><div class="text-xs muted">Abonnement activé</div></td>
+            <td><span class="badge badge-cat-referral">Parrainage</span></td>
+            <td class="num font-semibold" style="color:var(--naia-green)">+1 000</td>
+            <td><span class="badge badge-slate">API Naia</span></td>
+            <td class="text-sm">Illimité</td>
+            <td class="num">2</td>
+            <td><span class="toggle on"><span class="toggle-knob"></span></span></td>
+            <td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <div id="activity-modal" class="overlay" onclick="if(event.target===this)closeOverlay('activity-modal')">
+    <div class="modal modal-lg">
+      <div class="flex items-start justify-between mb-5">
+        <div><h3 class="modal-title">Créer une activité</h3><p class="modal-subtitle">Configurer une nouvelle règle d'attribution de points</p></div>
+        <button class="btn-ghost p-2" onclick="closeOverlay('activity-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="grid gap-3" style="grid-template-columns: 1fr 1fr">
+        <div style="grid-column: span 2"><label class="form-label">Nom de l'activité</label><input class="input" placeholder="ex. Publier une étude de cas" /></div>
+        <div style="grid-column: span 2"><label class="form-label">Description affichée aux membres</label><textarea class="input" rows="2" placeholder="Message court expliquant comment gagner ces points…"></textarea></div>
+        <div><label class="form-label">Catégorie</label><select class="select"><option>Plateforme</option><option>Communauté</option><option>Apprentissage</option><option>Parrainage</option></select></div>
+        <div><label class="form-label">Points</label><input class="input" type="number" value="100" /></div>
+        <div><label class="form-label">Déclencheur</label><select class="select"><option>API Naia (auto)</option><option>Admin (manuel)</option><option>Auto (interne)</option></select></div>
+        <div><label class="form-label">Limite</label><select class="select"><option>Illimité</option><option>1× par jour</option><option>1× par semaine</option><option>1× par mois</option><option>1× par centrale</option></select></div>
+        <div style="grid-column: span 2"><label class="form-label">Clé d'événement API (si API Naia)</label><input class="input" placeholder="ex. insight.case_study.published" style="font-family:monospace" /></div>
+      </div>
+      <div class="flex items-center justify-between mt-6">
+        <label class="flex items-center gap-2 text-sm"><span class="toggle on"><span class="toggle-knob"></span></span> Activer immédiatement</label>
+        <div class="flex gap-2">
+          <button class="btn btn-secondary" onclick="closeOverlay('activity-modal')">Annuler</button>
+          <button class="btn btn-primary" onclick="closeOverlay('activity-modal'); alert('Activité créée')"><i data-lucide="check"></i> Créer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

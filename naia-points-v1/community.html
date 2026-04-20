@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Communauté — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="community" data-title="Communauté" data-subtitle="Annuaire, forum et base de connaissances — 112 opérateurs actifs">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="forum">Forum</div>
+      <div class="tab" data-tab-target="directory">Annuaire des membres</div>
+      <div class="tab" data-tab-target="kb">Base de connaissances</div>
+    </div>
+
+    <!-- Forum -->
+    <div data-tab-panel="forum">
+      <div class="grid gap-4" style="grid-template-columns: 2fr 1fr">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-head-title">Discussions récentes</div>
+              <div class="text-sm muted">+50 pts par réponse approuvée</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="alert('Nouveau sujet — formulaire à venir')"><i data-lucide="plus"></i> Nouveau sujet</button>
+          </div>
+          <div class="filter-bar" style="padding:14px 18px 0; margin-bottom:0">
+            <input class="input search-input" style="width:260px" placeholder="Rechercher dans le forum…" />
+            <select class="select" style="width:180px"><option>Toutes catégories</option><option>Exploitation</option><option>Maintenance</option><option>Marché</option><option>Réglementation</option><option>Technologie</option></select>
+          </div>
+          <div style="padding:6px 0">
+            <div class="forum-row">
+              <div class="avatar">CR</div>
+              <div>
+                <div class="forum-title">Passe à poissons : retours d'expérience types Ichtyomer vs Denil</div>
+                <div class="forum-excerpt">Claire Rousseau · Maintenance · il y a 2 h</div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>12 réponses</div><div>48 vues</div></div>
+              <span class="badge badge-cat-community">Actif</span>
+            </div>
+            <div class="forum-row">
+              <div class="avatar" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div>
+              <div>
+                <div class="forum-title">Comment optimiser le planning maintenance basse chute ?</div>
+                <div class="forum-excerpt">Jean Vandenberg · Exploitation · il y a 5 h</div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>8 réponses</div><div>32 vues</div></div>
+              <span class="badge badge-cat-community">Actif</span>
+            </div>
+            <div class="forum-row">
+              <div class="avatar" style="background:linear-gradient(135deg,#86efac,#16a34a)">SL</div>
+              <div>
+                <div class="forum-title">Nouvelle réglementation CWaPE — impacts sur petites centrales</div>
+                <div class="forum-excerpt">Sophie Legrand · Réglementation · hier</div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>24 réponses</div><div>119 vues</div></div>
+              <span class="badge badge-red">Populaire</span>
+            </div>
+            <div class="forum-row">
+              <div class="avatar" style="background:linear-gradient(135deg,#c4b5fd,#7c3aed)">TM</div>
+              <div>
+                <div class="forum-title">Quel SCADA open-source pour remplacer un historien propriétaire ?</div>
+                <div class="forum-excerpt">Thomas Müller · Technologie · il y a 2 j</div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>17 réponses</div><div>83 vues</div></div>
+              <span class="badge badge-slate">Résolu</span>
+            </div>
+            <div class="forum-row">
+              <div class="avatar" style="background:linear-gradient(135deg,#7dd3fc,#0ea5e9)">IF</div>
+              <div>
+                <div class="forum-title">Prix spot négatifs : stratégie d'arrêt automatique ?</div>
+                <div class="forum-excerpt">Isabel Fernández · Marché · il y a 3 j</div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>31 réponses</div><div>174 vues</div></div>
+              <span class="badge badge-red">Populaire</span>
+            </div>
+            <div class="forum-row">
+              <div class="avatar">MD</div>
+              <div>
+                <div class="forum-title">Calibrage capteur débit après crue : méthode rapide ?</div>
+                <div class="forum-excerpt">Marc Dupont · Maintenance · il y a 5 j · <span style="color:var(--naia-cyan)">Votre sujet</span></div>
+              </div>
+              <div class="text-xs muted tabular" style="text-align:right"><div>6 réponses</div><div>29 vues</div></div>
+              <span class="badge badge-cat-community">Actif</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="height:fit-content">
+          <div class="card-head"><div class="card-head-title">Catégories</div></div>
+          <div class="card-body" style="padding:8px 16px">
+            <div class="flex justify-between items-center py-2"><span class="flex items-center gap-2 text-sm"><span style="width:10px; height:10px; border-radius:50%; background:var(--naia-cyan)"></span> Exploitation</span><span class="text-xs muted tabular">48 sujets</span></div>
+            <div class="flex justify-between items-center py-2"><span class="flex items-center gap-2 text-sm"><span style="width:10px; height:10px; border-radius:50%; background:var(--naia-green)"></span> Maintenance</span><span class="text-xs muted tabular">62 sujets</span></div>
+            <div class="flex justify-between items-center py-2"><span class="flex items-center gap-2 text-sm"><span style="width:10px; height:10px; border-radius:50%; background:#f59e0b"></span> Marché</span><span class="text-xs muted tabular">34 sujets</span></div>
+            <div class="flex justify-between items-center py-2"><span class="flex items-center gap-2 text-sm"><span style="width:10px; height:10px; border-radius:50%; background:#8b5cf6"></span> Réglementation</span><span class="text-xs muted tabular">19 sujets</span></div>
+            <div class="flex justify-between items-center py-2"><span class="flex items-center gap-2 text-sm"><span style="width:10px; height:10px; border-radius:50%; background:#ec4899"></span> Technologie</span><span class="text-xs muted tabular">27 sujets</span></div>
+          </div>
+          <div class="card-head" style="border-top:1px solid var(--naia-border); border-bottom:none"><div class="card-head-title">Top contributeurs</div></div>
+          <div class="card-body" style="padding:8px 16px 16px">
+            <div class="flex items-center gap-3 py-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div><div class="flex-1"><div class="text-sm font-medium">Jean Vandenberg</div><div class="text-xs muted">34 contributions</div></div><div class="activity-points text-sm">+1 700</div></div>
+            <div class="flex items-center gap-3 py-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#cbd5e1,#94a3b8)">SL</div><div class="flex-1"><div class="text-sm font-medium">Sophie Legrand</div><div class="text-xs muted">28 contributions</div></div><div class="activity-points text-sm">+1 400</div></div>
+            <div class="flex items-center gap-3 py-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div><div class="flex-1"><div class="text-sm font-medium">Claire Rousseau</div><div class="text-xs muted">22 contributions</div></div><div class="activity-points text-sm">+1 100</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Directory -->
+    <div data-tab-panel="directory" style="display:none">
+      <div class="filter-bar">
+        <input class="input search-input" style="width:300px" placeholder="Rechercher un opérateur, une centrale…" />
+        <select class="select" style="width:180px"><option>Tous les pays</option><option>Belgique</option><option>France</option><option>Suisse</option><option>Allemagne</option><option>Autriche</option></select>
+        <select class="select" style="width:200px"><option>Toutes capacités</option><option>&lt; 100 kW</option><option>100–500 kW</option><option>500 kW – 1 MW</option><option>&gt; 1 MW</option></select>
+        <select class="select" style="width:160px"><option>Tous niveaux</option><option>Bronze</option><option>Argent</option><option>Or</option><option>Platine</option><option>Ambassadeur</option></select>
+      </div>
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr))">
+        <!-- directory cards -->
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div>
+          <div style="font-weight:600">Jean Vandenberg</div>
+          <div class="text-xs muted">Centrale de Hohenberg</div>
+          <div class="text-xs muted">Bavière, DE · 1.2 MW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-ambassador">Ambassadeur</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#cbd5e1,#94a3b8)">SL</div>
+          <div style="font-weight:600">Sophie Legrand</div>
+          <div class="text-xs muted">Centrale de la Semois</div>
+          <div class="text-xs muted">Luxembourg, BE · 680 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-platinum">Platine</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div>
+          <div style="font-weight:600">Claire Rousseau</div>
+          <div class="text-xs muted">Moulin de la Dordogne</div>
+          <div class="text-xs muted">Dordogne, FR · 340 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-gold">Or</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px">TM</div>
+          <div style="font-weight:600">Thomas Müller</div>
+          <div class="text-xs muted">Moulin de Hohenberg</div>
+          <div class="text-xs muted">Baden-Württemberg, DE · 210 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-gold">Or</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#86efac,#16a34a)">IF</div>
+          <div style="font-weight:600">Isabel Fernández</div>
+          <div class="text-xs muted">Central de los Pirineos</div>
+          <div class="text-xs muted">Huesca, ES · 920 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-platinum">Platine</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#7dd3fc,#0ea5e9)">PR</div>
+          <div style="font-weight:600">Pierre Renard</div>
+          <div class="text-xs muted">Centrale du Hérou</div>
+          <div class="text-xs muted">Luxembourg, BE · 150 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-gold">Or</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#c4b5fd,#7c3aed)">AS</div>
+          <div style="font-weight:600">Anna Schmidt</div>
+          <div class="text-xs muted">Alpenwerk</div>
+          <div class="text-xs muted">Tirol, AT · 540 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-gold">Or</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+        <div class="card" style="padding:18px; text-align:center">
+          <div class="avatar avatar-lg" style="margin:0 auto 10px; background:linear-gradient(135deg,#fca5a5,#dc2626)">LD</div>
+          <div style="font-weight:600">Laurent Dubois</div>
+          <div class="text-xs muted">Centrale d'Ariège</div>
+          <div class="text-xs muted">Ariège, FR · 420 kW</div>
+          <div class="flex justify-center gap-2 mt-3"><span class="tier-pill tier-silver">Argent</span></div>
+          <button class="btn btn-secondary btn-sm btn-block mt-3">Voir le profil</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KB -->
+    <div data-tab-panel="kb" style="display:none">
+      <div class="flex items-center justify-between mb-4">
+        <div class="filter-bar" style="margin-bottom:0">
+          <input class="input search-input" style="width:320px" placeholder="Rechercher un article…" />
+          <select class="select" style="width:180px"><option>Tous les thèmes</option><option>Exploitation</option><option>Maintenance</option><option>Marché</option></select>
+        </div>
+        <button class="btn btn-primary"><i data-lucide="edit-3"></i> Rédiger un article <span style="opacity:0.8; margin-left:4px">(+150 pts)</span></button>
+      </div>
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))">
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Maintenance</span><span class="text-xs muted">5 min</span></div>
+          <div class="tile-title">Check-list d'hivernage pour petites centrales basse chute</div>
+          <div class="tile-desc">Un protocole en 12 points, testé sur 3 saisons consécutives. Par Claire Rousseau.</div>
+          <div class="tile-foot"><span class="text-xs muted">★ 4.8 · 32 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Exploitation</span><span class="text-xs muted">8 min</span></div>
+          <div class="tile-title">Comment lire une courbe de durée classée (CDC) pour piloter son débit réservé</div>
+          <div class="tile-desc">Méthode pragmatique pour arbitrer production / réservé en saison sèche. Par Jean Vandenberg.</div>
+          <div class="tile-foot"><span class="text-xs muted">★ 4.6 · 48 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Marché</span><span class="text-xs muted">12 min</span></div>
+          <div class="tile-title">Stratégies d'arrêt lors de prix spot négatifs — retour d'expérience 2024-2025</div>
+          <div class="tile-desc">Analyse de 300+ événements de prix négatifs et impact sur 5 centrales. Par Sophie Legrand.</div>
+          <div class="tile-foot"><span class="text-xs muted">★ 4.9 · 74 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Technologie</span><span class="text-xs muted">15 min</span></div>
+          <div class="tile-title">Remplacer un historien propriétaire par InfluxDB + Grafana</div>
+          <div class="tile-desc">Migration complète avec scripts d'import. Coût total : 0 € + 2 jours-homme. Par Thomas Müller.</div>
+          <div class="tile-foot"><span class="text-xs muted">★ 4.7 · 51 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Réglementation</span><span class="text-xs muted">10 min</span></div>
+          <div class="tile-title">Décryptage : nouvelle directive européenne sur les débits écologiques</div>
+          <div class="tile-desc">Ce qui change au 1er janvier 2027 et comment s'y préparer.</div>
+          <div class="tile-foot"><span class="text-xs muted">★ 4.5 · 28 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-cat-community">Maintenance</span><span class="text-xs muted">6 min</span></div>
+          <div class="tile-title">Calibrage rapide d'un capteur de débit après crue</div>
+          <div class="tile-desc">Protocole en 6 étapes, sans interruption de production. Par Marc Dupont.</div>
+          <div class="tile-foot"><span class="text-xs muted">Votre contribution · ★ 4.4 · 12 avis</span><button class="btn btn-sm btn-secondary">Lire</button></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

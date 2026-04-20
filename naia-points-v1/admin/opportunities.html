@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Opportunités — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="opportunities" data-title="Opportunités" data-subtitle="Gestion des simulations BTM et co-investissements (Layer 2 & 3)">
+  <section id="page-content">
+
+    <div style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border:1px solid #fbbf24; border-radius:14px; padding:18px 22px; margin-bottom:24px; display:flex; align-items:center; gap:16px">
+      <div style="width:44px; height:44px; border-radius:12px; background:white; display:flex; align-items:center; justify-content:center; color:#92400e; flex-shrink:0"><i data-lucide="sparkles"></i></div>
+      <div class="flex-1">
+        <div class="font-medium" style="color:#78350f">Layer 2 & 3 — en phase bêta</div>
+        <div class="text-sm" style="color:#92400e">Ouvert uniquement aux membres Ambassadeur et Platine. Généralisation prévue Q3 2026.</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="btm">Simulations BTM</div>
+      <div class="tab" data-tab-target="coinvest">Co-investissements</div>
+      <div class="tab" data-tab-target="access">Accès bêta</div>
+    </div>
+
+    <div data-tab-panel="btm">
+      <div class="grid gap-4 mb-4" style="grid-template-columns: repeat(4, 1fr)">
+        <div class="kpi-card"><div class="kpi-label">Simulations lancées (Q2)</div><div class="kpi-value">42</div></div>
+        <div class="kpi-card"><div class="kpi-label">Crédits échangés</div><div class="kpi-value tabular">28</div><div class="text-xs muted mt-1">7 000 pts consommés</div></div>
+        <div class="kpi-card"><div class="kpi-label">Revenu supplémentaire simulé</div><div class="kpi-value" style="color:var(--naia-green)">+284 k€</div><div class="text-xs muted mt-1">Cumulé / an / tous membres</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taux conversion Simulate → déploiement</div><div class="kpi-value">14%</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><div class="card-head-title">Simulations récentes</div><div class="text-sm muted">Toutes centrales, tous types BTM</div></div><button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export</button></div>
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Membre</th><th>Centrale</th><th>Équipement</th><th>Invest.</th><th>ROI</th><th>Payback</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">19 avr.</td><td>Jean Vandenberg</td><td>Hohenberg</td><td><span class="badge badge-cyan">Batterie 1 MWh</span></td><td class="num">180 k€</td><td class="num" style="color:var(--naia-green)">+34 k€/an</td><td class="num">5.3 ans</td></tr>
+            <tr><td class="tabular">18 avr.</td><td>Marc Dupont</td><td>Bocq</td><td><span class="badge badge-cyan">Batterie 250 kWh</span></td><td class="num">48 k€</td><td class="num" style="color:var(--naia-green)">+8.4 k€/an</td><td class="num">5.7 ans</td></tr>
+            <tr><td class="tabular">15 avr.</td><td>Sophie Legrand</td><td>Semois</td><td><span class="badge badge-green">Burner 120 kW</span></td><td class="num">28 k€</td><td class="num" style="color:var(--naia-green)">+9.4 k€/an</td><td class="num">3.0 ans</td></tr>
+            <tr><td class="tabular">12 avr.</td><td>Claire Rousseau</td><td>Dordogne</td><td><span class="badge badge-amber">EV 4× 22 kW</span></td><td class="num">36 k€</td><td class="num" style="color:var(--naia-green)">+6.8 k€/an</td><td class="num">5.3 ans</td></tr>
+            <tr><td class="tabular">10 avr.</td><td>Marc Dupont</td><td>Bocq</td><td><span class="badge badge-green">Burner 50 kW</span></td><td class="num">12.5 k€</td><td class="num" style="color:var(--naia-green)">+3.2 k€/an</td><td class="num">3.9 ans</td></tr>
+            <tr><td class="tabular">5 avr.</td><td>Isabel Fernández</td><td>Pirineos</td><td><span class="badge badge-cyan">Batterie 800 kWh</span></td><td class="num">156 k€</td><td class="num" style="color:var(--naia-green)">+24 k€/an</td><td class="num">6.5 ans</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-tab-panel="coinvest" style="display:none">
+      <div class="flex justify-between items-center mb-4">
+        <div class="filter-bar" style="margin:0"><select class="select" style="width:180px"><option>Toutes</option><option>En cours</option><option>Financées</option><option>À venir</option></select></div>
+        <button class="btn btn-primary"><i data-lucide="plus"></i> Nouvelle opportunité</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Opportunité</th><th>Centrale hôte</th><th>Type</th><th>Montant</th><th>Souscrit</th><th>Investisseurs</th><th>Rendement</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td><div class="font-medium text-sm">BTM Batterie 500 kWh</div><div class="text-xs muted">Anonymisé · FR</div></td><td class="text-sm">Anonyme · 850 kW</td><td><span class="badge badge-cyan">Batterie</span></td><td class="num">80 k€</td><td class="num">65 k€ (81%)</td><td class="num">9</td><td class="num" style="color:var(--naia-green)">8–10%</td><td><span class="badge badge-amber">En cours</span></td></tr>
+            <tr><td><div class="font-medium text-sm">BTM Burner 100 kW</div><div class="text-xs muted">Anonymisé · BE</div></td><td class="text-sm">Anonyme · 620 kW</td><td><span class="badge badge-green">Brûleur</span></td><td class="num">35 k€</td><td class="num">0 k€</td><td class="num">0</td><td class="num" style="color:var(--naia-green)">11–13%</td><td><span class="badge badge-status-pending">15 mai</span></td></tr>
+            <tr><td><div class="font-medium text-sm">BTM Batterie 300 kWh</div><div class="text-xs muted">Anonymisé · DE</div></td><td class="text-sm">Anonyme · 540 kW</td><td><span class="badge badge-cyan">Batterie</span></td><td class="num">60 k€</td><td class="num">60 k€ (100%)</td><td class="num">12</td><td class="num" style="color:var(--naia-green)">9.4%</td><td><span class="badge badge-status-approved">Financée</span></td></tr>
+            <tr><td><div class="font-medium text-sm">BTM Batterie 150 kWh</div><div class="text-xs muted">Anonymisé · AT</div></td><td class="text-sm">Anonyme · 480 kW</td><td><span class="badge badge-cyan">Batterie</span></td><td class="num">32 k€</td><td class="num">32 k€ (100%)</td><td class="num">7</td><td class="num" style="color:var(--naia-green)">8.1%</td><td><span class="badge badge-status-approved">Financée</span></td></tr>
+            <tr><td><div class="font-medium text-sm">BTM EV Charger 3× 22 kW</div><div class="text-xs muted">Anonymisé · CH</div></td><td class="text-sm">Anonyme · 720 kW</td><td><span class="badge badge-amber">EV</span></td><td class="num">22 k€</td><td class="num">22 k€ (100%)</td><td class="num">5</td><td class="num" style="color:var(--naia-green)">10.2%</td><td><span class="badge badge-status-approved">Financée</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-tab-panel="access" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><div class="card-head-title">Demandes d'accès bêta</div><div class="text-sm muted">Layer 2 &amp; 3 · réservé Platine / Ambassadeur</div></div></div>
+        <table class="data-table">
+          <thead><tr><th>Membre</th><th>Niveau</th><th>Demande</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">MD</div><span class="text-sm">Marc Dupont</span></div></td>
+              <td><span class="tier-pill tier-silver">Argent</span></td>
+              <td class="text-sm">Co-investissement</td>
+              <td class="text-sm muted">20 avril</td>
+              <td><span class="badge badge-status-pending">En attente</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-green btn-sm">Approuver</button><button class="btn btn-danger btn-sm">Refuser</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div><span class="text-sm">Claire Rousseau</span></div></td>
+              <td><span class="tier-pill tier-gold">Or</span></td>
+              <td class="text-sm">Co-investissement</td>
+              <td class="text-sm muted">18 avril</td>
+              <td><span class="badge badge-status-pending">En attente</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-green btn-sm">Approuver</button><button class="btn btn-danger btn-sm">Refuser</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#86efac,#16a34a)">IF</div><span class="text-sm">Isabel Fernández</span></div></td>
+              <td><span class="tier-pill tier-platinum">Platine</span></td>
+              <td class="text-sm">Co-investissement</td>
+              <td class="text-sm muted">15 avril</td>
+              <td><span class="badge badge-status-approved">Approuvé</span></td>
+              <td><button class="btn btn-ghost btn-sm">Voir</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

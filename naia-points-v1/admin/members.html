@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Membres — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="members" data-title="Membres" data-subtitle="112 membres actifs · 8 invitations en attente">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="active">Actifs (112)</div>
+      <div class="tab" data-tab-target="invited">Invités (8)</div>
+      <div class="tab" data-tab-target="codes">Codes parrainage</div>
+    </div>
+
+    <div data-tab-panel="active">
+      <div class="card">
+        <div class="card-head">
+          <div class="filter-bar" style="margin:0">
+            <input class="input search-input" style="width:300px" placeholder="Rechercher un membre, centrale, pays…" />
+            <select class="select" style="width:140px"><option>Tous pays</option><option>BE</option><option>FR</option><option>DE</option><option>AT</option><option>CH</option><option>ES</option></select>
+            <select class="select" style="width:160px"><option>Tous niveaux</option><option>Bronze</option><option>Argent</option><option>Or</option><option>Platine</option><option>Ambassadeur</option></select>
+            <select class="select" style="width:150px"><option>Tous statuts</option><option>Actifs (90 j)</option><option>Inactifs</option></select>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-secondary"><i data-lucide="download"></i> Exporter CSV</button>
+            <button class="btn btn-primary" onclick="openOverlay('invite-modal')"><i data-lucide="mail"></i> Inviter</button>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Membre</th><th>Centrale</th><th>Pays</th><th>Capacité</th><th>Niveau</th><th>Points</th><th>Dernier accès</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr onclick="openDrawer('member-drawer')" style="cursor:pointer">
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div><div><div class="text-sm font-medium">Jean Vandenberg</div><div class="text-xs muted">jean@hohenberg.de</div></div></div></td>
+              <td class="text-sm">Centrale de Hohenberg</td>
+              <td class="text-sm">🇩🇪 DE</td>
+              <td class="num">1 200 kW</td>
+              <td><span class="tier-pill tier-ambassador">Ambassadeur</span></td>
+              <td class="num font-semibold">9 850</td>
+              <td class="text-sm muted">il y a 2 h</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr onclick="openDrawer('member-drawer')" style="cursor:pointer">
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#cbd5e1,#94a3b8)">SL</div><div><div class="text-sm font-medium">Sophie Legrand</div><div class="text-xs muted">sophie@semois.be</div></div></div></td>
+              <td class="text-sm">Centrale de la Semois</td>
+              <td class="text-sm">🇧🇪 BE</td>
+              <td class="num">680 kW</td>
+              <td><span class="tier-pill tier-platinum">Platine</span></td>
+              <td class="num font-semibold">8 240</td>
+              <td class="text-sm muted">hier</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div><div><div class="text-sm font-medium">Claire Rousseau</div><div class="text-xs muted">claire@dordogne.fr</div></div></div></td>
+              <td class="text-sm">Moulin de la Dordogne</td>
+              <td class="text-sm">🇫🇷 FR</td>
+              <td class="num">340 kW</td>
+              <td><span class="tier-pill tier-gold">Or</span></td>
+              <td class="num font-semibold">7 180</td>
+              <td class="text-sm muted">il y a 4 h</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">TM</div><div><div class="text-sm font-medium">Thomas Müller</div><div class="text-xs muted">thomas@hohenberg.de</div></div></div></td>
+              <td class="text-sm">Moulin de Hohenberg</td>
+              <td class="text-sm">🇩🇪 DE</td>
+              <td class="num">210 kW</td>
+              <td><span class="tier-pill tier-gold">Or</span></td>
+              <td class="num font-semibold">6 920</td>
+              <td class="text-sm muted">il y a 1 j</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#86efac,#16a34a)">IF</div><div><div class="text-sm font-medium">Isabel Fernández</div><div class="text-xs muted">isabel@pirineos.es</div></div></div></td>
+              <td class="text-sm">Central de los Pirineos</td>
+              <td class="text-sm">🇪🇸 ES</td>
+              <td class="num">920 kW</td>
+              <td><span class="tier-pill tier-platinum">Platine</span></td>
+              <td class="num font-semibold">6 480</td>
+              <td class="text-sm muted">il y a 3 h</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7dd3fc,#0ea5e9)">PR</div><div><div class="text-sm font-medium">Pierre Renard</div><div class="text-xs muted">pierre@herou.be</div></div></div></td>
+              <td class="text-sm">Centrale du Hérou</td>
+              <td class="text-sm">🇧🇪 BE</td>
+              <td class="num">150 kW</td>
+              <td><span class="tier-pill tier-gold">Or</span></td>
+              <td class="num font-semibold">6 100</td>
+              <td class="text-sm muted">hier</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">MD</div><div><div class="text-sm font-medium">Marc Dupont</div><div class="text-xs muted">marc.dupont@moulin.be</div></div></div></td>
+              <td class="text-sm">Centrale du Bocq</td>
+              <td class="text-sm">🇧🇪 BE</td>
+              <td class="num">480 kW</td>
+              <td><span class="tier-pill tier-silver">Argent</span></td>
+              <td class="num font-semibold">3 450</td>
+              <td class="text-sm muted">maintenant</td>
+              <td><span class="badge badge-status-approved">Actif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr style="opacity:0.6">
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">LP</div><div><div class="text-sm font-medium">Lucien Petit</div><div class="text-xs muted">lucien@jura-sud.fr</div></div></div></td>
+              <td class="text-sm">Micro-centrale du Jura-Sud</td>
+              <td class="text-sm">🇫🇷 FR</td>
+              <td class="num">85 kW</td>
+              <td><span class="tier-pill tier-bronze">Bronze</span></td>
+              <td class="num font-semibold">420</td>
+              <td class="text-sm muted">il y a 4 mois</td>
+              <td><span class="badge badge-status-inactive">Inactif</span></td>
+              <td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flex justify-between items-center p-4">
+          <span class="text-sm muted">Affichage 1-8 sur 112</span>
+          <div class="flex gap-1">
+            <button class="btn btn-secondary btn-sm" disabled><i data-lucide="chevron-left"></i></button>
+            <button class="btn btn-primary btn-sm">1</button>
+            <button class="btn btn-secondary btn-sm">2</button>
+            <button class="btn btn-secondary btn-sm">3</button>
+            <span class="px-2 self-center muted">…</span>
+            <button class="btn btn-secondary btn-sm">14</button>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="invited" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Invitations en attente</div>
+          <button class="btn btn-primary" onclick="openOverlay('invite-modal')"><i data-lucide="mail"></i> Nouvelle invitation</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Email</th><th>Nom</th><th>Parrain</th><th>Envoyée le</th><th>Dernière relance</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>operateur1@moulin.fr</td><td>Étienne Brunet</td><td>Marc Dupont</td><td class="text-sm muted">18 avr. 2026</td><td class="text-sm muted">—</td><td><span class="badge badge-status-pending">En attente</span></td><td><button class="btn btn-sm btn-secondary">Relancer</button></td></tr>
+            <tr><td>hydro@alpes.fr</td><td>Céline Dumas</td><td>Code : FHE2024</td><td class="text-sm muted">15 avr. 2026</td><td class="text-sm muted">20 avr.</td><td><span class="badge badge-status-pending">Relancée</span></td><td><button class="btn btn-sm btn-secondary">Relancer</button></td></tr>
+            <tr><td>k.schulz@bayern-hydro.de</td><td>Klaus Schulz</td><td>Jean Vandenberg</td><td class="text-sm muted">12 avr. 2026</td><td class="text-sm muted">19 avr.</td><td><span class="badge badge-status-pending">Relancée</span></td><td><button class="btn btn-sm btn-secondary">Relancer</button></td></tr>
+            <tr><td>moulin@bretagne.fr</td><td>Yann Le Goff</td><td>Code : ADEME</td><td class="text-sm muted">10 avr. 2026</td><td class="text-sm muted">17 avr.</td><td><span class="badge badge-status-pending">Relancée</span></td><td><button class="btn btn-sm btn-secondary">Relancer</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-tab-panel="codes" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Codes parrainage association</div>
+          <button class="btn btn-primary" onclick="alert('Nouveau code — formulaire à venir')"><i data-lucide="plus"></i> Créer un code</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Code</th><th>Association</th><th>Créé le</th><th>Inscrits</th><th>Activés</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:monospace; font-weight:600">FHE2024</td><td>France Hydro Électricité</td><td class="text-sm muted">15 jan. 2024</td><td class="num">42</td><td class="num">38</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm">Dashboard</button></td></tr>
+            <tr><td style="font-family:monospace; font-weight:600">MHYLAB</td><td>MHyLab (Suisse)</td><td class="text-sm muted">3 mar. 2024</td><td class="num">18</td><td class="num">14</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm">Dashboard</button></td></tr>
+            <tr><td style="font-family:monospace; font-weight:600">ADEME</td><td>ADEME Hydro</td><td class="text-sm muted">12 avr. 2024</td><td class="num">27</td><td class="num">22</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm">Dashboard</button></td></tr>
+            <tr><td style="font-family:monospace; font-weight:600">VDH-2025</td><td>Verband Deutscher Hydro</td><td class="text-sm muted">8 sep. 2024</td><td class="num">15</td><td class="num">12</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm">Dashboard</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Invite modal -->
+  <div id="invite-modal" class="overlay" onclick="if(event.target===this)closeOverlay('invite-modal')">
+    <div class="modal">
+      <div class="flex items-start justify-between mb-5">
+        <div><h3 class="modal-title">Inviter un nouveau membre</h3><p class="modal-subtitle">Envoi d'un lien magique (magic link) par email</p></div>
+        <button class="btn-ghost p-2" onclick="closeOverlay('invite-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="mb-3"><label class="form-label">Email</label><input class="input" type="email" placeholder="operateur@centrale.com" /></div>
+      <div class="grid gap-3 mb-3" style="grid-template-columns: 1fr 1fr">
+        <div><label class="form-label">Prénom</label><input class="input" placeholder="Prénom" /></div>
+        <div><label class="form-label">Nom</label><input class="input" placeholder="Nom" /></div>
+      </div>
+      <div class="mb-3"><label class="form-label">Centrale</label><input class="input" placeholder="ex. Centrale du Bocq" /></div>
+      <div class="grid gap-3 mb-3" style="grid-template-columns: 1fr 1fr">
+        <div><label class="form-label">Pays</label><select class="select"><option>Belgique</option><option>France</option><option>Suisse</option><option>Allemagne</option><option>Autriche</option><option>Espagne</option></select></div>
+        <div><label class="form-label">Rôle</label><select class="select"><option>Membre</option><option>Admin</option></select></div>
+      </div>
+      <div class="mb-4"><label class="form-label">Message (optionnel)</label><textarea class="input" rows="3" placeholder="Message personnel accompagnant l'invitation…"></textarea></div>
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary" onclick="closeOverlay('invite-modal')">Annuler</button>
+        <button class="btn btn-primary" onclick="closeOverlay('invite-modal'); alert('Invitation envoyée')"><i data-lucide="send"></i> Envoyer l'invitation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Member drawer -->
+  <div id="member-drawer-overlay" class="drawer-overlay" onclick="closeDrawer('member-drawer')"></div>
+  <div id="member-drawer" class="drawer">
+    <div class="drawer-head">
+      <div>
+        <h3 style="font-size:18px; font-weight:600">Jean Vandenberg</h3>
+        <div class="text-sm muted">jean@hohenberg.de · Membre depuis jan. 2024</div>
+      </div>
+      <button class="btn-ghost p-2" onclick="closeDrawer('member-drawer')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="avatar avatar-xl" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div>
+        <div class="flex-1">
+          <div class="flex gap-2 mb-2"><span class="tier-pill tier-ambassador">Ambassadeur</span><span class="badge badge-status-approved">Actif</span></div>
+          <div class="text-2xl font-semibold tabular">9 850 pts</div>
+          <div class="text-xs muted">Rang #1 sur 112 membres</div>
+        </div>
+      </div>
+
+      <h4 class="section-title">Informations</h4>
+      <div class="info-row"><span class="info-row-label">Centrale</span><span class="info-row-value">Centrale de Hohenberg · 1.2 MW</span></div>
+      <div class="info-row"><span class="info-row-label">Pays</span><span class="info-row-value">🇩🇪 Allemagne (Bavière)</span></div>
+      <div class="info-row"><span class="info-row-label">Abonnement Naia Insight</span><span class="info-row-value">Premium · actif</span></div>
+      <div class="info-row"><span class="info-row-label">Code parrainage</span><span class="info-row-value" style="font-family:monospace">JEAN-HHB</span></div>
+      <div class="info-row"><span class="info-row-label">Filleuls activés</span><span class="info-row-value">7</span></div>
+      <div class="info-row"><span class="info-row-label">Dernière connexion</span><span class="info-row-value">il y a 2 h</span></div>
+
+      <h4 class="section-title mt-6">Activité récente</h4>
+      <div class="activity-item" style="padding:8px 0"><div class="activity-icon" style="background:#cffafe; color:#0e7490"><i data-lucide="bar-chart-3"></i></div><div class="activity-main"><div class="activity-title">Analyse des pertes</div><div class="activity-meta">Aujourd'hui 13:48</div></div><div class="activity-points">+100</div></div>
+      <div class="activity-item" style="padding:8px 0"><div class="activity-icon" style="background:#dcfce7; color:#15803d"><i data-lucide="users"></i></div><div class="activity-main"><div class="activity-title">Visite proposée</div><div class="activity-meta">14 mai 2026</div></div><div class="activity-points">+500</div></div>
+      <div class="activity-item" style="padding:8px 0"><div class="activity-icon" style="background:#fce7f3; color:#9d174d"><i data-lucide="user-plus"></i></div><div class="activity-main"><div class="activity-title">Filleul activé : Klaus Schulz</div><div class="activity-meta">18 avr. 2026</div></div><div class="activity-points">+100</div></div>
+
+      <h4 class="section-title mt-6">Actions</h4>
+      <div class="grid gap-2">
+        <button class="btn btn-secondary"><i data-lucide="sparkles"></i> Attribuer des points</button>
+        <button class="btn btn-secondary"><i data-lucide="shield"></i> Attribuer un badge</button>
+        <button class="btn btn-secondary"><i data-lucide="mail"></i> Envoyer un email</button>
+        <button class="btn btn-secondary"><i data-lucide="user-cog"></i> Modifier le rôle</button>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-danger btn-sm"><i data-lucide="user-x"></i> Désactiver</button>
+      <button class="btn btn-secondary" onclick="closeDrawer('member-drawer')">Fermer</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

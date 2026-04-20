@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Paramètres — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="settings" data-title="Paramètres" data-subtitle="Configuration du programme Naia Points">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="program">Programme</div>
+      <div class="tab" data-tab-target="api">API Naia</div>
+      <div class="tab" data-tab-target="notifications">Notifications</div>
+      <div class="tab" data-tab-target="branding">Branding</div>
+      <div class="tab" data-tab-target="team">Équipe admin</div>
+    </div>
+
+    <div data-tab-panel="program">
+      <div class="grid gap-4" style="grid-template-columns: 1fr 1fr">
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Paliers de niveau</div></div>
+          <div class="card-body">
+            <div class="mb-3"><label class="form-label">Bronze (par défaut)</label><div class="flex items-center gap-2"><input class="input" type="number" value="0" /><span class="text-sm muted">pts</span></div></div>
+            <div class="mb-3"><label class="form-label">Argent</label><div class="flex items-center gap-2"><input class="input" type="number" value="1000" /><span class="text-sm muted">pts</span></div></div>
+            <div class="mb-3"><label class="form-label">Or</label><div class="flex items-center gap-2"><input class="input" type="number" value="4000" /><span class="text-sm muted">pts</span></div></div>
+            <div class="mb-3"><label class="form-label">Platine</label><div class="flex items-center gap-2"><input class="input" type="number" value="10000" /><span class="text-sm muted">pts</span></div></div>
+            <div><label class="form-label">Ambassadeur</label><div class="flex items-center gap-2"><input class="input" type="number" value="25000" /><span class="text-sm muted">pts</span></div></div>
+            <div class="form-hint mt-2">Les paliers déterminent les badges, les accès VIP et les rédemptions exclusives.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Règles générales</div></div>
+          <div class="card-body">
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div><div class="font-medium text-sm">Expiration des points</div><div class="text-xs muted">Points expirent après X mois d'inactivité</div></div>
+              <select class="select" style="width:130px"><option>Jamais</option><option>12 mois</option><option selected>18 mois</option><option>24 mois</option></select>
+            </div>
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div><div class="font-medium text-sm">Saison</div><div class="text-xs muted">Fréquence du classement remis à zéro</div></div>
+              <select class="select" style="width:130px"><option>Jamais</option><option selected>Trimestre</option><option>Semestre</option><option>Année</option></select>
+            </div>
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div><div class="font-medium text-sm">Accès communauté limité</div><div class="text-xs muted">Requiert abonnement Naia Insight actif</div></div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div><div class="font-medium text-sm">Publier les profils publiquement</div><div class="text-xs muted">Visibles dans l'annuaire des membres</div></div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+            <div class="flex justify-between items-center py-3">
+              <div><div class="font-medium text-sm">Parrainage associations</div><div class="text-xs muted">Autoriser la création de codes association</div></div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Budget de rédemption</div></div>
+          <div class="card-body">
+            <div class="mb-4"><label class="form-label">Budget trimestriel (points)</label><div class="flex items-center gap-2"><input class="input" type="number" value="30000" /><span class="text-sm muted">pts</span></div></div>
+            <div style="padding:14px; background:#fef3c7; border-radius:10px; font-size:13px">
+              <div style="font-weight:600; color:#78350f" class="mb-1">Consommation Q2 2026 : 18 000 / 30 000 pts (60%)</div>
+              <div class="progress"><div class="progress-fill" style="width:60%; background:#f59e0b"></div></div>
+              <div class="muted" style="font-size:12px; margin-top:6px; color:#92400e">Alerte déclenchée à 75%.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Parrainage — valeurs par défaut</div></div>
+          <div class="card-body">
+            <div class="mb-3"><label class="form-label">Points parrain (par filleul activé)</label><div class="flex items-center gap-2"><input class="input" type="number" value="100" /><span class="text-sm muted">pts</span></div></div>
+            <div class="mb-3"><label class="form-label">Points filleul (à l'activation)</label><div class="flex items-center gap-2"><input class="input" type="number" value="100" /><span class="text-sm muted">pts</span></div></div>
+            <div class="mb-3"><label class="form-label">Points code association (filleul)</label><div class="flex items-center gap-2"><input class="input" type="number" value="100" /><span class="text-sm muted">pts</span></div></div>
+            <div><label class="form-label">Bonus nouveau abonné Naia</label><div class="flex items-center gap-2"><input class="input" type="number" value="1000" /><span class="text-sm muted">pts</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API -->
+    <div data-tab-panel="api" style="display:none">
+      <div class="grid gap-4" style="grid-template-columns: 1.3fr 1fr">
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Intégration Naia Insight</div><span class="badge badge-status-approved">Connecté</span></div>
+          <div class="card-body">
+            <div class="mb-3"><label class="form-label">URL de l'API Naia</label><input class="input" value="https://api.naia.energy/v1" style="font-family:monospace" /></div>
+            <div class="mb-3"><label class="form-label">Clé API (X-Naia-Key)</label><div class="flex gap-2"><input class="input" type="password" value="sk_live_****************************" style="font-family:monospace" /><button class="btn btn-secondary"><i data-lucide="eye"></i></button><button class="btn btn-secondary"><i data-lucide="refresh-cw"></i></button></div><div class="form-hint">Dernière rotation : 12 mars 2026</div></div>
+            <div class="mb-4"><label class="form-label">Webhook de réception d'événements</label><input class="input" value="https://points.naia.energy/webhooks/insight" style="font-family:monospace" /></div>
+            <div style="padding:14px; background:#f0fdf4; border:1px solid #86efac; border-radius:10px; font-size:13px">
+              <div class="font-medium mb-1" style="color:var(--naia-navy)">État : opérationnel</div>
+              <div class="muted">Dernier événement reçu il y a 3 min · 14 200 événements traités sur 30 j · 0 erreur.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Événements écoutés</div></div>
+          <div class="card-body" style="padding:10px 18px">
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">insight.plant.onboarded</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">insight.loss_analysis.generated</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">insight.recommendation.acknowledged</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">insight.maintenance.logged</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">insight.data_streak.30d</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2" style="border-bottom:1px solid var(--naia-border)"><code class="text-xs">simulate.btm.completed</code><span class="toggle"><span class="toggle-knob"></span></span></div>
+            <div class="flex justify-between items-center py-2"><code class="text-xs">billing.subscription.activated</code><span class="toggle on"><span class="toggle-knob"></span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="notifications" style="display:none">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Notifications email</div></div>
+        <div class="card-body">
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)"><div><div class="font-medium text-sm">Rédemption en attente</div><div class="text-xs muted">Alerte quand un membre demande une rédemption manuelle</div></div><span class="toggle on"><span class="toggle-knob"></span></span></div>
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)"><div><div class="font-medium text-sm">Nouvelle visite proposée</div><div class="text-xs muted">Alerte admin pour validation</div></div><span class="toggle on"><span class="toggle-knob"></span></span></div>
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)"><div><div class="font-medium text-sm">Article KB à modérer</div><div class="text-xs muted">Nouveau contenu soumis par un membre</div></div><span class="toggle on"><span class="toggle-knob"></span></span></div>
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)"><div><div class="font-medium text-sm">Budget Q atteint à 75%</div><div class="text-xs muted">Seuil d'alerte budget rédemption</div></div><span class="toggle on"><span class="toggle-knob"></span></span></div>
+          <div class="flex justify-between items-center py-3"><div><div class="font-medium text-sm">Nouveau membre activé</div><div class="text-xs muted">Notification à chaque inscription</div></div><span class="toggle"><span class="toggle-knob"></span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="branding" style="display:none">
+      <div class="grid gap-4" style="grid-template-columns: 1fr 1fr">
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Identité visuelle</div></div>
+          <div class="card-body">
+            <div class="mb-4"><label class="form-label">Logo</label><div style="display:flex; align-items:center; gap:16px; padding:14px; border:1px solid var(--naia-border); border-radius:10px"><div class="sidebar-brand-logo" style="width:48px; height:48px">N</div><button class="btn btn-secondary btn-sm">Changer</button></div></div>
+            <div class="mb-3"><label class="form-label">Couleur primaire (accent)</label><div class="flex gap-2 items-center"><div style="width:32px; height:32px; background:#00B4D8; border-radius:6px; border:1px solid var(--naia-border)"></div><input class="input" value="#00B4D8" /></div></div>
+            <div class="mb-3"><label class="form-label">Couleur navy (fond sombre)</label><div class="flex gap-2 items-center"><div style="width:32px; height:32px; background:#1A2B4A; border-radius:6px; border:1px solid var(--naia-border)"></div><input class="input" value="#1A2B4A" /></div></div>
+            <div><label class="form-label">Couleur accent points</label><div class="flex gap-2 items-center"><div style="width:32px; height:32px; background:#8DC63F; border-radius:6px; border:1px solid var(--naia-border)"></div><input class="input" value="#8DC63F" /></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Emails</div></div>
+          <div class="card-body">
+            <div class="mb-3"><label class="form-label">Expéditeur</label><input class="input" value="Naia Points <noreply@naia.energy>" /></div>
+            <div class="mb-3"><label class="form-label">Nom de l'équipe (signature)</label><input class="input" value="L'équipe Naia" /></div>
+            <div class="mb-3"><label class="form-label">URL publique</label><input class="input" value="https://points.naia.energy" style="font-family:monospace" /></div>
+            <div><label class="form-label">Pied de page email</label><textarea class="input" rows="3">Hydro Software Services SRL · Rue de la Station 12 · 5000 Namur · BE</textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="team" style="display:none">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Équipe admin</div><button class="btn btn-primary btn-sm"><i data-lucide="user-plus"></i> Ajouter un admin</button></div>
+        <table class="data-table">
+          <thead><tr><th>Admin</th><th>Rôle</th><th>Dernière action</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="flex items-center gap-2"><div class="avatar avatar-sm">AD</div><div><div class="text-sm font-medium">Admin Naia</div><div class="text-xs muted">admin@naia.energy</div></div></div></td><td><span class="badge badge-purple">Super-admin</span></td><td class="text-sm muted">il y a 2 min</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+            <tr><td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#86efac,#16a34a)">PV</div><div><div class="text-sm font-medium">Pauline Vermeer</div><div class="text-xs muted">pauline@naia.energy</div></div></div></td><td><span class="badge badge-cyan">Programme</span></td><td class="text-sm muted">il y a 3 h</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+            <tr><td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">LR</div><div><div class="text-sm font-medium">Luc Renard</div><div class="text-xs muted">luc@naia.energy</div></div></div></td><td><span class="badge badge-blue">Communauté</span></td><td class="text-sm muted">hier</td><td><span class="badge badge-status-approved">Actif</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

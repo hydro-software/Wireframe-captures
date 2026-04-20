@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Tableau de bord — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="dashboard" data-title="Tableau de bord" data-subtitle="Pilotage du programme Naia Points — Q2 2026">
+  <section id="page-content">
+
+    <!-- KPIs -->
+    <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))">
+      <div class="kpi-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="kpi-label">Membres actifs</div>
+            <div class="kpi-value tabular">112</div>
+            <div class="kpi-delta up"><i data-lucide="arrow-up" style="width:14px;height:14px"></i> +18 (30 j)</div>
+          </div>
+          <div class="kpi-icon" style="background:#cffafe; color:#0e7490"><i data-lucide="users"></i></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="kpi-label">Points émis</div>
+            <div class="kpi-value tabular">46 200</div>
+            <div class="kpi-delta up"><i data-lucide="arrow-up" style="width:14px;height:14px"></i> +9.5% vs. Q1</div>
+          </div>
+          <div class="kpi-icon" style="background:#dcfce7; color:#15803d"><i data-lucide="sparkles"></i></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="kpi-label">Points échangés</div>
+            <div class="kpi-value tabular">24 850</div>
+            <div class="kpi-delta up"><i data-lucide="arrow-up" style="width:14px;height:14px"></i> +13.6% vs. Q1</div>
+          </div>
+          <div class="kpi-icon" style="background:#ffedd5; color:#ea580c"><i data-lucide="gift"></i></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="kpi-label">Taux de rédemption</div>
+            <div class="kpi-value">53.8 %</div>
+            <div class="kpi-delta up"><i data-lucide="arrow-up" style="width:14px;height:14px"></i> Au-dessus de la cible (45%)</div>
+          </div>
+          <div class="kpi-icon" style="background:#ede9fe; color:#5b21b6"><i data-lucide="trending-up"></i></div>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#fbbf24; background:#fffbeb">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="kpi-label" style="color:#92400e">Demandes en attente</div>
+            <div class="kpi-value" style="color:#78350f">4</div>
+            <div class="text-xs" style="color:#92400e">2 rédemptions · 2 visites</div>
+          </div>
+          <div class="kpi-icon" style="background:#fef3c7; color:#92400e"><i data-lucide="clock"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid gap-4 mb-6" style="grid-template-columns: 2fr 1fr">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-head-title">Points émis vs. échangés</div>
+            <div class="text-sm muted">12 derniers mois</div>
+          </div>
+          <div class="flex items-center gap-4 text-xs muted">
+            <span class="flex items-center gap-2"><span style="width:10px; height:10px; border-radius:2px; background:#8DC63F; display:inline-block"></span>Émis</span>
+            <span class="flex items-center gap-2"><span style="width:10px; height:10px; border-radius:2px; background:#00B4D8; display:inline-block"></span>Échangés</span>
+          </div>
+        </div>
+        <div class="card-body"><div class="chart-container"><canvas id="admin-points-chart"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Croissance membres</div>
+          <span class="badge badge-cyan">+18 sur 30 j</span>
+        </div>
+        <div class="card-body"><div class="chart-container" style="min-height:240px"><canvas id="member-growth-chart"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- Split: Pending queue + Activity feed -->
+    <div class="grid gap-4 mb-6" style="grid-template-columns: 1.3fr 1fr">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-head-title">File d'attente — à valider</div>
+            <div class="text-sm muted">Rédemptions et visites en attente d'approbation</div>
+          </div>
+          <a href="benefits.html" class="link text-xs">Tout gérer</a>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Demande</th><th>Membre</th><th>Type</th><th>Coût</th><th>Date</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500">Visite prioritaire de centrale</td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">MD</div><span class="text-sm">Marc Dupont</span></div></td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">300 pts</td>
+              <td class="text-sm muted">2 mars</td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green" onclick="alert('Approuvé')"><i data-lucide="check"></i></button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Témoignage case study</td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#86efac,#16a34a)">SL</div><span class="text-sm">Sophie Legrand</span></div></td>
+              <td><span class="badge badge-cat-community">Communauté</span></td>
+              <td class="num" style="color:var(--naia-green)">+300 pts</td>
+              <td class="text-sm muted">18 avril</td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i></button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Visite — Centrale du Bocq (12 juin)</td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">MD</div><span class="text-sm">Marc Dupont</span></div></td>
+              <td><span class="badge badge-cat-community">Visite</span></td>
+              <td class="num">—</td>
+              <td class="text-sm muted">15 avril</td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i></button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Session 1:1 expert marché</td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div><span class="text-sm">Jean Vandenberg</span></div></td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">500 pts</td>
+              <td class="text-sm muted">20 avril</td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i></button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Activité récente</div><a class="link text-xs">Tout voir</a></div>
+        <div class="card-body" style="padding:6px 22px">
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fce7f3; color:#9d174d"><i data-lucide="user-plus"></i></div>
+            <div class="activity-main"><div class="activity-title">Nouveau membre : Niklas Eriksen</div><div class="activity-meta">Vestfold Kraft · NO · via code FHE2024</div></div>
+            <div class="text-xs muted">14:23</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dcfce7; color:#15803d"><i data-lucide="check"></i></div>
+            <div class="activity-main"><div class="activity-title">Rédemption approuvée</div><div class="activity-meta">C. Rousseau · Crédit simulation BTM (−250)</div></div>
+            <div class="text-xs muted">13:48</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dbeafe; color:#1e40af"><i data-lucide="map-pin"></i></div>
+            <div class="activity-main"><div class="activity-title">Nouvelle visite proposée</div><div class="activity-meta">M. Dupont · Centrale du Bocq · 12 juin</div></div>
+            <div class="text-xs muted">11:02</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#ede9fe; color:#5b21b6"><i data-lucide="edit-3"></i></div>
+            <div class="activity-main"><div class="activity-title">Article KB publié</div><div class="activity-meta">S. Legrand · « Stratégies d'arrêt prix négatifs »</div></div>
+            <div class="text-xs muted">hier</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fef3c7; color:#92400e"><i data-lucide="alert-triangle"></i></div>
+            <div class="activity-main"><div class="activity-title">Seuil d'alerte atteint</div><div class="activity-meta">Budget Q2 rédemption : 60% consommé</div></div>
+            <div class="text-xs muted">hier</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="grid gap-4" style="grid-template-columns: 1fr 1fr 1fr">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Top 3 activités</div></div>
+        <div class="card-body" style="padding:8px 16px 16px">
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+            <div><div class="text-sm font-medium">Analyse des pertes</div><div class="text-xs muted">+100 pts · Plateforme</div></div>
+            <div class="text-sm tabular font-semibold">382 ×</div>
+          </div>
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+            <div><div class="text-sm font-medium">Lecture newsletter</div><div class="text-xs muted">+25 pts · Apprentissage</div></div>
+            <div class="text-sm tabular font-semibold">298 ×</div>
+          </div>
+          <div class="flex justify-between items-center py-3">
+            <div><div class="text-sm font-medium">Réponse forum</div><div class="text-xs muted">+50 pts · Communauté</div></div>
+            <div class="text-sm tabular font-semibold">184 ×</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Top 3 récompenses</div></div>
+        <div class="card-body" style="padding:8px 16px 16px">
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+            <div><div class="text-sm font-medium">Newsletter premium</div><div class="text-xs muted">150 pts · Produit</div></div>
+            <div class="text-sm tabular font-semibold">42 ×</div>
+          </div>
+          <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+            <div><div class="text-sm font-medium">Crédit simulation BTM</div><div class="text-xs muted">250 pts · Produit</div></div>
+            <div class="text-sm tabular font-semibold">28 ×</div>
+          </div>
+          <div class="flex justify-between items-center py-3">
+            <div><div class="text-sm font-medium">Visite prioritaire</div><div class="text-xs muted">300 pts · Accès</div></div>
+            <div class="text-sm tabular font-semibold">19 ×</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Répartition niveaux</div></div>
+        <div class="card-body" style="padding:16px">
+          <div class="flex items-center gap-3 py-2"><span class="tier-pill tier-bronze" style="width:80px; justify-content:center">Bronze</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:28%; background:#fbbf24"></div></div><span class="tabular text-sm font-medium">31</span></div>
+          <div class="flex items-center gap-3 py-2"><span class="tier-pill tier-silver" style="width:80px; justify-content:center">Argent</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:38%; background:#94a3b8"></div></div><span class="tabular text-sm font-medium">42</span></div>
+          <div class="flex items-center gap-3 py-2"><span class="tier-pill tier-gold" style="width:80px; justify-content:center">Or</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:22%; background:#f59e0b"></div></div><span class="tabular text-sm font-medium">25</span></div>
+          <div class="flex items-center gap-3 py-2"><span class="tier-pill tier-platinum" style="width:80px; justify-content:center">Platine</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:10%; background:#8b5cf6"></div></div><span class="tabular text-sm font-medium">11</span></div>
+          <div class="flex items-center gap-3 py-2"><span class="tier-pill tier-ambassador" style="width:80px; justify-content:center">Ambass.</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:3%; background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div></div><span class="tabular text-sm font-medium">3</span></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

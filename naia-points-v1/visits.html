@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visites de centrales — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="visits" data-title="Visites de centrales" data-subtitle="Ouvrez votre centrale ou visitez celle d'un pair — +500 pts à l'accueil, +200 pts à la participation">
+  <section id="page-content">
+
+    <!-- CTA strip -->
+    <div style="background:linear-gradient(135deg, var(--naia-navy), var(--naia-navy-deep)); color:white; border-radius:14px; padding:22px 28px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; gap:20px">
+      <div style="display:flex; align-items:center; gap:18px">
+        <div style="width:56px; height:56px; border-radius:14px; background:rgba(0,180,216,0.2); display:flex; align-items:center; justify-content:center; color:var(--naia-cyan)"><i data-lucide="map-pin" style="width:28px; height:28px"></i></div>
+        <div>
+          <div style="font-size:17px; font-weight:600">Accueillir une visite à votre centrale</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:2px">Partagez votre installation avec la communauté — <b style="color:var(--naia-green)">+500 pts</b> à chaque visite organisée.</div>
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="openOverlay('host-visit-modal')"><i data-lucide="plus"></i> Proposer une visite</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="upcoming">À venir (8)</div>
+      <div class="tab" data-tab-target="mine">Mes visites (3)</div>
+      <div class="tab" data-tab-target="past">Historique</div>
+    </div>
+
+    <!-- Upcoming -->
+    <div data-tab-panel="upcoming">
+      <div class="grid gap-5" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))">
+        <div class="visit-card">
+          <div class="visit-image v2"><div class="visit-date-stamp"><div class="d">06</div><div class="m">Mai</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Centrale de Marche-les-Dames</div>
+            <div class="text-xs muted">Namur, BE · Hôte : Sophie Legrand</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 480 kW</span><span><i data-lucide="users"></i> 3/6 places</span><span><i data-lucide="clock"></i> 14 h–17 h</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Visite technique d'une centrale basse chute rénovée en 2024. Focus sur la turbine Kaplan et l'instrumentation.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Demande envoyée — en attente d\'approbation par l\'hôte')"><i data-lucide="calendar-plus"></i> S'inscrire</button>
+          </div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v3"><div class="visit-date-stamp"><div class="d">14</div><div class="m">Mai</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Centrale de Hohenberg</div>
+            <div class="text-xs muted">Bavière, DE · Hôte : Jean Vandenberg</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 1.2 MW</span><span><i data-lucide="users"></i> 5/8 places</span><span><i data-lucide="clock"></i> 10 h–16 h</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Grande centrale haute chute, atelier de modernisation des groupes Francis et retour sur 18 mois d'utilisation Naia.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Demande envoyée')"><i data-lucide="calendar-plus"></i> S'inscrire</button>
+          </div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v4"><div class="visit-date-stamp"><div class="d">22</div><div class="m">Mai</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Moulin de la Dordogne</div>
+            <div class="text-xs muted">Dordogne, FR · Hôte : Claire Rousseau</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 340 kW</span><span><i data-lucide="users"></i> 6/6 places</span><span><i data-lucide="clock"></i> 13 h–17 h</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Centrale historique rénovée avec passe à poissons Ichtyomer. Focus sur l'intégration environnementale.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-secondary btn-sm" disabled>Liste d'attente</button>
+          </div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v5"><div class="visit-date-stamp"><div class="d">03</div><div class="m">Juin</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Central de los Pirineos</div>
+            <div class="text-xs muted">Huesca, ES · Hôte : Isabel Fernández</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 920 kW</span><span><i data-lucide="users"></i> 2/8 places</span><span><i data-lucide="clock"></i> Journée</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Centrale en zone aride : gestion des étiages sévères et stratégie d'effacement marché.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Demande envoyée')"><i data-lucide="calendar-plus"></i> S'inscrire</button>
+          </div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v6"><div class="visit-date-stamp"><div class="d">18</div><div class="m">Juin</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Alpenwerk</div>
+            <div class="text-xs muted">Tirol, AT · Hôte : Anna Schmidt</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 540 kW</span><span><i data-lucide="users"></i> 4/6 places</span><span><i data-lucide="clock"></i> 09 h–18 h</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Visite de deux centrales alpines successives sur la même rivière. Focus sur la cascade hydraulique.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Demande envoyée')"><i data-lucide="calendar-plus"></i> S'inscrire</button>
+          </div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image"><div class="visit-date-stamp"><div class="d">01</div><div class="m">Juil</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Centrale du Hérou</div>
+            <div class="text-xs muted">Luxembourg, BE · Hôte : Pierre Renard</div>
+            <div class="visit-meta"><span><i data-lucide="zap"></i> 150 kW</span><span><i data-lucide="users"></i> 1/4 places</span><span><i data-lucide="clock"></i> Après-midi</span></div>
+            <p class="text-sm muted" style="line-height:1.5">Micro-centrale familiale : automatisation low-cost et intégration Naia récente.</p>
+          </div>
+          <div class="visit-foot">
+            <span class="activity-points">+200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Demande envoyée')"><i data-lucide="calendar-plus"></i> S'inscrire</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mine -->
+    <div data-tab-panel="mine" style="display:none">
+      <div class="grid gap-5" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))">
+        <div class="visit-card">
+          <div class="visit-image v2"><div class="visit-date-stamp"><div class="d">06</div><div class="m">Mai</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Centrale de Marche-les-Dames</div>
+            <div class="text-xs muted">En tant que participant</div>
+            <div class="visit-meta"><span><i data-lucide="users"></i> Hôte : Sophie Legrand</span><span><i data-lucide="clock"></i> 14 h–17 h</span></div>
+            <span class="badge badge-status-approved">Inscription confirmée</span>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Dans 16 jours</span><button class="btn btn-secondary btn-sm">Détails</button></div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v3"><div class="visit-date-stamp"><div class="d">12</div><div class="m">Juin</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Centrale du Bocq (la vôtre)</div>
+            <div class="text-xs muted">En tant qu'hôte · <b>+500 pts à la tenue</b></div>
+            <div class="visit-meta"><span><i data-lucide="users"></i> 4 participants confirmés</span><span><i data-lucide="user-plus"></i> 2 en attente</span></div>
+            <span class="badge badge-status-pending">À valider (admin)</span>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Dans 53 jours</span><button class="btn btn-primary btn-sm">Gérer</button></div>
+        </div>
+        <div class="visit-card" style="opacity:0.7">
+          <div class="visit-image v4"><div class="visit-date-stamp"><div class="d">15</div><div class="m">Mars</div></div></div>
+          <div class="visit-body">
+            <div class="visit-title">Moulin de la Dordogne</div>
+            <div class="text-xs muted">Participant · Passée</div>
+            <span class="badge badge-status-approved">+200 pts crédités</span>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Il y a 36 jours</span><button class="btn btn-ghost btn-sm">Compte-rendu</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past -->
+    <div data-tab-panel="past" style="display:none">
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Centrale</th><th>Hôte</th><th>Rôle</th><th>Photos</th><th>Points</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">15 mars 2026</td><td>Moulin de la Dordogne</td><td>Claire Rousseau</td><td><span class="badge badge-cyan">Participant</span></td><td>12 photos</td><td class="activity-points">+200</td></tr>
+            <tr><td class="tabular">8 février 2026</td><td>Centrale du Bocq</td><td>Vous</td><td><span class="badge badge-green">Hôte</span></td><td>8 photos</td><td class="activity-points">+500</td></tr>
+            <tr><td class="tabular">22 janvier 2026</td><td>Alpenwerk</td><td>Anna Schmidt</td><td><span class="badge badge-cyan">Participant</span></td><td>18 photos</td><td class="activity-points">+200</td></tr>
+            <tr><td class="tabular">14 novembre 2025</td><td>Centrale du Bocq</td><td>Vous</td><td><span class="badge badge-green">Hôte</span></td><td>10 photos</td><td class="activity-points">+500</td></tr>
+            <tr><td class="tabular">3 octobre 2025</td><td>Moulin de Hohenberg</td><td>Thomas Müller</td><td><span class="badge badge-cyan">Participant</span></td><td>15 photos</td><td class="activity-points">+200</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Host visit modal -->
+  <div id="host-visit-modal" class="overlay" onclick="if(event.target===this)closeOverlay('host-visit-modal')">
+    <div class="modal modal-lg">
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h3 class="modal-title">Proposer une visite</h3>
+          <p class="modal-subtitle">Ouvrez votre centrale à la communauté — gagnez <b style="color:var(--naia-green)">+500 pts</b> à la tenue.</p>
+        </div>
+        <button class="btn-ghost p-2" onclick="closeOverlay('host-visit-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="grid gap-3" style="grid-template-columns: 1fr 1fr">
+        <div><label class="form-label">Centrale</label><select class="select"><option>Centrale du Bocq</option><option>Moulin de la Lesse</option></select></div>
+        <div><label class="form-label">Date proposée</label><input class="input" type="date" value="2026-06-12" /></div>
+        <div><label class="form-label">Heure de début</label><input class="input" type="time" value="14:00" /></div>
+        <div><label class="form-label">Durée</label><select class="select"><option>2 h</option><option>3 h</option><option>Après-midi</option><option>Journée</option></select></div>
+        <div><label class="form-label">Nombre max. de participants</label><input class="input" type="number" value="6" /></div>
+        <div><label class="form-label">Langue</label><select class="select"><option>Français</option><option>English</option><option>Deutsch</option></select></div>
+        <div style="grid-column: span 2"><label class="form-label">Description</label><textarea class="input" rows="4" placeholder="Décrivez la visite, les points forts techniques, ce que les participants vont voir et apprendre…"></textarea></div>
+        <div style="grid-column: span 2"><label class="form-label">Thèmes</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm" style="border-color:var(--naia-border)"><input type="checkbox" checked /> Turbine & équipement</label>
+            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm" style="border-color:var(--naia-border)"><input type="checkbox" checked /> Instrumentation</label>
+            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm" style="border-color:var(--naia-border)"><input type="checkbox" /> Environnement / passe à poissons</label>
+            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm" style="border-color:var(--naia-border)"><input type="checkbox" /> Marché & contrats</label>
+            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm" style="border-color:var(--naia-border)"><input type="checkbox" /> Intégration Naia</label>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button class="btn btn-secondary" onclick="closeOverlay('host-visit-modal')">Annuler</button>
+        <button class="btn btn-green" onclick="closeOverlay('host-visit-modal'); alert('Proposition envoyée — l\'équipe Naia la validera sous 48 h')"><i data-lucide="send"></i> Envoyer la proposition</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

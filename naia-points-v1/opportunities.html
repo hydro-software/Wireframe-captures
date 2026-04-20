@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunités — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="opportunities" data-title="Opportunités d'investissement" data-subtitle="Simulation BTM, performance des pairs et co-investissement — Layer 2 & 3">
+  <section id="page-content">
+
+    <div style="background:linear-gradient(135deg, #ecfdf5 0%, #f0f9ff 100%); border:1px solid #bbf7d0; border-radius:14px; padding:18px 22px; margin-bottom:24px; display:flex; align-items:center; gap:16px">
+      <div style="width:44px; height:44px; border-radius:12px; background:white; display:flex; align-items:center; justify-content:center; color:var(--naia-green); flex-shrink:0"><i data-lucide="info"></i></div>
+      <div class="flex-1">
+        <div class="font-medium" style="color:var(--naia-navy)">Naia Layer 2 & 3 — bientôt disponible</div>
+        <div class="text-sm muted">Ces fonctionnalités sont en bêta pour les membres Ambassadeur et Platine. Elles se généraliseront au second semestre 2026.</div>
+      </div>
+      <button class="btn btn-green btn-sm" onclick="alert('Demande d\'accès bêta envoyée')">Demander l'accès bêta</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="btm">Simulations BTM</div>
+      <div class="tab" data-tab-target="peer">Performance des pairs</div>
+      <div class="tab" data-tab-target="coinvest">Co-investissement</div>
+    </div>
+
+    <!-- BTM -->
+    <div data-tab-panel="btm">
+      <div class="grid gap-4 mb-4" style="grid-template-columns: repeat(4, 1fr)">
+        <div class="kpi-card">
+          <div class="kpi-label">Crédits simulation</div>
+          <div class="kpi-value">2</div>
+          <div class="text-xs muted mt-1">Disponibles · +1 pour 250 pts</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Simulations lancées</div>
+          <div class="kpi-value">4</div>
+          <div class="text-xs muted mt-1">Depuis janvier 2026</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Revenu supplémentaire estimé</div>
+          <div class="kpi-value" style="color:var(--naia-green)">+18.4 k€</div>
+          <div class="text-xs muted mt-1">Toutes simulations cumulées / an</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">ROI moyen simulé</div>
+          <div class="kpi-value">6.2 ans</div>
+          <div class="text-xs muted mt-1">Payback sur équipement BTM</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-head-title">Mes simulations BTM</div>
+            <div class="text-sm muted">Centrale du Bocq · Capacité 480 kW</div>
+          </div>
+          <button class="btn btn-primary" onclick="alert('Nouvelle simulation BTM — à venir')"><i data-lucide="plus"></i> Nouvelle simulation</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Équipement</th><th>Capacité</th><th>Investissement</th><th>Revenu annuel</th><th>Payback</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="tabular">18 avril 2026</td>
+              <td><span class="badge badge-cyan">Batterie</span> 250 kWh Li-ion</td>
+              <td class="num">250 kWh</td>
+              <td class="num">48 000 €</td>
+              <td class="num" style="color:var(--naia-green); font-weight:600">+8 400 €/an</td>
+              <td class="num">5.7 ans</td>
+              <td><span class="badge badge-status-approved">Complète</span></td>
+            </tr>
+            <tr>
+              <td class="tabular">10 avril 2026</td>
+              <td><span class="badge badge-green">Brûleur</span> Burner 50 kW</td>
+              <td class="num">50 kW</td>
+              <td class="num">12 500 €</td>
+              <td class="num" style="color:var(--naia-green); font-weight:600">+3 200 €/an</td>
+              <td class="num">3.9 ans</td>
+              <td><span class="badge badge-status-approved">Complète</span></td>
+            </tr>
+            <tr>
+              <td class="tabular">25 mars 2026</td>
+              <td><span class="badge badge-amber">EV Charger</span> 2× borne 22 kW</td>
+              <td class="num">44 kW</td>
+              <td class="num">18 000 €</td>
+              <td class="num" style="color:var(--naia-green); font-weight:600">+4 100 €/an</td>
+              <td class="num">4.4 ans</td>
+              <td><span class="badge badge-status-approved">Complète</span></td>
+            </tr>
+            <tr>
+              <td class="tabular">12 mars 2026</td>
+              <td><span class="badge badge-cyan">Batterie</span> 100 kWh Li-ion</td>
+              <td class="num">100 kWh</td>
+              <td class="num">22 500 €</td>
+              <td class="num" style="color:var(--naia-green); font-weight:600">+2 700 €/an</td>
+              <td class="num">8.3 ans</td>
+              <td><span class="badge badge-status-approved">Complète</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Peer performance -->
+    <div data-tab-panel="peer" style="display:none">
+      <div class="text-sm muted mb-3">Toutes les données affichées sont <b>anonymisées</b> — aucune centrale n'est identifiable.</div>
+      <div class="filter-bar">
+        <select class="select" style="width:180px"><option>Type : Tous</option><option>Batterie</option><option>Brûleur</option><option>EV Charger</option></select>
+        <select class="select" style="width:180px"><option>Capacité : Similaire à la mienne (300-600 kW)</option><option>&lt; 500 kW</option><option>500 kW – 1 MW</option><option>&gt; 1 MW</option></select>
+        <select class="select" style="width:160px"><option>Région : Europe de l'Ouest</option><option>Europe du Nord</option><option>Europe du Sud</option><option>Toutes</option></select>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Retours réels anonymisés — 24 configurations BTM actives</div>
+          <span class="badge badge-green">Mis à jour aujourd'hui</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Type BTM</th><th>Capacité</th><th>Centrale hôte</th><th>Revenus réels (12 mois)</th><th>ROI actuel</th><th>Écart vs. simulation</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-cyan">Batterie</span></td><td class="num">200 kWh</td><td class="text-sm muted">Centrale anonyme · BE · 420 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+7 820 €</td><td class="num">6.1 ans</td><td class="text-xs" style="color:var(--naia-green)">+2% vs. simu</td></tr>
+            <tr><td><span class="badge badge-cyan">Batterie</span></td><td class="num">500 kWh</td><td class="text-sm muted">Centrale anonyme · FR · 680 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+21 400 €</td><td class="num">4.8 ans</td><td class="text-xs" style="color:var(--naia-green)">+8% vs. simu</td></tr>
+            <tr><td><span class="badge badge-green">Brûleur</span></td><td class="num">80 kW</td><td class="text-sm muted">Centrale anonyme · DE · 540 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+5 900 €</td><td class="num">3.5 ans</td><td class="text-xs" style="color:var(--naia-danger)">−4% vs. simu</td></tr>
+            <tr><td><span class="badge badge-amber">EV Charger</span></td><td class="num">3× 22 kW</td><td class="text-sm muted">Centrale anonyme · BE · 320 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+6 200 €</td><td class="num">5.2 ans</td><td class="text-xs" style="color:var(--naia-green)">+15% vs. simu</td></tr>
+            <tr><td><span class="badge badge-cyan">Batterie</span></td><td class="num">150 kWh</td><td class="text-sm muted">Centrale anonyme · AT · 480 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+3 900 €</td><td class="num">7.9 ans</td><td class="text-xs" style="color:var(--naia-danger)">−6% vs. simu</td></tr>
+            <tr><td><span class="badge badge-green">Brûleur</span></td><td class="num">120 kW</td><td class="text-sm muted">Centrale anonyme · CH · 720 kW</td><td class="num" style="font-weight:600; color:var(--naia-green)">+9 400 €</td><td class="num">3.1 ans</td><td class="text-xs" style="color:var(--naia-green)">+12% vs. simu</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Co-investment -->
+    <div data-tab-panel="coinvest" style="display:none">
+      <div style="background:#fef3c7; border:1px solid #fbbf24; border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; gap:12px; align-items:center">
+        <i data-lucide="lock" style="color:#92400e"></i>
+        <div class="text-sm" style="color:#78350f">
+          <b>Accès restreint</b> — Les opportunités de co-investissement sont réservées aux membres <b>Ambassadeur</b>.
+          Votre niveau actuel : <b>Argent</b>. Continuez de gagner des points pour débloquer cet accès.
+        </div>
+      </div>
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))">
+        <div class="card" style="padding:18px">
+          <div class="flex justify-between items-start mb-3">
+            <span class="badge badge-cyan">Batterie</span>
+            <span class="badge badge-amber">En cours</span>
+          </div>
+          <div style="font-weight:600; font-size:15px">BTM Batterie 500 kWh — Centrale anonyme FR</div>
+          <div class="text-xs muted mt-1">Capacité centrale : 850 kW · ROI simulé : 4.6 ans</div>
+          <div class="grid gap-2 mt-3">
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Ticket minimum</span><span class="info-row-value text-sm tabular">15 000 €</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Rendement attendu</span><span class="info-row-value text-sm" style="color:var(--naia-green)">8-10% / an</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Durée</span><span class="info-row-value text-sm">10 ans</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Souscription</span><span class="info-row-value text-sm tabular">65 000 / 80 000 €</span></div>
+          </div>
+          <div class="progress mt-3"><div class="progress-fill" style="width:81%"></div></div>
+          <button class="btn btn-secondary btn-block mt-4" disabled><i data-lucide="lock"></i> Ambassadeur requis</button>
+        </div>
+        <div class="card" style="padding:18px">
+          <div class="flex justify-between items-start mb-3">
+            <span class="badge badge-green">Brûleur</span>
+            <span class="badge badge-status-pending">À venir</span>
+          </div>
+          <div style="font-weight:600; font-size:15px">BTM Burner 100 kW — Centrale anonyme BE</div>
+          <div class="text-xs muted mt-1">Capacité centrale : 620 kW · ROI simulé : 3.2 ans</div>
+          <div class="grid gap-2 mt-3">
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Ticket minimum</span><span class="info-row-value text-sm tabular">5 000 €</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Rendement attendu</span><span class="info-row-value text-sm" style="color:var(--naia-green)">11-13% / an</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Ouverture</span><span class="info-row-value text-sm">15 mai 2026</span></div>
+          </div>
+          <button class="btn btn-secondary btn-block mt-4" disabled><i data-lucide="lock"></i> Ambassadeur requis</button>
+        </div>
+        <div class="card" style="padding:18px">
+          <div class="flex justify-between items-start mb-3">
+            <span class="badge badge-cyan">Batterie</span>
+            <span class="badge badge-status-approved">Financé</span>
+          </div>
+          <div style="font-weight:600; font-size:15px">BTM Batterie 300 kWh — Centrale anonyme DE</div>
+          <div class="text-xs muted mt-1">Capacité centrale : 540 kW · 12 investisseurs</div>
+          <div class="grid gap-2 mt-3">
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Montant levé</span><span class="info-row-value text-sm tabular">60 000 €</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Rendement actuel</span><span class="info-row-value text-sm" style="color:var(--naia-green)">9.4% / an</span></div>
+            <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Mise en service</span><span class="info-row-value text-sm">janvier 2026</span></div>
+          </div>
+          <button class="btn btn-secondary btn-block mt-4" disabled>Fermé</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

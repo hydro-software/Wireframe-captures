@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Visites — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="visits" data-title="Visites de centrales" data-subtitle="Calendrier, validations et historique">
+  <section id="page-content">
+
+    <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(4, 1fr)">
+      <div class="kpi-card"><div class="kpi-label">Proposées à valider</div><div class="kpi-value">3</div></div>
+      <div class="kpi-card"><div class="kpi-label">Planifiées (Q2)</div><div class="kpi-value">8</div></div>
+      <div class="kpi-card"><div class="kpi-label">Participants attendus</div><div class="kpi-value">42</div></div>
+      <div class="kpi-card"><div class="kpi-label">Points à distribuer (Q2)</div><div class="kpi-value tabular">12 400</div></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="pending">À valider (3)</div>
+      <div class="tab" data-tab-target="upcoming">Planifiées (8)</div>
+      <div class="tab" data-tab-target="past">Historique</div>
+    </div>
+
+    <div data-tab-panel="pending">
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr))">
+        <div class="visit-card">
+          <div class="visit-image v2"><div class="visit-date-stamp"><div class="d">12</div><div class="m">Juin</div></div></div>
+          <div class="visit-body">
+            <div class="flex justify-between items-start"><div class="visit-title">Centrale du Bocq</div><span class="badge badge-status-pending">À valider</span></div>
+            <div class="text-xs muted">Proposée par Marc Dupont · 15 avr. 2026</div>
+            <div class="visit-meta"><span><i data-lucide="map-pin"></i> Spontin, BE</span><span><i data-lucide="users"></i> 6 places max</span><span><i data-lucide="clock"></i> 14 h–17 h</span></div>
+            <div class="text-sm muted" style="line-height:1.5">Visite technique d'une centrale basse chute. Focus sur la turbine Kaplan et l'instrumentation.</div>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Hôte : 500 pts · Parts. : 200 pts</span><div class="flex gap-1"><button class="btn btn-green btn-sm" onclick="alert('Visite approuvée — publiée aux membres')"><i data-lucide="check"></i> Approuver</button><button class="btn btn-danger btn-sm"><i data-lucide="x"></i></button></div></div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v5"><div class="visit-date-stamp"><div class="d">25</div><div class="m">Juin</div></div></div>
+          <div class="visit-body">
+            <div class="flex justify-between items-start"><div class="visit-title">Central de los Pirineos</div><span class="badge badge-status-pending">À valider</span></div>
+            <div class="text-xs muted">Proposée par Isabel Fernández · 17 avr. 2026</div>
+            <div class="visit-meta"><span><i data-lucide="map-pin"></i> Huesca, ES</span><span><i data-lucide="users"></i> 8 places max</span><span><i data-lucide="clock"></i> Journée</span></div>
+            <div class="text-sm muted" style="line-height:1.5">Deuxième édition — focus étiages et gestion de l'eau en zone aride.</div>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Hôte : 500 pts · Parts. : 200 pts</span><div class="flex gap-1"><button class="btn btn-green btn-sm"><i data-lucide="check"></i> Approuver</button><button class="btn btn-danger btn-sm"><i data-lucide="x"></i></button></div></div>
+        </div>
+        <div class="visit-card">
+          <div class="visit-image v3"><div class="visit-date-stamp"><div class="d">08</div><div class="m">Juil</div></div></div>
+          <div class="visit-body">
+            <div class="flex justify-between items-start"><div class="visit-title">Moulin de Hohenberg</div><span class="badge badge-status-pending">À valider</span></div>
+            <div class="text-xs muted">Proposée par Thomas Müller · 19 avr. 2026</div>
+            <div class="visit-meta"><span><i data-lucide="map-pin"></i> Bade-Wurtemberg, DE</span><span><i data-lucide="users"></i> 5 places max</span><span><i data-lucide="clock"></i> 09 h–12 h</span></div>
+            <div class="text-sm muted" style="line-height:1.5">Atelier technique : migration d'un historien propriétaire vers InfluxDB + Grafana.</div>
+          </div>
+          <div class="visit-foot"><span class="text-xs muted">Hôte : 500 pts · Parts. : 200 pts</span><div class="flex gap-1"><button class="btn btn-green btn-sm"><i data-lucide="check"></i> Approuver</button><button class="btn btn-danger btn-sm"><i data-lucide="x"></i></button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="upcoming" style="display:none">
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Centrale</th><th>Pays</th><th>Hôte</th><th>Participants</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">6 mai 2026</td><td>Centrale de Marche-les-Dames</td><td>🇧🇪</td><td>Sophie Legrand</td><td class="num">3 / 6</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">14 mai 2026</td><td>Centrale de Hohenberg</td><td>🇩🇪</td><td>Jean Vandenberg</td><td class="num">5 / 8</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">22 mai 2026</td><td>Moulin de la Dordogne</td><td>🇫🇷</td><td>Claire Rousseau</td><td class="num">6 / 6</td><td><span class="badge badge-red">Complet</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">3 juin 2026</td><td>Central de los Pirineos</td><td>🇪🇸</td><td>Isabel Fernández</td><td class="num">2 / 8</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">12 juin 2026</td><td>Centrale du Bocq</td><td>🇧🇪</td><td>Marc Dupont</td><td class="num">4 / 6</td><td><span class="badge badge-status-pending">En attente</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">18 juin 2026</td><td>Alpenwerk</td><td>🇦🇹</td><td>Anna Schmidt</td><td class="num">4 / 6</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">1 juillet 2026</td><td>Centrale du Hérou</td><td>🇧🇪</td><td>Pierre Renard</td><td class="num">1 / 4</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td class="tabular">8 juillet 2026</td><td>Moulin de Hohenberg</td><td>🇩🇪</td><td>Thomas Müller</td><td class="num">0 / 5</td><td><span class="badge badge-status-pending">En attente</span></td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-tab-panel="past" style="display:none">
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Centrale</th><th>Hôte</th><th>Présents</th><th>Points distribués</th><th>Photos</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">15 mars</td><td>Moulin de la Dordogne</td><td>Claire Rousseau</td><td class="num">5</td><td class="num">1 500</td><td>12</td></tr>
+            <tr><td class="tabular">8 février</td><td>Centrale du Bocq</td><td>Marc Dupont</td><td class="num">4</td><td class="num">1 300</td><td>8</td></tr>
+            <tr><td class="tabular">22 janvier</td><td>Alpenwerk</td><td>Anna Schmidt</td><td class="num">6</td><td class="num">1 700</td><td>18</td></tr>
+            <tr><td class="tabular">14 novembre 2025</td><td>Centrale du Bocq</td><td>Marc Dupont</td><td class="num">5</td><td class="num">1 500</td><td>10</td></tr>
+            <tr><td class="tabular">3 octobre 2025</td><td>Moulin de Hohenberg</td><td>Thomas Müller</td><td class="num">4</td><td class="num">1 300</td><td>15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

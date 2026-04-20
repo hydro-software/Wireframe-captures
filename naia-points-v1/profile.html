@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="profile" data-title="Mon profil" data-subtitle="Informations personnelles, centrales et préférences">
+  <section id="page-content">
+
+    <!-- Identity header -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="flex items-center gap-4">
+          <div class="avatar avatar-xl" style="width:80px; height:80px; font-size:26px">MD</div>
+          <div style="flex:1">
+            <div class="flex items-center gap-3">
+              <h2 style="font-size:22px; font-weight:600">Marc Dupont</h2>
+              <span class="tier-pill tier-gold"><i data-lucide="award" style="width:12px; height:12px"></i> Niveau Argent</span>
+            </div>
+            <div class="text-sm muted mt-1">marc.dupont@moulin.be · Membre depuis mars 2024</div>
+            <div class="flex gap-2 mt-3">
+              <span class="badge badge-purple"><i data-lucide="shield"></i> Pionnier hydro</span>
+              <span class="badge badge-green"><i data-lucide="map-pin"></i> Hôte de 3 visites</span>
+              <span class="badge badge-cyan"><i data-lucide="book"></i> 8 contributions</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary"><i data-lucide="edit-3"></i> Modifier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab-target="overview">Vue d'ensemble</div>
+      <div class="tab" data-tab-target="plants">Mes centrales</div>
+      <div class="tab" data-tab-target="badges">Badges</div>
+      <div class="tab" data-tab-target="history">Historique points</div>
+      <div class="tab" data-tab-target="settings">Préférences</div>
+    </div>
+
+    <!-- Overview -->
+    <div data-tab-panel="overview">
+      <div class="grid gap-4" style="grid-template-columns: 1.5fr 1fr">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-title">Progression vers le niveau Or</div>
+          </div>
+          <div class="card-body">
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-medium">Argent → Or</span>
+              <span class="text-sm muted">3 450 / 4 000 pts</span>
+            </div>
+            <div class="progress mb-4"><div class="progress-fill" style="width:86%"></div></div>
+
+            <div class="grid gap-3" style="grid-template-columns: repeat(5, 1fr); text-align:center">
+              <div>
+                <div style="width:44px; height:44px; margin:0 auto 6px; background:#fde68a; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#78350f">
+                  <i data-lucide="medal" style="width:22px; height:22px"></i>
+                </div>
+                <div class="text-xs muted">Bronze</div>
+                <div class="text-xs muted tabular">0 pts</div>
+              </div>
+              <div>
+                <div style="width:44px; height:44px; margin:0 auto 6px; background:linear-gradient(135deg,var(--naia-cyan),var(--naia-green)); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; box-shadow:0 4px 12px -2px rgba(0,180,216,0.4)">
+                  <i data-lucide="award" style="width:22px; height:22px"></i>
+                </div>
+                <div class="text-xs" style="color:var(--naia-cyan); font-weight:600">Argent</div>
+                <div class="text-xs muted tabular">1 000 pts</div>
+              </div>
+              <div>
+                <div style="width:44px; height:44px; margin:0 auto 6px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#94a3b8">
+                  <i data-lucide="award" style="width:22px; height:22px"></i>
+                </div>
+                <div class="text-xs muted">Or</div>
+                <div class="text-xs muted tabular">4 000 pts</div>
+              </div>
+              <div>
+                <div style="width:44px; height:44px; margin:0 auto 6px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#94a3b8">
+                  <i data-lucide="gem" style="width:22px; height:22px"></i>
+                </div>
+                <div class="text-xs muted">Platine</div>
+                <div class="text-xs muted tabular">10 000 pts</div>
+              </div>
+              <div>
+                <div style="width:44px; height:44px; margin:0 auto 6px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#94a3b8">
+                  <i data-lucide="crown" style="width:22px; height:22px"></i>
+                </div>
+                <div class="text-xs muted">Ambassadeur</div>
+                <div class="text-xs muted tabular">25 000 pts</div>
+              </div>
+            </div>
+
+            <div class="mt-5" style="padding:14px; background:#f0fdf4; border:1px solid #86efac; border-radius:10px; display:flex; gap:12px; align-items:start">
+              <div style="width:36px; height:36px; border-radius:10px; background:white; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--naia-green)">
+                <i data-lucide="lightbulb"></i>
+              </div>
+              <div>
+                <div class="font-medium" style="color:var(--naia-navy)">Plus que 550 pts vers le niveau Or</div>
+                <div class="text-sm muted mt-1">Proposez une visite de centrale (+500 pts) ou publiez deux articles de connaissance (+300 pts) pour passer Or.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Informations</div></div>
+          <div class="card-body" style="padding-top:6px">
+            <div class="info-row"><span class="info-row-label">Prénom</span><span class="info-row-value">Marc</span></div>
+            <div class="info-row"><span class="info-row-label">Nom</span><span class="info-row-value">Dupont</span></div>
+            <div class="info-row"><span class="info-row-label">Email</span><span class="info-row-value">marc.dupont@moulin.be</span></div>
+            <div class="info-row"><span class="info-row-label">Pays</span><span class="info-row-value">Belgique 🇧🇪</span></div>
+            <div class="info-row"><span class="info-row-label">Centrales</span><span class="info-row-value">2 actives</span></div>
+            <div class="info-row"><span class="info-row-label">Code parrainage</span><span class="info-row-value" style="font-family:monospace">MARC-2026</span></div>
+            <div class="info-row"><span class="info-row-label">Membre depuis</span><span class="info-row-value">mars 2024</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plants -->
+    <div data-tab-panel="plants" style="display:none">
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr))">
+        <div class="card">
+          <div class="visit-image v2" style="height:140px; border-radius:12px 12px 0 0"></div>
+          <div class="card-body">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <div style="font-size:16px; font-weight:600">Centrale du Bocq</div>
+                <div class="text-sm muted">Spontin, BE · Run-of-river</div>
+              </div>
+              <span class="badge badge-status-approved">Active</span>
+            </div>
+            <div class="grid gap-2 mt-3" style="grid-template-columns: 1fr 1fr">
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Capacité</span><span class="info-row-value text-sm">480 kW</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Turbine</span><span class="info-row-value text-sm">Kaplan</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Connectée</span><span class="info-row-value text-sm">14/03/2024</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Production 2025</span><span class="info-row-value text-sm">2.1 GWh</span></div>
+            </div>
+            <button class="btn btn-secondary btn-sm btn-block mt-4"><i data-lucide="external-link"></i> Ouvrir dans Naia Insight</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="visit-image v3" style="height:140px; border-radius:12px 12px 0 0"></div>
+          <div class="card-body">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <div style="font-size:16px; font-weight:600">Moulin de la Lesse</div>
+                <div class="text-sm muted">Houyet, BE · Run-of-river</div>
+              </div>
+              <span class="badge badge-status-approved">Active</span>
+            </div>
+            <div class="grid gap-2 mt-3" style="grid-template-columns: 1fr 1fr">
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Capacité</span><span class="info-row-value text-sm">210 kW</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Turbine</span><span class="info-row-value text-sm">Francis</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Connectée</span><span class="info-row-value text-sm">22/09/2024</span></div>
+              <div class="info-row" style="padding:6px 0"><span class="info-row-label text-xs">Production 2025</span><span class="info-row-value text-sm">0.9 GWh</span></div>
+            </div>
+            <button class="btn btn-secondary btn-sm btn-block mt-4"><i data-lucide="external-link"></i> Ouvrir dans Naia Insight</button>
+          </div>
+        </div>
+        <div class="card" style="border-style:dashed; background:#fafbfd">
+          <div class="card-body" style="text-align:center; padding:40px 20px">
+            <div style="width:48px; height:48px; margin:0 auto 12px; border-radius:12px; background:#e0f2fe; color:var(--naia-cyan); display:flex; align-items:center; justify-content:center"><i data-lucide="plus"></i></div>
+            <div class="font-medium mb-2">Ajouter une centrale</div>
+            <div class="text-sm muted mb-4">+500 pts à la première connexion de données</div>
+            <button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div data-tab-panel="badges" style="display:none">
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))">
+        <div class="card" style="text-align:center; padding:22px">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:linear-gradient(135deg,#c4b5fd,#7c3aed); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; box-shadow:0 8px 20px -4px rgba(124,58,237,0.4)"><i data-lucide="shield" style="width:32px; height:32px"></i></div>
+          <div style="font-weight:600">Pionnier hydro</div>
+          <div class="text-xs muted mt-1">Premiers 100 membres de la communauté</div>
+          <div class="text-xs mt-2" style="color:var(--naia-green); font-weight:500">✓ Obtenu en mars 2024</div>
+        </div>
+        <div class="card" style="text-align:center; padding:22px">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:linear-gradient(135deg,#86efac,#16a34a); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white"><i data-lucide="map-pin" style="width:32px; height:32px"></i></div>
+          <div style="font-weight:600">Hôte confirmé</div>
+          <div class="text-xs muted mt-1">A accueilli 3 visites de centrale</div>
+          <div class="text-xs mt-2" style="color:var(--naia-green); font-weight:500">✓ Obtenu en février 2026</div>
+        </div>
+        <div class="card" style="text-align:center; padding:22px">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:linear-gradient(135deg,#7dd3fc,#0ea5e9); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white"><i data-lucide="book" style="width:32px; height:32px"></i></div>
+          <div style="font-weight:600">Contributeur savoir</div>
+          <div class="text-xs muted mt-1">5 articles approuvés</div>
+          <div class="text-xs mt-2" style="color:var(--naia-green); font-weight:500">✓ Obtenu en janvier 2026</div>
+        </div>
+        <div class="card" style="text-align:center; padding:22px">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:linear-gradient(135deg,#fcd34d,#f59e0b); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white"><i data-lucide="flame" style="width:32px; height:32px"></i></div>
+          <div style="font-weight:600">Série de 30 j</div>
+          <div class="text-xs muted mt-1">30 jours de données complètes</div>
+          <div class="text-xs mt-2" style="color:var(--naia-green); font-weight:500">✓ Obtenu en avril 2026</div>
+        </div>
+        <div class="card" style="text-align:center; padding:22px; opacity:0.5">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:#e4e8ee; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#94a3b8"><i data-lucide="lock" style="width:28px; height:28px"></i></div>
+          <div style="font-weight:600">Ambassadeur</div>
+          <div class="text-xs muted mt-1">Reconnaissance top-tier</div>
+          <div class="text-xs mt-2 muted">5 000 pts requis</div>
+        </div>
+        <div class="card" style="text-align:center; padding:22px; opacity:0.5">
+          <div style="width:72px; height:72px; margin:0 auto 12px; background:#e4e8ee; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#94a3b8"><i data-lucide="lock" style="width:28px; height:28px"></i></div>
+          <div style="font-weight:600">Super-parrain</div>
+          <div class="text-xs muted mt-1">10 filleuls activés</div>
+          <div class="text-xs mt-2 muted">6 restants</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div data-tab-panel="history" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Historique complet des points</div>
+          <button class="btn btn-secondary btn-sm" onclick="alert('Export CSV')"><i data-lucide="download"></i> Exporter</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Activité</th><th>Type</th><th class="num" style="text-align:right">Points</th><th class="num" style="text-align:right">Solde</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="tabular">20 avr.</td><td>Analyse des pertes</td><td><span class="badge badge-cat-platform">Plateforme</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+100</td><td class="num" style="text-align:right">3 450</td></tr>
+            <tr><td class="tabular">19 avr.</td><td>Réponse forum approuvée</td><td><span class="badge badge-cat-community">Communauté</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+50</td><td class="num" style="text-align:right">3 350</td></tr>
+            <tr><td class="tabular">16 avr.</td><td>Newsletter avril lue</td><td><span class="badge badge-cat-learning">Apprentissage</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+25</td><td class="num" style="text-align:right">3 300</td></tr>
+            <tr><td class="tabular">12 avr.</td><td>Échange : Session expert marché</td><td><span class="badge badge-cyan">Récompense</span></td><td class="num" style="text-align:right; color:var(--naia-danger); font-weight:600">−500</td><td class="num" style="text-align:right">3 275</td></tr>
+            <tr><td class="tabular">10 avr.</td><td>Série 30 j données complètes</td><td><span class="badge badge-cat-platform">Plateforme</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+200</td><td class="num" style="text-align:right">3 775</td></tr>
+            <tr><td class="tabular">8 avr.</td><td>Filleul activé : P. Renard</td><td><span class="badge badge-cat-referral">Parrainage</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+100</td><td class="num" style="text-align:right">3 575</td></tr>
+            <tr><td class="tabular">5 avr.</td><td>Échange : Crédit simulation BTM</td><td><span class="badge badge-cyan">Récompense</span></td><td class="num" style="text-align:right; color:var(--naia-danger); font-weight:600">−250</td><td class="num" style="text-align:right">3 475</td></tr>
+            <tr><td class="tabular">2 avr.</td><td>Article publié : « Passes à poissons »</td><td><span class="badge badge-cat-community">Communauté</span></td><td class="num" style="text-align:right; color:var(--naia-green); font-weight:600">+150</td><td class="num" style="text-align:right">3 725</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Preferences -->
+    <div data-tab-panel="settings" style="display:none">
+      <div class="grid gap-4" style="grid-template-columns: 1fr 1fr">
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Notifications</div></div>
+          <div class="card-body">
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div>
+                <div class="font-medium text-sm">Email hebdomadaire</div>
+                <div class="text-xs muted">Récapitulatif des points gagnés et des visites à venir</div>
+              </div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div>
+                <div class="font-medium text-sm">Nouvelles visites</div>
+                <div class="text-xs muted">Alerte quand une nouvelle visite s'ouvre</div>
+              </div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+            <div class="flex justify-between items-center py-3" style="border-bottom:1px solid var(--naia-border)">
+              <div>
+                <div class="font-medium text-sm">Nouvelles récompenses</div>
+                <div class="text-xs muted">Alerte quand de nouveaux avantages sont disponibles</div>
+              </div>
+              <span class="toggle"><span class="toggle-knob"></span></span>
+            </div>
+            <div class="flex justify-between items-center py-3">
+              <div>
+                <div class="font-medium text-sm">Réponses forum</div>
+                <div class="text-xs muted">Alerte quand on répond à vos messages</div>
+              </div>
+              <span class="toggle on"><span class="toggle-knob"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Langue & région</div></div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Langue d'interface</label>
+              <select class="select"><option>Français</option><option>Deutsch</option><option>English</option></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fuseau horaire</label>
+              <select class="select"><option>Europe/Brussels (UTC+1)</option><option>Europe/Paris (UTC+1)</option><option>Europe/Berlin (UTC+1)</option></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Devise</label>
+              <select class="select"><option>EUR (€)</option><option>CHF</option></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Visibilité du profil</label>
+              <select class="select"><option>Public (communauté)</option><option>Privé</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="grid-column: span 2">
+          <div class="card-head"><div class="card-head-title">Sécurité</div></div>
+          <div class="card-body flex gap-3 flex-wrap">
+            <button class="btn btn-secondary"><i data-lucide="key"></i> Changer le mot de passe</button>
+            <button class="btn btn-secondary"><i data-lucide="smartphone"></i> Activer le 2FA</button>
+            <button class="btn btn-secondary"><i data-lucide="log-out"></i> Déconnecter tous les appareils</button>
+            <button class="btn btn-danger" style="margin-left:auto"><i data-lucide="trash-2"></i> Supprimer mon compte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

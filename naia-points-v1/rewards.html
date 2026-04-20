@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Récompenses — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="rewards" data-title="Récompenses" data-subtitle="Échangez vos points contre des avantages exclusifs">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="catalog">Catalogue</div>
+      <div class="tab" data-tab-target="history">Mes échanges</div>
+    </div>
+
+    <div data-tab-panel="catalog">
+
+      <!-- Filter -->
+      <div class="filter-bar">
+        <input class="input search-input" style="width:300px" placeholder="Rechercher un avantage…" />
+        <select class="select" style="width:200px">
+          <option>Toutes les catégories</option>
+          <option>Accès & expériences</option>
+          <option>Produit (cross-layer)</option>
+          <option>Reconnaissance</option>
+          <option>Marchandise</option>
+        </select>
+        <select class="select" style="width:180px">
+          <option>Points (croissant)</option>
+          <option>Points (décroissant)</option>
+          <option>Plus populaires</option>
+        </select>
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--naia-text-muted)">
+          <span class="toggle on"><span class="toggle-knob"></span></span>
+          Accessibles avec mes points
+        </label>
+      </div>
+
+      <!-- Access & experiences -->
+      <h3 class="section-title">Accès & expériences</h3>
+      <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))">
+        <div class="tile">
+          <div class="tile-head">
+            <span class="badge badge-cyan"><i data-lucide="map-pin"></i> Accès</span>
+            <span class="badge badge-green">Disponible</span>
+          </div>
+          <div class="tile-title">Visite de centrale prioritaire</div>
+          <div class="tile-desc">Premier accès aux prochaines visites avant ouverture publique.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 300 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Visite prioritaire', 300)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head">
+            <span class="badge badge-cyan"><i data-lucide="message-circle"></i> Accès</span>
+            <span class="badge badge-green">Disponible</span>
+          </div>
+          <div class="tile-title">Session 1:1 avec un expert marché</div>
+          <div class="tile-desc">30 min avec les analystes marché de Naia.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 500 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Session expert marché', 500)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head">
+            <span class="badge badge-cyan"><i data-lucide="rocket"></i> Accès</span>
+            <span class="badge badge-green">Disponible</span>
+          </div>
+          <div class="tile-title">Accès anticipé aux nouveautés</div>
+          <div class="tile-desc">Beta des futures fonctionnalités Naia.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 400 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Accès anticipé', 400)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head">
+            <span class="badge badge-cyan"><i data-lucide="users"></i> Accès</span>
+            <span class="badge badge-amber">Premium</span>
+          </div>
+          <div class="tile-title">Siège au conseil consultatif (trimestre)</div>
+          <div class="tile-desc">Participer au Naia Community Advisory Board pour un trimestre.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 2 000 pts</span>
+            <button class="btn btn-secondary btn-sm" disabled>Insuffisant</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head">
+            <span class="badge badge-cyan"><i data-lucide="calendar"></i> Accès</span>
+            <span class="badge badge-amber">VIP</span>
+          </div>
+          <div class="tile-title">Invitation VIP au meetup annuel</div>
+          <div class="tile-desc">Tous frais payés au rassemblement annuel de la communauté Naia.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 1 500 pts</span>
+            <button class="btn btn-secondary btn-sm" disabled>Insuffisant</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product -->
+      <h3 class="section-title">Produit (cross-layer)</h3>
+      <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))">
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-blue"><i data-lucide="cpu"></i> Simulate · L2</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Crédit de simulation BTM</div>
+          <div class="tile-desc">Un token pour lancer un rapport de simulation behind-the-meter.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 250 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Crédit simulation BTM', 250)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-blue"><i data-lucide="newspaper"></i> Insight · L1</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Newsletter premium — édition mensuelle</div>
+          <div class="tile-desc">Deep-dive marché approfondi, version mensuelle.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 150 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Newsletter premium', 150)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-blue"><i data-lucide="layers"></i> Insight · L1</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Analyse pertes multi-centrales</div>
+          <div class="tile-desc">Rapport comparatif sur l'ensemble de vos actifs.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 500 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Analyse multi-centrales', 500)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-blue"><i data-lucide="chart-line"></i> Insight · L1</span><span class="badge badge-amber">Premium</span></div>
+          <div class="tile-title">Rapport scénarios marché personnalisé</div>
+          <div class="tile-desc">Analyse sur mesure des scénarios de prix pour votre région.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 750 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Rapport scénarios', 750)">Échanger</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recognition -->
+      <h3 class="section-title">Reconnaissance & statut</h3>
+      <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))">
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-purple"><i data-lucide="shield"></i> Badge</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Badge « Pionnier hydro »</div>
+          <div class="tile-desc">Visible sur votre profil communautaire.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 100 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Badge Pionnier', 100)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-purple"><i data-lucide="book"></i> Badge</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Badge « Contributeur savoir »</div>
+          <div class="tile-desc">Décerné après 5 articles approuvés.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 200 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Badge Contributeur', 200)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-purple"><i data-lucide="star"></i> Spotlight</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Portrait d'opérateur dans la newsletter</div>
+          <div class="tile-desc">Profil mis en avant dans la newsletter mensuelle.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 500 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Spotlight newsletter', 500)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-purple"><i data-lucide="crown"></i> Élite</span><span class="badge badge-amber">Ambassadeur</span></div>
+          <div class="tile-title">Statut « Ambassadeur Naia »</div>
+          <div class="tile-desc">Reconnaissance top-tier : débloque tous les avantages premium pour 1 an.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 5 000 pts</span>
+            <button class="btn btn-secondary btn-sm" disabled>Insuffisant</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Merchandise -->
+      <h3 class="section-title">Marchandise & tangible</h3>
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))">
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-slate"><i data-lucide="shirt"></i> Marchandise</span><span class="badge badge-green">Disponible</span></div>
+          <div class="tile-title">Équipement Naia (casquette, veste)</div>
+          <div class="tile-desc">Produit dérivé expédié.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 300 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Équipement Naia', 300)">Échanger</button>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-head"><span class="badge badge-slate"><i data-lucide="gift"></i> Chèque</span><span class="badge badge-amber">Premium</span></div>
+          <div class="tile-title">Chèque-cadeau 25 €</div>
+          <div class="tile-desc">Chèque-cadeau multi-enseignes.</div>
+          <div class="tile-foot">
+            <span class="tile-cost"><i data-lucide="sparkles"></i> 750 pts</span>
+            <button class="btn btn-primary btn-sm" onclick="redeem('Chèque-cadeau', 750)">Échanger</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="history" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-title">Historique des échanges</div>
+          <button class="btn btn-secondary btn-sm" onclick="alert('Export CSV de l\'historique')"><i data-lucide="download"></i> Exporter</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Avantage</th><th>Catégorie</th><th>Points</th><th>Statut</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tabular">12 avr. 2026</td>
+              <td>Session 1:1 avec expert marché</td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">−500</td>
+              <td><span class="badge badge-status-approved">Approuvé</span></td>
+              <td><button class="btn btn-ghost btn-sm">Détails</button></td>
+            </tr>
+            <tr>
+              <td class="tabular">5 avr. 2026</td>
+              <td>Crédit de simulation BTM</td>
+              <td><span class="badge badge-blue">Produit</span></td>
+              <td class="num">−250</td>
+              <td><span class="badge badge-status-approved">Approuvé</span></td>
+              <td><button class="btn btn-ghost btn-sm">Détails</button></td>
+            </tr>
+            <tr>
+              <td class="tabular">22 mars 2026</td>
+              <td>Newsletter premium — mars</td>
+              <td><span class="badge badge-blue">Produit</span></td>
+              <td class="num">−150</td>
+              <td><span class="badge badge-status-approved">Approuvé</span></td>
+              <td><button class="btn btn-ghost btn-sm">Détails</button></td>
+            </tr>
+            <tr>
+              <td class="tabular">10 mars 2026</td>
+              <td>Badge « Pionnier hydro »</td>
+              <td><span class="badge badge-purple">Reconnaissance</span></td>
+              <td class="num">−100</td>
+              <td><span class="badge badge-status-approved">Approuvé</span></td>
+              <td><button class="btn btn-ghost btn-sm">Détails</button></td>
+            </tr>
+            <tr>
+              <td class="tabular">2 mars 2026</td>
+              <td>Visite de centrale prioritaire</td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">−300</td>
+              <td><span class="badge badge-status-pending">En attente</span></td>
+              <td><button class="btn btn-ghost btn-sm">Détails</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

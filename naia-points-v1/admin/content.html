@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Contenu — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="content" data-title="Contenu" data-subtitle="Newsletters, base de connaissances et modération forum">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="newsletter">Newsletters</div>
+      <div class="tab" data-tab-target="kb">Base de connaissances</div>
+      <div class="tab" data-tab-target="forum">Modération forum</div>
+    </div>
+
+    <!-- Newsletter -->
+    <div data-tab-panel="newsletter">
+      <div class="flex justify-between items-center mb-4">
+        <div class="filter-bar" style="margin:0"><select class="select" style="width:180px"><option>Toutes</option><option>Inclus</option><option>Premium</option></select><select class="select" style="width:140px"><option>2026</option><option>2025</option></select></div>
+        <button class="btn btn-primary"><i data-lucide="plus"></i> Nouvelle édition</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Édition</th><th>Type</th><th>Publiée le</th><th>Lecteurs</th><th>Taux d'ouverture</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="font-medium text-sm">Édition d'avril — Bilan Q1</div><div class="text-xs muted">18 avril 2026</div></td><td><span class="badge badge-included">Inclus</span></td><td class="text-sm muted">18 avr.</td><td class="num">94 / 112</td><td class="num">83.9%</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Deep-dive — Scénarios prix Q3</div><div class="text-xs muted">15 avril 2026</div></td><td><span class="badge badge-premium">★ Premium</span></td><td class="text-sm muted">15 avr.</td><td class="num">42</td><td class="num">—</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Édition de mars</div><div class="text-xs muted">18 mars 2026</div></td><td><span class="badge badge-included">Inclus</span></td><td class="text-sm muted">18 mars</td><td class="num">98 / 108</td><td class="num">90.7%</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Deep-dive — BTM batteries 100-500 kWh</div><div class="text-xs muted">12 mars 2026</div></td><td><span class="badge badge-premium">★ Premium</span></td><td class="text-sm muted">12 mars</td><td class="num">28</td><td class="num">—</td><td><span class="badge badge-status-approved">Publiée</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Édition de mai (brouillon)</div><div class="text-xs muted">Prévue pour le 18 mai</div></td><td><span class="badge badge-included">Inclus</span></td><td class="text-sm muted">—</td><td class="num">—</td><td class="num">—</td><td><span class="badge badge-status-pending">Brouillon</span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KB moderation -->
+    <div data-tab-panel="kb" style="display:none">
+      <div class="card mb-4">
+        <div class="card-head"><div><div class="card-head-title">Articles soumis — en attente</div><div class="text-sm muted">2 articles à modérer · SLA : 72 h</div></div></div>
+        <table class="data-table">
+          <thead><tr><th>Titre</th><th>Auteur</th><th>Thème</th><th>Soumis</th><th>Longueur</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="font-medium text-sm">Analyse comparative : prix CRE France vs. OA 2026</div><div class="text-xs muted">Proposé pour +150 pts</div></td>
+              <td>Laurent Dubois</td>
+              <td><span class="badge badge-cat-community">Marché</span></td>
+              <td class="text-sm muted">19 avril</td>
+              <td class="text-sm muted">1 800 mots</td>
+              <td><div class="flex gap-1"><button class="btn btn-green btn-sm"><i data-lucide="check"></i> Approuver</button><button class="btn btn-secondary btn-sm">Aperçu</button><button class="btn btn-danger btn-sm"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="font-medium text-sm">Retour d'expérience : passes à poissons Ichtyomer sur 2 ans</div><div class="text-xs muted">Proposé pour +150 pts</div></td>
+              <td>Claire Rousseau</td>
+              <td><span class="badge badge-cat-community">Maintenance</span></td>
+              <td class="text-sm muted">20 avril</td>
+              <td class="text-sm muted">2 400 mots</td>
+              <td><div class="flex gap-1"><button class="btn btn-green btn-sm"><i data-lucide="check"></i> Approuver</button><button class="btn btn-secondary btn-sm">Aperçu</button><button class="btn btn-danger btn-sm"><i data-lucide="x"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><div class="card-head-title">Articles publiés</div><div class="text-sm muted">64 articles · 4 238 lectures cumulées</div></div><button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> Rédaction interne</button></div>
+        <table class="data-table">
+          <thead><tr><th>Titre</th><th>Auteur</th><th>Thème</th><th>Lu</th><th>Note</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>Check-list d'hivernage pour petites centrales</td><td>Claire Rousseau</td><td><span class="badge badge-cat-community">Maintenance</span></td><td class="num">412</td><td>★ 4.8</td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+            <tr><td>Stratégies d'arrêt lors de prix négatifs</td><td>Sophie Legrand</td><td><span class="badge badge-cat-community">Marché</span></td><td class="num">598</td><td>★ 4.9</td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+            <tr><td>Remplacer un historien propriétaire par InfluxDB + Grafana</td><td>Thomas Müller</td><td><span class="badge badge-cat-community">Technologie</span></td><td class="num">354</td><td>★ 4.7</td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+            <tr><td>Calibrage rapide d'un capteur de débit après crue</td><td>Marc Dupont</td><td><span class="badge badge-cat-community">Maintenance</span></td><td class="num">128</td><td>★ 4.4</td><td><button class="btn btn-ghost btn-sm"><i data-lucide="more-horizontal"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Forum moderation -->
+    <div data-tab-panel="forum" style="display:none">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Signalements en attente</div><span class="badge badge-red">1 urgent</span></div>
+        <div>
+          <div class="forum-row">
+            <div class="avatar avatar-sm" style="background:#fee2e2; color:#991b1b"><i data-lucide="flag"></i></div>
+            <div>
+              <div class="forum-title">Post signalé : ton inapproprié (critique publique d'un membre)</div>
+              <div class="forum-excerpt">Par Anna Schmidt · signalé par 2 membres · il y a 3 h</div>
+            </div>
+            <div class="text-xs muted tabular"><div>Sujet : Prix spot négatifs</div></div>
+            <div class="flex gap-1"><button class="btn btn-green btn-sm">Conserver</button><button class="btn btn-danger btn-sm">Supprimer</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-4 mt-4" style="grid-template-columns: repeat(3, 1fr)">
+        <div class="kpi-card"><div class="kpi-label">Sujets (30 j)</div><div class="kpi-value">42</div></div>
+        <div class="kpi-card"><div class="kpi-label">Réponses (30 j)</div><div class="kpi-value">184</div></div>
+        <div class="kpi-card"><div class="kpi-label">Taux résolution</div><div class="kpi-value">74%</div></div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

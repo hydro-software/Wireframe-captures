@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classement — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="leaderboard" data-title="Classement de la communauté" data-subtitle="Les opérateurs les plus actifs cette saison">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="points">Total de points</div>
+      <div class="tab" data-tab-target="community">Contribution communauté</div>
+      <div class="tab" data-tab-target="referrals">Meilleurs parrains</div>
+      <div class="tab" data-tab-target="efficiency">Efficacité centrale</div>
+    </div>
+
+    <div class="filter-bar">
+      <select class="select" style="width:200px">
+        <option>Ce trimestre (Q2 2026)</option>
+        <option>Ce mois</option>
+        <option>12 derniers mois</option>
+        <option>Depuis le début</option>
+      </select>
+      <select class="select" style="width:180px">
+        <option>Tous les pays</option>
+        <option>Belgique</option>
+        <option>France</option>
+        <option>Suisse</option>
+        <option>Allemagne</option>
+        <option>Autriche</option>
+      </select>
+    </div>
+
+    <!-- Podium + ranking -->
+    <div class="grid gap-4" style="grid-template-columns: 2fr 1fr">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-head-title">Top contributeurs</div>
+            <div class="text-sm muted">Classés par total de points cumulés sur le trimestre</div>
+          </div>
+          <span class="badge badge-cyan"><i data-lucide="sparkles"></i> Mis à jour il y a 5 min</span>
+        </div>
+
+        <!-- Podium -->
+        <div class="grid gap-4" style="padding:24px; grid-template-columns: 1fr 1.2fr 1fr; align-items:end; background:linear-gradient(180deg, #fafbfd 0%, white 100%)">
+          <div style="text-align:center; padding-bottom:20px">
+            <div class="avatar avatar-xl" style="margin:0 auto 10px; background:linear-gradient(135deg,#cbd5e1,#94a3b8)">SL</div>
+            <div style="font-weight:600">Sophie Legrand</div>
+            <div class="text-xs muted">Centrale de la Semois · BE</div>
+            <div style="margin-top:8px; padding:6px 12px; background:#e2e8f0; border-radius:999px; display:inline-block; font-weight:600" class="tabular">8 240 pts</div>
+            <div style="margin-top:8px; font-size:28px; font-weight:700; color:#94a3b8">🥈</div>
+          </div>
+          <div style="text-align:center">
+            <div class="avatar avatar-xl" style="margin:0 auto 10px; background:linear-gradient(135deg,#fbbf24,#f59e0b); width:80px; height:80px; font-size:24px">JV</div>
+            <div style="font-weight:600; font-size:16px">Jean Vandenberg</div>
+            <div class="text-xs muted">Centrale de Hohenberg · DE</div>
+            <div style="margin-top:8px; padding:8px 14px; background:linear-gradient(135deg,#fef3c7,#fbbf24); border-radius:999px; display:inline-block; font-weight:700" class="tabular">9 850 pts</div>
+            <div style="margin-top:8px; font-size:36px">🏆</div>
+          </div>
+          <div style="text-align:center; padding-bottom:30px">
+            <div class="avatar avatar-xl" style="margin:0 auto 10px; background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div>
+            <div style="font-weight:600">Claire Rousseau</div>
+            <div class="text-xs muted">Moulin de la Dordogne · FR</div>
+            <div style="margin-top:8px; padding:6px 12px; background:#fef3c7; border-radius:999px; display:inline-block; font-weight:600" class="tabular">7 180 pts</div>
+            <div style="margin-top:8px; font-size:28px; font-weight:700; color:#d97706">🥉</div>
+          </div>
+        </div>
+
+        <!-- Rest of the ranking -->
+        <div style="padding:12px 16px">
+          <div class="leader-row">
+            <div class="leader-rank">4</div>
+            <div>
+              <div class="leader-name">Thomas Müller</div>
+              <div class="leader-meta">Moulin de Hohenberg · DE</div>
+            </div>
+            <div class="leader-points tabular">6 920 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">5</div>
+            <div>
+              <div class="leader-name">Isabel Fernández</div>
+              <div class="leader-meta">Central de los Pirineos · ES</div>
+            </div>
+            <div class="leader-points tabular">6 480 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">6</div>
+            <div>
+              <div class="leader-name">Pierre Renard</div>
+              <div class="leader-meta">Centrale du Hérou · BE</div>
+            </div>
+            <div class="leader-points tabular">6 100 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">7</div>
+            <div>
+              <div class="leader-name">Anna Schmidt</div>
+              <div class="leader-meta">Alpenwerk · AT</div>
+            </div>
+            <div class="leader-points tabular">5 740 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">8</div>
+            <div>
+              <div class="leader-name">Laurent Dubois</div>
+              <div class="leader-meta">Centrale d'Ariège · FR</div>
+            </div>
+            <div class="leader-points tabular">5 220 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">9</div>
+            <div>
+              <div class="leader-name">Eva Nilsson</div>
+              <div class="leader-meta">Kraftverk Öst · SE</div>
+            </div>
+            <div class="leader-points tabular">4 940 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">10</div>
+            <div>
+              <div class="leader-name">Hans Weber</div>
+              <div class="leader-meta">Kraftwerk Rhein · CH</div>
+            </div>
+            <div class="leader-points tabular">4 610 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">11</div>
+            <div>
+              <div class="leader-name">Marie Lambert</div>
+              <div class="leader-meta">Moulin du Doubs · FR</div>
+            </div>
+            <div class="leader-points tabular">4 280 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">12</div>
+            <div>
+              <div class="leader-name">Raf De Smet</div>
+              <div class="leader-meta">Centrale van Vlaanderen · BE</div>
+            </div>
+            <div class="leader-points tabular">3 980 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">13</div>
+            <div>
+              <div class="leader-name">Camille Boucher</div>
+              <div class="leader-meta">Petite centrale du Jura · FR</div>
+            </div>
+            <div class="leader-points tabular">3 720 pts</div>
+          </div>
+          <!-- Self highlight -->
+          <div class="leader-row" style="background:linear-gradient(90deg,#ecfeff,#f0fdf4); border:1px solid var(--naia-cyan)">
+            <div class="leader-rank" style="background:var(--naia-cyan); color:white">14</div>
+            <div>
+              <div class="leader-name">Marc Dupont <span class="badge badge-cyan" style="margin-left:6px">Vous</span></div>
+              <div class="leader-meta">Centrale du Bocq · BE</div>
+            </div>
+            <div class="leader-points tabular">3 450 pts</div>
+          </div>
+          <div class="leader-row">
+            <div class="leader-rank">15</div>
+            <div>
+              <div class="leader-name">Niklas Eriksen</div>
+              <div class="leader-meta">Vestfold Kraft · NO</div>
+            </div>
+            <div class="leader-points tabular">3 180 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="card" style="height:fit-content">
+        <div class="card-head">
+          <div class="card-head-title">Votre progression</div>
+        </div>
+        <div class="card-body">
+          <div style="padding:14px; background:var(--naia-navy); color:white; border-radius:10px; margin-bottom:16px">
+            <div style="font-size:12px; color:rgba(255,255,255,0.65)">Rang actuel</div>
+            <div style="font-size:32px; font-weight:700" class="tabular">#14 <span style="font-size:14px; color:#86efac">↑ 3</span></div>
+            <div style="font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px">Parmi 112 opérateurs actifs</div>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Points ce trimestre</span>
+            <span class="info-row-value tabular">3 450</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Points à combler pour top 10</span>
+            <span class="info-row-value tabular" style="color:var(--naia-cyan)">+1 160</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Série active</span>
+            <span class="info-row-value">23 j</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row-label">Centrales actives</span>
+            <span class="info-row-value">2</span>
+          </div>
+          <a href="earn.html" class="btn btn-primary btn-block mt-4"><i data-lucide="zap"></i> Gagner plus de points</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

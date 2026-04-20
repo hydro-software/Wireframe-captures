@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Avantages — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-portal="admin" data-page="benefits" data-title="Avantages" data-subtitle="Catalogue des récompenses et file d'attente des rédemptions">
+  <section id="page-content">
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="queue">File d'attente <span class="badge badge-amber" style="margin-left:8px">4</span></div>
+      <div class="tab" data-tab-target="catalog">Catalogue (19 avantages)</div>
+      <div class="tab" data-tab-target="fulfilled">Historique</div>
+    </div>
+
+    <!-- Queue -->
+    <div data-tab-panel="queue">
+      <div class="card">
+        <div class="card-head">
+          <div><div class="card-head-title">Demandes à valider</div><div class="text-sm muted">SLA interne : 48 h · moyenne actuelle : 28 h</div></div>
+          <div class="flex gap-2"><button class="btn btn-secondary btn-sm"><i data-lucide="filter"></i> Filtrer</button></div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Membre</th><th>Avantage</th><th>Catégorie</th><th>Coût</th><th>Demandé</th><th>SLA</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">MD</div><div><div class="text-sm font-medium">Marc Dupont</div><div class="text-xs muted">Solde : 3 450 pts</div></div></div></td>
+              <td><div class="font-medium text-sm">Visite prioritaire de centrale</div></td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">300 pts</td>
+              <td class="text-sm muted">2 mars 2026</td>
+              <td><span class="badge badge-status-pending">44 h</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green" onclick="alert('Approuvé — notification envoyée à Marc')"><i data-lucide="check"></i> Approuver</button><button class="btn btn-sm btn-secondary">Détails</button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">JV</div><div><div class="text-sm font-medium">Jean Vandenberg</div><div class="text-xs muted">Solde : 9 850 pts</div></div></div></td>
+              <td><div class="font-medium text-sm">Session 1:1 expert marché</div></td>
+              <td><span class="badge badge-cyan">Accès</span></td>
+              <td class="num">500 pts</td>
+              <td class="text-sm muted">20 avril 2026</td>
+              <td><span class="badge badge-status-approved">12 h</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i> Approuver</button><button class="btn btn-sm btn-secondary">Détails</button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#fbbf24,#d97706)">CR</div><div><div class="text-sm font-medium">Claire Rousseau</div><div class="text-xs muted">Solde : 7 180 pts</div></div></div></td>
+              <td><div class="font-medium text-sm">Équipement Naia — veste</div></td>
+              <td><span class="badge badge-slate">Marchandise</span></td>
+              <td class="num">300 pts</td>
+              <td class="text-sm muted">19 avril 2026</td>
+              <td><span class="badge badge-status-approved">24 h</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i> Approuver</button><button class="btn btn-sm btn-secondary">Détails</button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#86efac,#16a34a)">IF</div><div><div class="text-sm font-medium">Isabel Fernández</div><div class="text-xs muted">Solde : 6 480 pts</div></div></div></td>
+              <td><div class="font-medium text-sm">Rapport scénarios marché personnalisé</div></td>
+              <td><span class="badge badge-blue">Produit</span></td>
+              <td class="num">750 pts</td>
+              <td class="text-sm muted">21 avril 2026</td>
+              <td><span class="badge badge-status-approved">4 h</span></td>
+              <td><div class="flex gap-1"><button class="btn btn-sm btn-green"><i data-lucide="check"></i> Approuver</button><button class="btn btn-sm btn-secondary">Détails</button><button class="btn btn-sm btn-danger"><i data-lucide="x"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Catalog -->
+    <div data-tab-panel="catalog" style="display:none">
+      <div class="flex justify-between items-center mb-4">
+        <div class="filter-bar" style="margin:0">
+          <select class="select" style="width:200px"><option>Toutes catégories</option><option>Accès</option><option>Produit</option><option>Reconnaissance</option><option>Marchandise</option></select>
+          <select class="select" style="width:160px"><option>Toutes</option><option>Actives</option><option>Désactivées</option></select>
+        </div>
+        <button class="btn btn-primary" onclick="alert('Création avantage — formulaire à venir')"><i data-lucide="plus"></i> Créer un avantage</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Avantage</th><th>Catégorie</th><th>Coût</th><th>Stock</th><th>Approbation</th><th>Échangé (30 j)</th><th>Actif</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="font-medium text-sm">Visite de centrale prioritaire</div></td><td><span class="badge badge-cyan">Accès</span></td><td class="num font-semibold">300</td><td class="text-sm">Illimité</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">19</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Session 1:1 expert marché</div></td><td><span class="badge badge-cyan">Accès</span></td><td class="num font-semibold">500</td><td class="text-sm">4 / mois</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">14</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Accès anticipé nouveautés</div></td><td><span class="badge badge-cyan">Accès</span></td><td class="num font-semibold">400</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">22</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Siège conseil consultatif (trim.)</div></td><td><span class="badge badge-cyan">Accès</span></td><td class="num font-semibold">2 000</td><td class="text-sm">2 / trim.</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">1</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Invitation VIP meetup annuel</div></td><td><span class="badge badge-cyan">Accès</span></td><td class="num font-semibold">1 500</td><td class="text-sm">10 / an</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">3</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Crédit simulation BTM</div></td><td><span class="badge badge-blue">Produit</span></td><td class="num font-semibold">250</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">28</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Newsletter premium</div></td><td><span class="badge badge-blue">Produit</span></td><td class="num font-semibold">150</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">42</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Analyse pertes multi-centrales</div></td><td><span class="badge badge-blue">Produit</span></td><td class="num font-semibold">500</td><td class="text-sm">Illimité</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">6</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Rapport scénarios marché</div></td><td><span class="badge badge-blue">Produit</span></td><td class="num font-semibold">750</td><td class="text-sm">Illimité</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">4</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Badge Pionnier hydro</div></td><td><span class="badge badge-purple">Reconnaissance</span></td><td class="num font-semibold">100</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">11</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Badge Contributeur savoir</div></td><td><span class="badge badge-purple">Reconnaissance</span></td><td class="num font-semibold">200</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">7</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Spotlight newsletter</div></td><td><span class="badge badge-purple">Reconnaissance</span></td><td class="num font-semibold">500</td><td class="text-sm">1 / mois</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">1</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Statut Ambassadeur</div></td><td><span class="badge badge-purple">Reconnaissance</span></td><td class="num font-semibold">5 000</td><td class="text-sm">Illimité</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">0</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Équipement Naia (casquette, veste)</div></td><td><span class="badge badge-slate">Marchandise</span></td><td class="num font-semibold">300</td><td class="text-sm">120 / an</td><td><span class="badge badge-amber">Manuel</span></td><td class="num">8</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+            <tr><td><div class="font-medium text-sm">Chèque-cadeau 25 €</div></td><td><span class="badge badge-slate">Marchandise</span></td><td class="num font-semibold">750</td><td class="text-sm">Illimité</td><td><span class="badge badge-slate">Auto</span></td><td class="num">2</td><td><span class="toggle on"><span class="toggle-knob"></span></span></td><td><button class="btn btn-ghost btn-sm"><i data-lucide="edit-3"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div data-tab-panel="fulfilled" style="display:none">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Historique des rédemptions</div><button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export</button></div>
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Membre</th><th>Avantage</th><th>Coût</th><th>Statut</th><th>Délai traitement</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">20 avr.</td><td>Thomas Müller</td><td>Newsletter premium avril</td><td class="num">150</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">Instantané</td></tr>
+            <tr><td class="tabular">18 avr.</td><td>Sophie Legrand</td><td>Crédit simulation BTM</td><td class="num">250</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">Instantané</td></tr>
+            <tr><td class="tabular">15 avr.</td><td>Claire Rousseau</td><td>Analyse pertes multi-centrales</td><td class="num">500</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">22 h</td></tr>
+            <tr><td class="tabular">12 avr.</td><td>Marc Dupont</td><td>Session 1:1 expert marché</td><td class="num">500</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">36 h</td></tr>
+            <tr><td class="tabular">5 avr.</td><td>Marc Dupont</td><td>Crédit simulation BTM</td><td class="num">250</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">Instantané</td></tr>
+            <tr><td class="tabular">2 avr.</td><td>Pierre Renard</td><td>Accès anticipé nouveautés</td><td class="num">400</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">Instantané</td></tr>
+            <tr><td class="tabular">28 mars</td><td>Jean Vandenberg</td><td>Spotlight newsletter</td><td class="num">500</td><td><span class="badge badge-status-approved">Livré</span></td><td class="text-sm muted">3 j</td></tr>
+            <tr><td class="tabular">22 mars</td><td>Anna Schmidt</td><td>Chèque-cadeau 25 €</td><td class="num">750</td><td><span class="badge badge-status-rejected">Refusé</span></td><td class="text-sm muted">Solde insuffisant</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

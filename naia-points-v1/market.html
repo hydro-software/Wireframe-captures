@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intelligence de marché — Naia Points</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-portal="member" data-page="market" data-title="Intelligence de marché" data-subtitle="Newsletters, analyses de marché et alertes réglementaires">
+  <section id="page-content">
+
+    <!-- Featured -->
+    <div class="card mb-4" style="background:linear-gradient(135deg, #f0f9ff 0%, #ecfeff 100%); border-color:#a5f3fc">
+      <div class="card-body" style="display:grid; gap:20px; grid-template-columns: 1fr 140px; align-items:center">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge badge-premium">★ Premium</span>
+            <span class="badge badge-amber">Nouveau</span>
+            <span class="text-xs muted">Édition d'avril 2026 · Deep-dive</span>
+          </div>
+          <h2 style="font-size:22px; font-weight:600; letter-spacing:-0.01em; color:var(--naia-navy); margin-bottom:8px">
+            Scénarios prix Q3 2026 : comment l'hydro passe le pic estival
+          </h2>
+          <p class="muted text-sm" style="line-height:1.5; max-width:640px">
+            Analyse approfondie des prix spot Belpex / Powernext pour juillet-septembre 2026.
+            Modélisation de 4 scénarios (canicule, crue, normale, hiver précoce) et leur impact sur 120+ centrales européennes.
+            24 pages · Par l'équipe analyse Naia.
+          </p>
+          <div class="flex items-center gap-3 mt-4">
+            <button class="btn btn-navy" onclick="redeem('Newsletter premium avril', 150)"><i data-lucide="unlock"></i> Débloquer (150 pts)</button>
+            <button class="btn btn-secondary">Aperçu gratuit</button>
+          </div>
+        </div>
+        <div class="nl-cover premium" style="width:120px; height:150px; font-size:28px">04<br>2026</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab-target="nl">Newsletters</div>
+      <div class="tab" data-tab-target="updates">Mises à jour marché</div>
+      <div class="tab" data-tab-target="regulatory">Alertes réglementaires</div>
+    </div>
+
+    <div data-tab-panel="nl">
+      <div class="filter-bar">
+        <select class="select" style="width:180px"><option>Toutes les éditions</option><option>Inclus (Layer 1)</option><option>Premium uniquement</option></select>
+        <select class="select" style="width:180px"><option>2026</option><option>2025</option><option>2024</option></select>
+      </div>
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(380px, 1fr))">
+        <div class="nl-card">
+          <div class="nl-cover">04<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-included">Inclus</span><span class="text-xs muted">18 avril 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Édition d'avril — Bilan Q1 et perspectives estivales</div>
+            <div class="text-sm muted" style="line-height:1.5">Production hydro Q1 2026 : +14% vs. 2025 malgré une baisse des prix spot de 8%. Analyse par région, perspectives pour l'été.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-primary btn-sm"><i data-lucide="book-open"></i> Lire</button>
+              <span class="text-xs muted" style="align-self:center">+25 pts à la lecture</span>
+            </div>
+          </div>
+        </div>
+        <div class="nl-card">
+          <div class="nl-cover premium">04<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-premium">★ Premium</span><span class="text-xs muted">15 avril 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Deep-dive — Scénarios prix Q3 2026</div>
+            <div class="text-sm muted" style="line-height:1.5">Modélisation complète des prix spot estivaux sur 4 scénarios climatiques, impact centrale par centrale.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-navy btn-sm" onclick="redeem('Newsletter premium avril', 150)"><i data-lucide="unlock"></i> 150 pts</button>
+              <span class="text-xs muted" style="align-self:center">24 pages</span>
+            </div>
+          </div>
+        </div>
+        <div class="nl-card">
+          <div class="nl-cover">03<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-included">Inclus</span><span class="text-xs muted">18 mars 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Édition de mars — Débit, prix, réglementation</div>
+            <div class="text-sm muted" style="line-height:1.5">Crues printanières exceptionnelles en France de l'Est : qui en a profité ? Et 3 alertes réglementaires à anticiper.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-secondary btn-sm" disabled><i data-lucide="check"></i> Lu</button>
+            </div>
+          </div>
+        </div>
+        <div class="nl-card">
+          <div class="nl-cover premium">03<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-premium">★ Premium</span><span class="text-xs muted">12 mars 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Deep-dive — BTM : le cas batteries 100-500 kWh</div>
+            <div class="text-sm muted" style="line-height:1.5">Analyse ROI de 30 configurations batterie sur des centrales hydro ≤ 1 MW. Seuils d'intérêt et timing optimal.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-secondary btn-sm" disabled><i data-lucide="check"></i> Débloqué</button>
+              <span class="text-xs muted" style="align-self:center">28 pages</span>
+            </div>
+          </div>
+        </div>
+        <div class="nl-card">
+          <div class="nl-cover">02<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-included">Inclus</span><span class="text-xs muted">18 février 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Édition de février — Hiver 2025-2026 en chiffres</div>
+            <div class="text-sm muted" style="line-height:1.5">Rétrospective de l'hiver : événements de prix extrêmes, stratégies gagnantes, erreurs fréquentes.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-secondary btn-sm" disabled><i data-lucide="check"></i> Lu</button>
+            </div>
+          </div>
+        </div>
+        <div class="nl-card">
+          <div class="nl-cover">01<br>2026</div>
+          <div class="nl-body">
+            <div class="flex items-center gap-2"><span class="badge badge-included">Inclus</span><span class="text-xs muted">18 janvier 2026</span></div>
+            <div style="font-weight:600; font-size:15px">Édition de janvier — 2026 : l'année hydro en Europe</div>
+            <div class="text-sm muted" style="line-height:1.5">Perspectives annuelles par pays, tendances prix, nouveaux mécanismes de soutien.</div>
+            <div class="flex gap-2 mt-auto pt-2">
+              <button class="btn btn-primary btn-sm"><i data-lucide="book-open"></i> Lire (+25 pts)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="updates" style="display:none">
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Dernières mises à jour marché</div><span class="badge badge-cyan">4 nouvelles</span></div>
+        <div>
+          <div class="activity-item" style="padding:16px 22px">
+            <div class="activity-icon" style="background:#dcfce7; color:#15803d"><i data-lucide="trending-up"></i></div>
+            <div class="activity-main">
+              <div class="activity-title">Prix spot Belpex +18% en avril vs. moyenne 5 ans</div>
+              <div class="activity-meta">Aujourd'hui · Mouvements marchés de court terme</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Lire</button>
+          </div>
+          <div class="activity-item" style="padding:16px 22px">
+            <div class="activity-icon" style="background:#dbeafe; color:#1e40af"><i data-lucide="alert-triangle"></i></div>
+            <div class="activity-main">
+              <div class="activity-title">Alerte : 3 épisodes prix négatifs attendus cette semaine (PPE)</div>
+              <div class="activity-meta">Hier · Prix horaires</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Lire</button>
+          </div>
+          <div class="activity-item" style="padding:16px 22px">
+            <div class="activity-icon" style="background:#fef3c7; color:#92400e"><i data-lucide="newspaper"></i></div>
+            <div class="activity-main">
+              <div class="activity-title">Nouveau contrat-cadre Elia pour les services système</div>
+              <div class="activity-meta">Il y a 3 jours · Réglementation BE</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Lire</button>
+          </div>
+          <div class="activity-item" style="padding:16px 22px">
+            <div class="activity-icon" style="background:#ede9fe; color:#5b21b6"><i data-lucide="bar-chart-3"></i></div>
+            <div class="activity-main">
+              <div class="activity-title">Analyse : corrélation débit / prix spot Q1 2026</div>
+              <div class="activity-meta">Il y a 5 jours · Analyse Naia</div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Lire</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="regulatory" style="display:none">
+      <div class="grid gap-3">
+        <div class="card" style="display:flex; gap:16px; padding:20px; align-items:start">
+          <div class="kpi-icon" style="background:#fee2e2; color:#991b1b; width:48px; height:48px; border-radius:12px"><i data-lucide="alert-triangle"></i></div>
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="badge badge-red">Urgent</span>
+                <span class="badge badge-slate" style="margin-left:6px">🇧🇪 Belgique</span>
+                <div style="font-weight:600; margin-top:8px">Nouvelle grille tarifaire CWaPE — impacts à anticiper avant le 1er juin</div>
+              </div>
+              <span class="text-xs muted">Publié le 10 avril</span>
+            </div>
+            <div class="text-sm muted mt-2">La CWaPE publie sa grille tarifaire révisée pour les producteurs &lt; 1 MW. Les nouveaux coefficients de rémunération entrent en vigueur le 1er juin 2026 et modifient significativement les revenus pour les centrales basse chute.</div>
+            <div class="flex gap-2 mt-3">
+              <button class="btn btn-sm btn-primary">Lire l'analyse</button>
+              <button class="btn btn-sm btn-secondary">Calculer mon impact</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="display:flex; gap:16px; padding:20px; align-items:start">
+          <div class="kpi-icon" style="background:#fef3c7; color:#92400e; width:48px; height:48px; border-radius:12px"><i data-lucide="info"></i></div>
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="badge badge-amber">À suivre</span>
+                <span class="badge badge-slate" style="margin-left:6px">🇪🇺 UE</span>
+                <div style="font-weight:600; margin-top:8px">Directive Eau — consultation publique sur les débits écologiques</div>
+              </div>
+              <span class="text-xs muted">Consultation jusqu'au 30 mai</span>
+            </div>
+            <div class="text-sm muted mt-2">La Commission européenne ouvre une consultation sur la révision des débits réservés minimaux. Votre retour compte — Naia peut agréger vos réponses.</div>
+            <div class="flex gap-2 mt-3">
+              <button class="btn btn-sm btn-primary">Participer</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="display:flex; gap:16px; padding:20px; align-items:start">
+          <div class="kpi-icon" style="background:#dcfce7; color:#15803d; width:48px; height:48px; border-radius:12px"><i data-lucide="check-circle"></i></div>
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="badge badge-green">Opportunité</span>
+                <span class="badge badge-slate" style="margin-left:6px">🇫🇷 France</span>
+                <div style="font-weight:600; margin-top:8px">Nouvel appel d'offres CRE pour micro-hydro &lt; 500 kW</div>
+              </div>
+              <span class="text-xs muted">Candidatures ouvertes jusqu'au 15 juillet</span>
+            </div>
+            <div class="text-sm muted mt-2">La Commission de régulation de l'énergie lance un AO dédié aux petites centrales. Prix de référence garanti sur 20 ans. Éligibilité : ≤ 500 kW, &lt; 5 ans d'exploitation.</div>
+            <div class="flex gap-2 mt-3">
+              <button class="btn btn-sm btn-primary">Voir l'éligibilité</button>
+              <button class="btn btn-sm btn-secondary">Accompagnement Naia</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
