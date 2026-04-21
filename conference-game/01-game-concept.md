@@ -25,9 +25,9 @@
 8. **Add Email** — On-screen keyboard to enter email address for detailed results
 9. **Score Screen Loop** — After submission, the display cycles through: Naia reel video → Classement → next player invitation. Driven by the conference app (not the game console itself)
 
-### Practice Mode (30 seconds)
+### Practice Mode (30 seconds, skippable)
 
-Before the competitive 5-minute round, every player gets a **30-second guided practice**. This is mandatory — the timer does not start on the real game until the practice is complete or skipped.
+Before the competitive 5-minute round, every player is offered a **30-second guided practice**. First-time players should run through it; repeat players can skip it.
 
 The practice walks through:
 1. **Reading the chart** — "Voici la production journalière en kWh. La pluie est en haut, le débit en ligne."
@@ -35,16 +35,25 @@ The practice walks through:
 3. **Classifying** — the example is classified step by step: category → subcategory → confirm
 4. **Using indicators** — brief demo of toggling an extra flow station or comparator
 
-At the end of the 30 seconds (or when the player clicks "J'AI COMPRIS"), the game transitions to the real countdown and the 5-minute timer starts fresh.
+**Skip button**: a clear "PASSER LA PRATIQUE →" button is always visible. Players who already know the game (second attempt, or who just watched someone else play) can go straight to the countdown. The skip is detected automatically when a returning alias is entered — the practice screen still shows, but with "SAUTER" pre-highlighted.
 
-### Alias Name
+At the end of the 30 seconds (or when the player clicks "J'AI COMPRIS" or "PASSER"), the game transitions to the real countdown and the 5-minute timer starts fresh.
+
+### Alias Name & Multiple Plays
 
 Before playing, the player enters an alias (3-20 characters, alphanumeric + some symbols). This name:
 - Appears on the public leaderboard (privacy-friendly — no real name shown)
-- Persists if the same player returns (same alias → best score counts)
+- Persists if the same player returns — **the same alias entered a second time continues the same "player"**
 - Is used in the "En jeu" indicator during play ("🎮 HydroPro42 — 3:42 restantes")
 
-The real name + email are captured AFTER the game (for results email + CRM).
+**Multiple plays per alias**:
+- A player may play as many times as they want (queue permitting)
+- Each attempt is a new session — a **different scenario** is assigned (round-robin, excluding already-played scenarios for this alias)
+- On the leaderboard, only the **best score** across all attempts for an alias is shown
+- The leaderboard entry shows, in a smaller font, the number of games played: `142 pts (3 parties)`
+- This rewards repeat engagement without diluting the competitive ranking
+
+The real name + email are captured AFTER the game (for results email + CRM). If the alias already has a participant record, the email is pre-filled on the next play — but still re-confirmed.
 
 ### What the Player Sees
 

@@ -39,11 +39,11 @@
 │          [ JOUER ]                           │
 │                                              │
 │   ──── Classement ────                       │
-│   1. Pierre M.  ·····  142 pts              │
-│   2. Sophie L.  ·····  128 pts              │
-│   3. Marc D.    ·····  115 pts              │
+│   1. HydroPro42  ·····  142 pts  (3p)       │
+│   2. SophieH2O   ·····  128 pts  (1p)       │
+│   3. TurbineMax  ·····  115 pts  (2p)       │
 │                                              │
-│   Aujourd'hui : 47 joueurs | Moy. : 89     │
+│   47 joueurs · 62 parties · Moy. : 89       │
 │                                              │
 └──────────────────────────────────────────────┘
 ```
@@ -112,13 +112,13 @@
 - Plant name, capacity, and river shown as overlay text on the video or below it
 - Purpose: Gives the player context about the plant they're about to analyze
 
-## Screen 2.5: Mode Pratique (30-second Guided Tutorial)
+## Screen 2.5: Mode Pratique (30-second Guided Tutorial — Skippable)
 
-**Purpose**: Teach the mechanics before the competitive round. Mandatory — the 5-minute timer does NOT start until practice ends.
+**Purpose**: Teach the mechanics before the competitive round. Skippable — first-time players should run through it; repeat players can go straight to the game.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│ 🎓 MODE PRATIQUE — 0:22 restantes           [J'AI COMPRIS →]    │
+│ 🎓 MODE PRATIQUE — 0:22 restantes    [J'AI COMPRIS]  [PASSER →]│
 │──────────────────────────────────────────────────────────────────│
 │        │                                                         │
 │ PANEL  │  ZONE GRAPHIQUE (exemple guidé)                         │
@@ -139,6 +139,9 @@
 │        │  Étape 3/4 : Choisir la catégorie                      │
 │        │  Étape 4/4 : Choisir la sous-catégorie                 │
 │        │                                                         │
+│        │  C'est votre 2e partie ? Cliquez PASSER pour aller     │
+│        │  directement au jeu.                                    │
+│        │                                                         │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -147,13 +150,19 @@
 2. **Animated tooltips** guide the player through each interaction
 3. **Pre-filled example**: a sample loss area is shown, the draw mechanic is demonstrated visually
 4. **Try it yourself prompts**: player practices drawing/classifying once before the real round
-5. **J'AI COMPRIS button**: skip the tutorial early if confident
-6. At end: "Prêt ? La vraie partie commence !" → Screen 3 (countdown)
+5. **J'AI COMPRIS button**: ends the tutorial early (for first-time players who got it)
+6. **PASSER button**: skip the tutorial entirely (for returning/experienced players)
+7. At end: "Prêt ? La vraie partie commence !" → Screen 3 (countdown)
+
+**Smart default for returning players**:
+- If the alias entered on Screen 1.5 already exists in the session database, the PASSER button is **visually highlighted** and becomes the default focus
+- The hint "Bon retour, {alias} ! Vous pouvez passer la pratique." appears
+- First-time aliases see J'AI COMPRIS highlighted by default
 
 **Purpose**:
-- Fair competition: every player starts with the same baseline understanding
-- Reduces the "host has to explain the mechanic" burden
-- First-time players aren't disadvantaged vs. repeat players
+- First-time players get a fair tutorial
+- Repeat players don't have to watch it again (reduces queue time)
+- Host doesn't have to explain the mechanic repeatedly
 - Even non-hydro experts understand the UI before the timer starts
 
 ## Screen 3: Décompte (Countdown)
@@ -433,14 +442,18 @@ The second screen / TV next to the arcade cabinet shows a **looping sequence dri
 │                                                          │
 │   🏆 CLASSEMENT                                         │
 │   ─────────────────────────────────────────────          │
-│   #1  HydroPro42     EDF Hydro             142          │
-│   #2  SophieH2O      CNR                   128          │
-│   #3  TurbineMax     Hydrovolt             115          │
+│   #1  HydroPro42                           142          │
+│                                          (3 parties)    │
+│   #2  SophieH2O                            128          │
+│                                          (1 partie)     │
+│   #3  TurbineMax                           115          │
+│                                          (2 parties)    │
 │   ...                                                    │
-│   #10 Débutant77     Indépendant            72          │
+│   #10 Débutant77                            72          │
+│                                          (1 partie)     │
 │   ─────────────────────────────────────────────          │
 │                                                          │
-│   Aujourd'hui : 47 joueurs | Moy. : 89 | Record : 142  │
+│   Aujourd'hui : 47 joueurs | 62 parties | Moy. : 89    │
 │                                                          │
 │   🎮 En jeu : Marie42 — 3:42 restantes                 │
 │                                                          │
@@ -448,9 +461,12 @@ The second screen / TV next to the arcade cabinet shows a **looping sequence dri
 ```
 
 - Leaderboard shows **aliases** (from Screen 1.5), not real names (privacy)
+- For each alias, only the **best score** is shown — multiple plays do not clutter the ranking
+- Below each score in smaller grey font: `(N parties)` — number of attempts this alias has played
 - Top 10 displayed
+- Stats line now distinguishes "joueurs" (unique aliases) from "parties" (total games played)
 - Updates automatically (polling `localhost` — no SSE needed since it's local)
-- Highlights new entries (animated push if a player just made the top 10)
+- Highlights new entries (animated push if a player just made the top 10, or if a returning player beats their previous best)
 
 ### Reel Video Configuration
 

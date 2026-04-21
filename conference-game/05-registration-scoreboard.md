@@ -7,6 +7,15 @@ Registration happens **after** the game, not before. The player plays first (no 
 ### Data Model (SQLite — Local)
 
 ```sql
+CREATE TABLE game_aliases (
+    alias             TEXT NOT NULL,     -- user-chosen pseudonym
+    conference_id     TEXT NOT NULL,
+    first_seen_at     TEXT DEFAULT (datetime('now')),
+    last_seen_at      TEXT DEFAULT (datetime('now')),
+    participant_id    TEXT REFERENCES game_participants(id),  -- linked when email is entered
+    PRIMARY KEY (alias, conference_id)
+);
+
 CREATE TABLE game_participants (
     id                TEXT PRIMARY KEY,  -- UUID
     first_name        TEXT,
@@ -22,13 +31,16 @@ CREATE TABLE game_participants (
 
 CREATE TABLE game_sessions (
     id                TEXT PRIMARY KEY,  -- UUID
+    alias             TEXT NOT NULL,     -- player's pseudonym (entered before the game)
     participant_id    TEXT REFERENCES game_participants(id),  -- NULL until email entered
+    conference_id     TEXT NOT NULL,
     scenario_id       TEXT NOT NULL,
     started_at        TEXT NOT NULL,
     ended_at          TEXT,
     time_limit_sec    INTEGER DEFAULT 300,
     time_used_sec     INTEGER,
     status            TEXT DEFAULT 'in_progress',  -- in_progress, completed, abandoned
+    practice_skipped  INTEGER DEFAULT 0, -- boolean: did the player skip the 30s tutorial?
 
     -- Scoring
     total_score       INTEGER DEFAULT 0,
@@ -43,9 +55,6 @@ CREATE TABLE game_sessions (
     revenue_found     REAL DEFAULT 0,
     revenue_missed    REAL DEFAULT 0,
 
-    -- Display name (entered post-game or auto-generated)
-    display_name      TEXT,  -- "Pierre M." for leaderboard
-
     -- Sync tracking
     synced_to_sheets  INTEGER DEFAULT 0, -- boolean
     sync_status       TEXT DEFAULT 'pending',  -- pending, unverified, verified
@@ -54,6 +63,8 @@ CREATE TABLE game_sessions (
 
     created_at        TEXT DEFAULT (datetime('now'))
 );
+
+CREATE INDEX idx_sessions_alias ON game_sessions(alias, conference_id);
 
 CREATE TABLE game_selections (
     id                  TEXT PRIMARY KEY,  -- UUID
@@ -78,17 +89,23 @@ CREATE TABLE game_selections (
 
 ### Flow
 
-1. Player presses JOUER → game starts (no registration)
-2. Game session created with `participant_id = NULL`
-3. After game → summary screen → player enters email + name
-4. Participant record created, linked to session
-5. Detailed results shown + email sent
-6. If player skips email → session saved with `participant_id = NULL`, score still on leaderboard as "Joueur anonyme"
+1. Player presses JOUER → alias entry screen
+2. Player enters alias → `game_aliases` row upserted (update `last_seen_at` if exists)
+3. Intro video → practice (skippable) → countdown → game starts
+4. Session created with `alias` set, `participant_id = NULL`
+5. After game → summary screen → player enters email + name
+6. Participant record created (or matched by email), linked to session AND to the alias row
+7. Email sent with detailed results
+8. If player skips email → session saved with `participant_id = NULL`, score still on leaderboard under the alias
 
-### Returning Players
-- Same email → same participant record, new session
-- Different scenario assigned (round-robin from available scenarios excluding already-played ones)
-- Leaderboard shows **best score** across all sessions
+### Returning Players (Multiple Plays)
+
+- **Same alias** → detected on alias entry, PASSER button highlighted in practice screen
+- Each attempt is a **new session** (new `game_sessions` row)
+- **Scenario assignment**: round-robin, excluding scenarios already played by this alias at this conference (query `SELECT DISTINCT scenario_id FROM game_sessions WHERE alias = ? AND conference_id = ?`). Once all scenarios are exhausted, any can be replayed.
+- **Email pre-fill**: if the alias is linked to a participant, the email + name fields are pre-filled on the results screen (still editable + re-confirmed)
+- **Leaderboard**: only the **best score** per alias is shown, with `(N parties)` annotation
+- **No hard limit** on number of plays — queue dynamics naturally limit it at a conference; for the online post-conference version, consider a soft rate limit (e.g., 3 plays per hour per alias) to prevent bots
 
 ### GDPR
 
@@ -124,7 +141,8 @@ GET /api/scoreboard?conference_id=hydro-2025-grenoble
 {
   "conferenceId": "hydro-2025-grenoble",
   "stats": {
-    "totalPlayers": 47,
+    "totalPlayers": 47,       // unique aliases
+    "totalGames": 62,         // total sessions (plays)
     "averageScore": 89,
     "highestScore": 142,
     "totalLossesFound": 312,
@@ -133,15 +151,15 @@ GET /api/scoreboard?conference_id=hydro-2025-grenoble
   "leaderboard": [
     {
       "rank": 1,
-      "displayName": "Pierre M.",
-      "company": "EDF Hydro",
-      "score": 142,
-      "lossesFound": 7,
-      "playedAt": "2025-06-15T10:15:00Z"
+      "alias": "HydroPro42",
+      "bestScore": 142,       // max across all games for this alias
+      "gamesPlayed": 3,       // shown small on the Classement
+      "lossesFound": 7,       // from the best game
+      "lastPlayedAt": "2025-06-15T10:15:00Z"
     }
   ],
   "currentGame": {
-    "playerName": "Marie D.",
+    "alias": "Marie42",
     "timeRemaining": 222,
     "lossesFound": 2,
     "status": "playing"
@@ -176,10 +194,12 @@ Since both windows run on the same machine:
 After each completed game session, the server appends a row to a Google Sheet and **verifies** it was written correctly:
 
 ```
-| Session ID | Console | Timestamp | First Name | Last Name | Email | Company | Score | Losses Found | Scenario | Marketing Consent |
-|-----------|---------|-----------|-----------|-----------|-------|---------|-------|-------------|----------|-------------------|
-| abc-123   | C1      | 2025-06-15 10:15 | Pierre | Martin | pierre@edf.fr | EDF Hydro | 142 | 7 | SC-001 | Oui |
+| Session ID | Console | Timestamp | Alias | First Name | Last Name | Email | Company | Score | Losses Found | Scenario | Marketing Consent |
+|-----------|---------|-----------|-------|-----------|-----------|-------|---------|-------|-------------|----------|-------------------|
+| abc-123   | C1      | 2025-06-15 10:15 | HydroPro42 | Pierre | Martin | pierre@edf.fr | EDF Hydro | 142 | 7 | SC-001 | Oui |
 ```
+
+The Alias column is used to aggregate scores for the combined leaderboard (best score per alias, with games-played count). Multiple rows per alias are expected for players who play several times.
 
 ### Sync with Write Verification
 
@@ -207,21 +227,22 @@ async function syncAndVerify(session: GameSession, participant: Participant) {
     // Step 1: Write
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEETS_ID,
-      range: 'Results!A:K',
+      range: 'Results!A:L',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[
           session.id,
           process.env.CONSOLE_ID || 'C1',  // identifies which console
           new Date().toISOString(),
-          participant.firstName,
-          participant.lastName,
-          participant.email,
-          participant.company,
+          session.alias,                    // pseudonym chosen before play
+          participant?.firstName ?? '',
+          participant?.lastName ?? '',
+          participant?.email ?? '',
+          participant?.company ?? '',
           session.totalScore,
           session.lossesFound,
           session.scenarioId,
-          participant.marketingConsent ? 'Oui' : 'Non'
+          participant?.marketingConsent ? 'Oui' : 'Non'
         ]]
       }
     })
