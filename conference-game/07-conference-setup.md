@@ -165,19 +165,34 @@ Redémarrer :      Fermer terminal, double-clic start.bat
 
 ## Budget & Shopping List
 
-### Hardware & Electronics
+This is the **full shopping list for the conference** (excluding cabinet construction). For the list of materials to build the arcade cabinet itself, see [08-hardware-build.md § Cabinet Build Shopping List](08-hardware-build.md#7-cabinet-build-shopping-list).
+
+### Game Station — Electronics & Cables
 
 | Item | Cost | Provided by | Notes |
 |------|------|-------------|-------|
 | Acer B226WL monitor (game) | — | Already owned | 22", 1920×1080, detachable stand (see hardware build spec) |
-| Large screen / TV for score display | — | **Jan** | 40-55", HDMI input, used for Naia reel + Classement loop |
-| TV stand | ~EUR 50-100 | Buy | Foldable, adjustable |
-| HDMI cable 5m + adapters | ~EUR 25 | Buy | Long run from arcade cabinet to TV |
+| Mini-PC or laptop | — (or ~EUR 200-400) | Already owned / Buy | Runs the game locally. Intel NUC or similar if new |
 | Wired USB mouse (×2) | ~EUR 20 | Buy | One spare |
+| USB hub (4-port) | ~EUR 10 | Buy | Mouse + peripherals |
+| HDMI cable 5 m | ~EUR 15 | Buy | Long run from arcade cabinet to scoreboard TV |
+| HDMI adapter (USB-C → HDMI) | ~EUR 10 | Buy | If needed for mini-PC / laptop ports |
+| Power strip (4-outlet, short cable) | ~EUR 10 | Buy | Inside the cabinet: PC + monitor + lightbox transformer |
+
+### Scoreboard / Reel Display
+
+| Item | Cost | Provided by | Notes |
+|------|------|-------------|-------|
+| Large screen / TV | — | **Jan** | 40-55", HDMI input, used for Naia reel + Classement loop |
+| TV stand | ~EUR 50-100 | Buy | Foldable, adjustable |
 | Headphones | — | **Jan** | For intro video audio during gameplay |
-| Infomaniak email | Included | — | Already in naia.energy hosting |
-| Google Sheets | Free | — | Part of Google Workspace |
-| **Total hardware to buy** | **~EUR 100-150** | | |
+
+### Services
+
+| Item | Cost | Notes |
+|------|------|-------|
+| Infomaniak email (SMTP) | Included | Already in naia.energy hosting |
+| Google Sheets | Free | Part of Google Workspace |
 
 ### Branding & Giveaways
 
@@ -196,6 +211,17 @@ Redémarrer :      Fermer terminal, double-clic start.bat
 | Badges (gauge-style) | [Pins Factory](https://www.pinsfactory.be) or [Epinglesbadges.be](https://www.epinglesbadges.be) | Custom metal badges with enamel fill |
 | Stickers | [Drukland.be](https://www.drukland.be) | Same supplier as lightbox vinyl |
 | TV stand | Coolblue, MediaMarkt | Local Belgian retailers |
+
+### Summary
+
+| Section | Estimated cost |
+|---------|----------------|
+| Game station electronics & cables | ~EUR 65 (+ ~EUR 200-400 if buying a mini-PC) |
+| Scoreboard / reel display stand | ~EUR 50-100 (screen + headphones provided by Jan) |
+| Branding & giveaways (100 visitors) | ~EUR 400-600 |
+| **Cabinet build** (in 08-hardware-build.md) | **~EUR 265-415** |
+| **Transport crate** (in 08-hardware-build.md) | **~EUR 40** |
+| **Grand total (per conference)** | **~EUR 820-1,560** |
 
 **Savings vs. previous spec**: No separate computer for scoreboard (saves ~EUR 100-200). No cloud hosting costs. No HDMI stick needed. Large screen + headphones provided by Jan.
 

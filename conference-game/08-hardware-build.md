@@ -321,7 +321,9 @@ See [`cabinet-panels.html`](cabinet-panels.html) for detailed crate packing diag
 
 ---
 
-## 7. Hardware Shopping List
+## 7. Cabinet Build Shopping List
+
+This list covers **only the cabinet construction**. The full conference shopping list (electronics, cables, branding, giveaways) is in [07-conference-setup.md § Budget & Shopping List](07-conference-setup.md#budget--shopping-list).
 
 ### Cabinet Build
 
@@ -335,35 +337,14 @@ See [`cabinet-panels.html`](cabinet-panels.html) for detailed crate packing diag
 | Mouse pads (×2) | ~€15 | For left + right overhangs |
 | **Total cabinet build** | **~€265-415** | |
 
-### Electronics & Cables
-
-| Item | Cost | Notes |
-|------|------|-------|
-| HDMI cable **5 meters** | ~€15 | Long run from cabinet to scoreboard TV |
-| HDMI adapter (USB-C → HDMI) | ~€10 | If needed for mini-PC/laptop |
-| USB hub (4-port) | ~€10 | Mouse + peripherals |
-| Wired USB mouse (×2) | ~€20 | One spare |
-| Power strip (4-outlet, short cable) | ~€10 | Inside cabinet |
-| **Total electronics** | **~€65** | |
-
-### Transport
+### Transport Crate
 
 | Item | Cost | Notes |
 |------|------|-------|
 | Pine plywood 9mm for crate | ~€15 | Cut to crate dimensions |
 | Protective felt/textile | ~€10 | Between panels |
 | Crate hinges + clasps | ~€15 | For reusable crate |
-| **Total transport** | **~€40** | |
-
-### What You Already Have
-- Acer monitor (from photos)
-- Wired mouse
-- Laptop or mini-PC (for running the game)
-
-### What You Might Add
-- Mini-PC (Intel NUC or similar): ~€200-400 (if not using a laptop)
-- Scoreboard TV (40-55"): ~€300 (or rent from venue)
-- TV stand: ~€50-100
+| **Total transport crate** | **~€40** | |
 
 ---
 
