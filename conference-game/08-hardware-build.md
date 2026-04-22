@@ -92,18 +92,6 @@ The cabinet's front panel has a **window opening** sized to the visible display 
 | Mouse shelf total width | 108 cm (58 + 2×25 overhang) |
 | Back | **Open** (no back panel) |
 
-### Design Note: Top Shifted 10 cm Backward
-
-Following a design review, the **logo panel + roof front edge were shifted 10 cm backward** (Z = 0 → Z = 10 cm) to improve screen visibility:
-- **Problem**: With the logo panel flush at the cabinet's front face, tall players or spectators close to the cabinet could have their overhead sight-line partially blocked by the roof overhang
-- **Solution**: Recess the logo panel 10 cm inward. The front face at Y = 77.1 cm and above is now open air — no panel overhang obstructs the head space
-- **Consequences** (all computed with Pythagoras):
-  - **Soffit panel (G)**: 28 cm → **18 cm** deep (-10 cm)
-  - **Roof panel (E)**: 50.5 cm → **40.6 cm** long (-9.9 cm) — `√(40² + 7²) = 40.61`
-  - **Side panel (A)**: points C and D move from (0, ·) to (10, ·), introducing an "inset" at the top-front
-  - **Roof angle**: ~8° → ~10° (slightly steeper, because the same 7 cm drop now happens over 40 cm instead of 50 cm)
-  - Weight savings: soffit -0.3 kg, roof -0.3 kg — negligible
-
 ### Key Geometry
 
 The front panel is tilted 20° backward — bottom at the front edge, top receding 28 cm into the cabinet. The **logo panel is recessed 10 cm** from the cabinet front face (at Z = 10 cm instead of Z = 0 cm). A horizontal **soffit panel** (G, 18 cm deep) bridges the gap between the front panel top (Z = 28) and the logo panel bottom (Z = 10), blocking lightbox light from shining downward and supporting the lightbox assembly. The roof slopes gently from the logo top (Z = 10, Y = 95 cm) to the back edge (Z = 50, Y = 88 cm).
