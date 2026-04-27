@@ -4,33 +4,68 @@
 <meta charset="UTF-8">
 <title>Naia Arcade Cabinet — 2D Panel Layout</title>
 <style>
+  /* Technical-document styling — black-on-white, drafting conventions.
+     Solid black = panel outline / cut line. Dashed gray = dimension /
+     hidden edge / waste boundary. Light fills give panels visual mass
+     without dominating the print. Optimised for laser printing on A4. */
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1a2e; color: #ccc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
-  h1 { color: #4fc3f7; margin-bottom: 8px; font-size: 22px; }
-  h2 { color: #4fc3f7; font-size: 16px; margin: 20px 0 8px 0; }
-  .subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
-  .panels { display: flex; flex-wrap: wrap; gap: 24px; }
-  .panel-card {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(79,195,247,0.15);
-    border-radius: 10px; padding: 16px; min-width: 320px; flex: 1;
+  body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    padding: 24px;
+    line-height: 1.4;
   }
-  .panel-card h3 { color: #fff; font-size: 14px; margin-bottom: 4px; }
-  .panel-card .qty { color: #4fc3f7; font-size: 12px; margin-bottom: 12px; }
-  .panel-card .dims { color: #aaa; font-size: 12px; margin-top: 8px; }
+  h1 { font-size: 20px; margin-bottom: 6px; font-weight: 700; color: #000; }
+  h2 {
+    font-size: 14px; margin: 28px 0 10px 0; font-weight: 700; color: #000;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid #000; padding-bottom: 3px;
+  }
+  .subtitle { color: #555; font-size: 12px; margin-bottom: 20px; }
+  .panels { display: flex; flex-wrap: wrap; gap: 16px; }
+  .panel-card {
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 14px;
+    min-width: 320px;
+    flex: 1;
+    page-break-inside: avoid;
+  }
+  .panel-card h3 { color: #000; font-size: 12px; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .panel-card .qty { color: #444; font-size: 11px; margin-bottom: 10px; }
+  .panel-card .dims { color: #555; font-size: 11px; margin-top: 6px; }
   svg { display: block; margin: 0 auto; }
-  .dim-line { stroke: #ff7043; stroke-width: 0.8; stroke-dasharray: 3,2; }
-  .dim-text { fill: #ff7043; font-size: 9px; font-family: 'Segoe UI', sans-serif; }
-  .panel-fill { fill: rgba(26,95,122,0.3); stroke: #4fc3f7; stroke-width: 1.5; }
-  .panel-label { fill: #fff; font-size: 10px; font-family: 'Segoe UI', sans-serif; text-anchor: middle; }
-  .cutout { fill: rgba(0,0,0,0.5); stroke: #ff7043; stroke-width: 1; stroke-dasharray: 4,2; }
-  .point-label { fill: #aaa; font-size: 7px; font-family: monospace; }
-  .angle-arc { fill: none; stroke: #ffd54f; stroke-width: 0.8; }
-  .angle-text { fill: #ffd54f; font-size: 8px; }
-  .section { margin-bottom: 30px; }
-  table { border-collapse: collapse; width: 100%; margin-top: 12px; }
-  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
-  th { color: #4fc3f7; font-size: 12px; }
-  .note { color: #888; font-size: 12px; font-style: italic; margin-top: 8px; }
+  .dim-line { stroke: #555; stroke-width: 0.6; stroke-dasharray: 3,2; }
+  .dim-text { fill: #333; font-size: 9px; font-family: 'Inter', sans-serif; }
+  .panel-fill { fill: rgba(0,0,0,0.04); stroke: #000; stroke-width: 1.2; }
+  .panel-label { fill: #000; font-size: 10px; font-family: 'Inter', sans-serif; text-anchor: middle; }
+  .cutout { fill: none; stroke: #000; stroke-width: 0.8; stroke-dasharray: 4,2; }
+  .point-label { fill: #555; font-size: 7px; font-family: monospace; }
+  .angle-arc { fill: none; stroke: #000; stroke-width: 0.6; }
+  .angle-text { fill: #000; font-size: 8px; }
+  .section { margin-bottom: 24px; page-break-inside: avoid; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  th, td {
+    text-align: left;
+    padding: 5px 8px;
+    border: 1px solid #000;
+    vertical-align: top;
+  }
+  th { background: #f0f0f0; color: #000; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .note { color: #444; font-size: 11px; font-style: italic; margin-top: 6px; }
+  @media print {
+    body { padding: 0; font-size: 11px; }
+    .panel-card { break-inside: avoid; border-color: #000; }
+    .section { break-inside: avoid; }
+    h2 { page-break-after: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -194,14 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Slot markers on front edge
     SLOT_HEIGHTS.forEach(sh => {
       const sy = ty(sh);
-      content += `<line x1="${tx(0)-3}" y1="${sy}" x2="${tx(0)+5}" y2="${sy}" stroke="#ffd54f" stroke-width="1"/>`;
-      content += `<text x="${tx(0)-15}" y="${sy+3}" fill="#ffd54f" font-size="7" text-anchor="middle">↔${sh}</text>`;
+      content += `<line x1="${tx(0)-3}" y1="${sy}" x2="${tx(0)+5}" y2="${sy}" stroke="#000" stroke-width="1"/>`;
+      content += `<text x="${tx(0)-15}" y="${sy+3}" fill="#000" font-size="7" text-anchor="middle">↔${sh}</text>`;
     });
 
     // Monitor shelf line
     const shelfZ = SHELF_Y * Math.tan(TILT);
-    content += `<line x1="${tx(shelfZ)}" y1="${ty(SHELF_Y)}" x2="${tx(shelfZ+SHELF_D)}" y2="${ty(SHELF_Y)}" stroke="#8B7355" stroke-width="2"/>`;
-    content += `<text x="${tx(shelfZ+SHELF_D/2)}" y="${ty(SHELF_Y)-5}" fill="#8B7355" font-size="8" text-anchor="middle">shelf @ Y=${SHELF_Y}</text>`;
+    content += `<line x1="${tx(shelfZ)}" y1="${ty(SHELF_Y)}" x2="${tx(shelfZ+SHELF_D)}" y2="${ty(SHELF_Y)}" stroke="#555" stroke-width="1.5" stroke-dasharray="4,2"/>`;
+    content += `<text x="${tx(shelfZ+SHELF_D/2)}" y="${ty(SHELF_Y)-5}" fill="#555" font-size="8" text-anchor="middle">shelf @ Y=${SHELF_Y}</text>`;
 
     svg.innerHTML = content;
   }
@@ -226,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wcx = pw/2, wcy = WIN_CENTER_S;
     content += `<rect x="${tx(wcx-WIN_W/2)}" y="${ty(wcy+WIN_H_S/2)}" width="${WIN_W*S}" height="${WIN_H_S*S}" class="cutout"/>`;
     content += `<text x="${tx(wcx)}" y="${ty(wcy)}" class="panel-label" font-size="8">Screen window</text>`;
-    content += `<text x="${tx(wcx)}" y="${ty(wcy)+12}" class="panel-label" font-size="7" fill="#aaa">${WIN_W}×${WIN_H}</text>`;
+    content += `<text x="${tx(wcx)}" y="${ty(wcy)+12}" class="panel-label" font-size="7" fill="#555">${WIN_W}×${WIN_H}</text>`;
 
     // Dims
     content += svgDim(tx(0), ty(0), tx(0), ty(ph), `${ph} (surface)`, -18);
@@ -259,11 +294,14 @@ document.addEventListener('DOMContentLoaded', () => {
     svg.innerHTML = content;
   }
 
-  // ---- LOGO PANEL DESIGN (visual mockup of the illuminated panel) ----
+  // ---- LOGO PANEL — face mockup, B&W simplified ----
+  // The screen version of this doc had a glowy gradient mockup; for the
+  // print-friendly build doc we just outline the panel and label it.
+  // The actual graphic is supplied as a vinyl decal on opal acrylic.
   {
     const svg = document.getElementById('logo-design-svg');
     const pw = INNER_W, ph = LOGO_H;
-    const designScale = 5; // bigger scale for design preview
+    const designScale = 5;
     const dw = pw * designScale;
     const dh = ph * designScale;
     const pad = 4;
@@ -272,69 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
     svg.setAttribute('height', dh + pad*2);
 
     let d = '';
-    // Defs: gradients and filters
-    d += `<defs>
-      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#1565C0"/>
-        <stop offset="30%" stop-color="#1976D2"/>
-        <stop offset="50%" stop-color="#9575CD"/>
-        <stop offset="70%" stop-color="#1976D2"/>
-        <stop offset="100%" stop-color="#1565C0"/>
-      </linearGradient>
-      <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.6"/>
-        <stop offset="40%" stop-color="#E1BEE7" stop-opacity="0.5"/>
-        <stop offset="60%" stop-color="#F8BBD0" stop-opacity="0.5"/>
-        <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.6"/>
-      </linearGradient>
-      <linearGradient id="waveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#42A5F5" stop-opacity="0.4"/>
-        <stop offset="50%" stop-color="#CE93D8" stop-opacity="0.3"/>
-        <stop offset="100%" stop-color="#42A5F5" stop-opacity="0.4"/>
-      </linearGradient>
-      <radialGradient id="centerGlow" cx="50%" cy="50%" r="45%">
-        <stop offset="0%" stop-color="#E1BEE7" stop-opacity="0.4"/>
-        <stop offset="100%" stop-color="#1565C0" stop-opacity="0"/>
-      </radialGradient>
-      <filter id="glowDesign"><feGaussianBlur stdDeviation="3" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <clipPath id="panelClip"><rect x="${pad}" y="${pad}" width="${dw}" height="${dh}" rx="3"/></clipPath>
-    </defs>`;
-
     const ox = pad, oy = pad;
-    // Background
-    d += `<g clip-path="url(#panelClip)">`;
-    d += `<rect x="${ox}" y="${oy}" width="${dw}" height="${dh}" fill="url(#bgGrad)" rx="3"/>`;
-    // Center glow (pink/purple soft light)
-    d += `<rect x="${ox}" y="${oy}" width="${dw}" height="${dh}" fill="url(#centerGlow)"/>`;
-
-    // Flowing waves (inspired by the Naia hydro image)
-    const cy = dh / 2 + oy;
-    const w2 = dw;
-    // Upper wave band
-    d += `<path d="M${ox},${cy-10} C${ox+w2*0.15},${cy-25} ${ox+w2*0.3},${cy-5} ${ox+w2*0.5},${cy-15} C${ox+w2*0.7},${cy-25} ${ox+w2*0.85},${cy-5} ${ox+w2},${cy-12}" fill="none" stroke="url(#waveGrad1)" stroke-width="4" opacity="0.7"/>`;
-    d += `<path d="M${ox},${cy-5} C${ox+w2*0.15},${cy-18} ${ox+w2*0.3},${cy+2} ${ox+w2*0.5},${cy-8} C${ox+w2*0.7},${cy-18} ${ox+w2*0.85},${cy+2} ${ox+w2},${cy-5}" fill="none" stroke="url(#waveGrad1)" stroke-width="3" opacity="0.5"/>`;
-    // Lower wave band
-    d += `<path d="M${ox},${cy+12} C${ox+w2*0.2},${cy+3} ${ox+w2*0.4},${cy+22} ${ox+w2*0.5},${cy+14} C${ox+w2*0.65},${cy+5} ${ox+w2*0.8},${cy+20} ${ox+w2},${cy+10}" fill="none" stroke="url(#waveGrad2)" stroke-width="4" opacity="0.6"/>`;
-    d += `<path d="M${ox},${cy+18} C${ox+w2*0.2},${cy+8} ${ox+w2*0.4},${cy+28} ${ox+w2*0.5},${cy+20} C${ox+w2*0.65},${cy+10} ${ox+w2*0.8},${cy+26} ${ox+w2},${cy+16}" fill="none" stroke="url(#waveGrad2)" stroke-width="2.5" opacity="0.4"/>`;
-    // Fine accent waves
-    d += `<path d="M${ox},${cy+6} C${ox+w2*0.25},${cy-2} ${ox+w2*0.5},${cy+15} ${ox+w2*0.75},${cy+5} C${ox+w2*0.85},${cy} ${ox+w2*0.95},${cy+8} ${ox+w2},${cy+4}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>`;
-
-    d += `</g>`;
-
-    // "naia" text - italic style matching the logo
-    const textCx = ox + dw/2;
-    const textCy = cy - 2;
-    d += `<text x="${textCx}" y="${textCy}" fill="white" font-size="32" font-weight="bold" font-style="italic" text-anchor="middle" dominant-baseline="middle" font-family="'Segoe UI', Arial, sans-serif" filter="url(#glowDesign)">naia</text>`;
-    // "hydro" text below
-    d += `<text x="${textCx+28}" y="${textCy+18}" fill="rgba(130,177,255,0.9)" font-size="12" text-anchor="middle" dominant-baseline="middle" font-family="'Segoe UI', Arial, sans-serif">hydro</text>`;
-
-    // Outer border with rounded corners
-    d += `<rect x="${ox}" y="${oy}" width="${dw}" height="${dh}" fill="none" stroke="#4fc3f7" stroke-width="1.5" rx="3"/>`;
-    // Label
-    d += `<text x="${textCx}" y="${oy+dh-4}" fill="rgba(79,195,247,0.5)" font-size="6" text-anchor="middle">Design mockup — actual vinyl decal on opal acrylic, backlit with LED</text>`;
-
+    // Plain bordered rectangle
+    d += `<rect x="${ox}" y="${oy}" width="${dw}" height="${dh}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.2"/>`;
+    const cx = ox + dw/2;
+    const cy = oy + dh/2;
+    d += `<text x="${cx}" y="${cy-2}" fill="#000" font-size="22" font-weight="700" font-style="italic" text-anchor="middle" dominant-baseline="middle" font-family="'Inter', Arial, sans-serif">naia</text>`;
+    d += `<text x="${cx}" y="${cy+18}" fill="#444" font-size="10" text-anchor="middle" dominant-baseline="middle" font-family="'Inter', Arial, sans-serif">hydro</text>`;
+    d += `<text x="${cx}" y="${oy+dh-4}" fill="#555" font-size="6" text-anchor="middle">Vinyl decal on opal acrylic 3 mm, backlit with LED strip</text>`;
     svg.innerHTML = d;
   }
 
@@ -355,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let content = '';
     content += `<rect x="${tx(0)}" y="${ty(ph)}" width="${pw*S}" height="${ph*S}" class="panel-fill"/>`;
     content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+4}" class="panel-label">Roof</text>`;
-    content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+16}" class="panel-label" font-size="8" fill="#aaa">angled ${ROOF_ANGLE.toFixed(1)}°</text>`;
+    content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+16}" class="panel-label" font-size="8" fill="#555">angled ${ROOF_ANGLE.toFixed(1)}°</text>`;
     content += svgDim(tx(0), ty(0), tx(0), ty(ph), `${ph.toFixed(1)}`, -18);
     content += svgDim(tx(0), ty(0), tx(pw), ty(0), `${INNER_W}`, 16);
 
@@ -379,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let content = '';
     content += `<rect x="${tx(0)}" y="${ty(ph)}" width="${pw*S}" height="${ph*S}" class="panel-fill"/>`;
     content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+4}" class="panel-label">Soffit</text>`;
-    content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+14}" class="panel-label" font-size="7" fill="#aaa">supports lightbox + blocks light</text>`;
+    content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+14}" class="panel-label" font-size="7" fill="#555">supports lightbox + blocks light</text>`;
     content += svgDim(tx(0), ty(0), tx(0), ty(ph), `${ph.toFixed(1)}`, -16);
     content += svgDim(tx(0), ty(0), tx(pw), ty(0), `${INNER_W}`, 16);
 
@@ -427,8 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show left overhang, cabinet width, right overhang
     const lo = MOUSE_OVERHANG;
-    content += `<line x1="${tx(lo)}" y1="${ty(0)}" x2="${tx(lo)}" y2="${ty(ph)}" stroke="#ff7043" stroke-width="0.5" stroke-dasharray="3,2"/>`;
-    content += `<line x1="${tx(lo+W)}" y1="${ty(0)}" x2="${tx(lo+W)}" y2="${ty(ph)}" stroke="#ff7043" stroke-width="0.5" stroke-dasharray="3,2"/>`;
+    content += `<line x1="${tx(lo)}" y1="${ty(0)}" x2="${tx(lo)}" y2="${ty(ph)}" stroke="#000" stroke-width="0.5" stroke-dasharray="3,2"/>`;
+    content += `<line x1="${tx(lo+W)}" y1="${ty(0)}" x2="${tx(lo+W)}" y2="${ty(ph)}" stroke="#000" stroke-width="0.5" stroke-dasharray="3,2"/>`;
 
     content += `<text x="${tx(lo/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">mouse area</text>`;
     content += `<text x="${tx(lo+W/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">through cabinet</text>`;
@@ -501,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Total row
     const totalTr = document.createElement('tr');
     totalTr.style.fontWeight = 'bold';
-    totalTr.style.color = '#4fc3f7';
+    totalTr.style.background = '#f0f0f0';
     totalTr.innerHTML = `<td></td><td>Total cabinet</td><td>${panels.reduce((s,p)=>s+p[2],0)}</td><td></td><td>${totalWeight.toFixed(1)} kg</td><td></td>`;
     tbody.appendChild(totalTr);
 
@@ -537,66 +520,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const hw = W/2; // half width = 29
 
     // Side panels (visible as thickness strips on left & right)
-    c += `<rect x="${tx(-hw)}" y="${ty(H_FRONT)}" width="${T*sc}" height="${H_FRONT*sc}" fill="rgba(26,95,122,0.5)" stroke="#4fc3f7" stroke-width="1"/>`;
-    c += `<rect x="${tx(hw-T)}" y="${ty(H_FRONT)}" width="${T*sc}" height="${H_FRONT*sc}" fill="rgba(26,95,122,0.5)" stroke="#4fc3f7" stroke-width="1"/>`;
+    c += `<rect x="${tx(-hw)}" y="${ty(H_FRONT)}" width="${T*sc}" height="${H_FRONT*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
+    c += `<rect x="${tx(hw-T)}" y="${ty(H_FRONT)}" width="${T*sc}" height="${H_FRONT*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
 
     // Front panel (regular plywood, not lightbox)
     const fpProjH = FP_TOP_Y; // 77.1
     c += glowDef;
-    c += `<rect x="${tx(-hw+T)}" y="${ty(fpProjH)}" width="${INNER_W*sc}" height="${fpProjH*sc}" fill="rgba(26,95,122,0.3)" stroke="#4fc3f7" stroke-width="1.5"/>`;
-    c += `<text x="${tx(0)}" y="${ty(8)}" fill="rgba(255,255,255,0.3)" font-size="7" text-anchor="middle">front panel (plywood)</text>`;
+    c += `<rect x="${tx(-hw+T)}" y="${ty(fpProjH)}" width="${INNER_W*sc}" height="${fpProjH*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.5"/>`;
+    c += `<text x="${tx(0)}" y="${ty(8)}" fill="#555" font-size="7" text-anchor="middle">front panel (plywood)</text>`;
 
     // Screen window cutout (dark — screen visible through here)
     const winCY = 57;
-    c += `<rect x="${tx(-WIN_W/2)}" y="${ty(winCY+WIN_H/2)}" width="${WIN_W*sc}" height="${WIN_H*sc}" fill="rgba(13,40,64,0.9)" stroke="#ff7043" stroke-width="1"/>`;
+    c += `<rect x="${tx(-WIN_W/2)}" y="${ty(winCY+WIN_H/2)}" width="${WIN_W*sc}" height="${WIN_H*sc}" fill="#fff" stroke="#000" stroke-width="1"/>`;
     // Screen content
-    c += `<rect x="${tx(-WIN_W/2+1)}" y="${ty(winCY+WIN_H/2-1)}" width="${(WIN_W-2)*sc}" height="${(WIN_H-2)*sc}" fill="rgba(13,47,79,0.9)" stroke="none"/>`;
+    c += `<rect x="${tx(-WIN_W/2+1)}" y="${ty(winCY+WIN_H/2-1)}" width="${(WIN_W-2)*sc}" height="${(WIN_H-2)*sc}" fill="#fff" stroke="none"/>`;
     // Chart line
     const chartPts = [[-20,8],[-15,6],[-10,7],[-5,3],[0,5],[5,12],[10,14],[15,5],[20,4]].map(
       ([dx,dy]) => `${tx(dx)},${ty(winCY-WIN_H/4+dy)}`
     ).join(' ');
-    c += `<polyline points="${chartPts}" fill="none" stroke="#4fc3f7" stroke-width="1.5"/>`;
-    c += `<text x="${tx(0)}" y="${ty(winCY+WIN_H/2-3)}" fill="#4fc3f7" font-size="8" text-anchor="middle">Production (kWh)</text>`;
+    c += `<polyline points="${chartPts}" fill="none" stroke="#000" stroke-width="1.5"/>`;
+    c += `<text x="${tx(0)}" y="${ty(winCY+WIN_H/2-3)}" fill="#000" font-size="8" text-anchor="middle">Production (kWh)</text>`;
 
     // Soffit panel front edge (visible as a slim strip at the top of the front panel — overhanging the recessed logo)
-    c += `<rect x="${tx(-hw+T)}" y="${ty(fpProjH+T)}" width="${INNER_W*sc}" height="${T*sc}" fill="rgba(26,95,122,0.6)" stroke="#4fc3f7" stroke-width="0.8"/>`;
-    c += `<text x="${tx(hw-T-2)}" y="${ty(fpProjH+T/2)+3}" fill="#aaa" font-size="5" text-anchor="end">soffit front edge</text>`;
+    c += `<rect x="${tx(-hw+T)}" y="${ty(fpProjH+T)}" width="${INNER_W*sc}" height="${T*sc}" fill="rgba(0,0,0,0.08)" stroke="#000" stroke-width="0.8"/>`;
+    c += `<text x="${tx(hw-T-2)}" y="${ty(fpProjH+T/2)+3}" fill="#555" font-size="5" text-anchor="end">soffit front edge</text>`;
 
     // Logo panel LIGHTBOX (illuminated — glow effect)
     // NOTE: in the new geometry, the logo panel is recessed ${LOGO_Z}cm behind the front face.
     // In a straight-on front view this doesn't change what's visible, but we render it with a
     // subtle shadow around the edges to hint at the recession.
-    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="${LOGO_H*sc}" fill="rgba(79,195,247,0.1)" stroke="none" filter="url(#glow)"/>`;
+    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="${LOGO_H*sc}" fill="rgba(0,0,0,0.02)" stroke="none" />`;
     // Gradient fill for lightbox (blue to purple like the Naia branding)
     c += `<defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2196F3" stop-opacity="0.25"/><stop offset="50%" stop-color="#9C27B0" stop-opacity="0.15"/><stop offset="100%" stop-color="#2196F3" stop-opacity="0.25"/></linearGradient></defs>`;
-    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="${LOGO_H*sc}" fill="url(#logoGrad)" stroke="#4fc3f7" stroke-width="1.5"/>`;
+    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="${LOGO_H*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.5"/>`;
     // Subtle shadow on left + right + top to hint at the 10cm recession (roof casts shadow on the recessed logo area)
-    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="3" fill="rgba(0,0,0,0.25)" stroke="none"/>`;
-    c += `<text x="${tx(0)}" y="${ty(H_FRONT)-4}" fill="rgba(255,255,255,0.4)" font-size="5" text-anchor="middle">(logo panel recessed ${LOGO_Z}cm — see perspective view)</text>`;
+    c += `<rect x="${tx(-hw+T)}" y="${ty(H_FRONT)}" width="${INNER_W*sc}" height="3" fill="rgba(0,0,0,0.10)" stroke="none"/>`;
+    c += `<text x="${tx(0)}" y="${ty(H_FRONT)-4}" fill="#555" font-size="5" text-anchor="middle">(logo panel recessed ${LOGO_Z}cm — see perspective view)</text>`;
     // Wave decoration (simplified flowing wave like Naia logo)
     const logoMidY = ty(H_FRONT - LOGO_H/2);
     const logoLeft = tx(-hw+T);
     const logoRight = tx(-hw+T) + INNER_W*sc;
     const logoW = INNER_W*sc;
-    c += `<path d="M${logoLeft},${logoMidY+8} Q${logoLeft+logoW*0.25},${logoMidY+2} ${logoLeft+logoW*0.5},${logoMidY+8} Q${logoLeft+logoW*0.75},${logoMidY+14} ${logoRight},${logoMidY+8}" fill="none" stroke="rgba(79,195,247,0.4)" stroke-width="1.5"/>`;
-    c += `<path d="M${logoLeft},${logoMidY+11} Q${logoLeft+logoW*0.25},${logoMidY+5} ${logoLeft+logoW*0.5},${logoMidY+11} Q${logoLeft+logoW*0.75},${logoMidY+17} ${logoRight},${logoMidY+11}" fill="none" stroke="rgba(156,39,176,0.3)" stroke-width="1"/>`;
+    c += `<path d="M${logoLeft},${logoMidY+8} Q${logoLeft+logoW*0.25},${logoMidY+2} ${logoLeft+logoW*0.5},${logoMidY+8} Q${logoLeft+logoW*0.75},${logoMidY+14} ${logoRight},${logoMidY+8}" fill="none" stroke="#555" stroke-width="1.5"/>`;
+    c += `<path d="M${logoLeft},${logoMidY+11} Q${logoLeft+logoW*0.25},${logoMidY+5} ${logoLeft+logoW*0.5},${logoMidY+11} Q${logoLeft+logoW*0.75},${logoMidY+17} ${logoRight},${logoMidY+11}" fill="none" stroke="#555" stroke-width="1"/>`;
     // NAIA text
-    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H/2+3)}" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle" font-style="italic">naia</text>`;
-    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H/2-4)}" fill="#4fc3f7" font-size="6" text-anchor="middle">hydro</text>`;
-    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H+1)}" fill="rgba(79,195,247,0.5)" font-size="5" text-anchor="middle">▸ illuminated lightbox ◂</text>`;
+    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H/2+3)}" fill="#000" font-size="16" font-weight="bold" text-anchor="middle" font-style="italic">naia</text>`;
+    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H/2-4)}" fill="#000" font-size="6" text-anchor="middle">hydro</text>`;
+    c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H+1)}" fill="#555" font-size="5" text-anchor="middle">illuminated lightbox</text>`;
 
     // Mouse shelf (full width 108, at Y=12)
     // Hidden behind front panel — show center portion as dotted, overhangs solid
     const msY = MOUSE_CURRENT;
     // Left overhang (visible, solid)
-    c += `<rect x="${tx(-MOUSE_TOTAL_W/2)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(26,109,138,0.5)" stroke="#4fc3f7" stroke-width="1"/>`;
+    c += `<rect x="${tx(-MOUSE_TOTAL_W/2)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
     // Right overhang (visible, solid)
-    c += `<rect x="${tx(hw)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(26,109,138,0.5)" stroke="#4fc3f7" stroke-width="1"/>`;
+    c += `<rect x="${tx(hw)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
     // Center portion behind front panel (dotted)
-    c += `<rect x="${tx(-hw)}" y="${ty(msY+MOUSE_T)}" width="${W*sc}" height="${MOUSE_T*sc}" fill="none" stroke="#4fc3f7" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>`;
+    c += `<rect x="${tx(-hw)}" y="${ty(msY+MOUSE_T)}" width="${W*sc}" height="${MOUSE_T*sc}" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>`;
     // Mouse pads on overhangs
-    c += `<rect x="${tx(-MOUSE_TOTAL_W/2+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#1a1a1a" stroke="none"/>`;
-    c += `<rect x="${tx(hw+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#1a1a1a" stroke="none"/>`;
+    c += `<rect x="${tx(-MOUSE_TOTAL_W/2+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
+    c += `<rect x="${tx(hw+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
 
     // Dimension lines
     c += svgDim(tx(-hw), ty(0), tx(hw), ty(0), `${W}`, 16);
@@ -653,10 +636,10 @@ document.addEventListener('DOMContentLoaded', () => {
       [D, 0],
     ];
     const sidePts = sideProfile.map(([z,y]) => [px(W, z), py(y, z)]);
-    quad(sidePts, 'rgba(26,95,122,0.35)', '#4fc3f7', 1.2);
+    quad(sidePts, 'rgba(0,0,0,0.05)', '#000', 1.2);
 
     // Label side panel edges
-    c += `<text x="${px(W+2, D/2)}" y="${py(H_BACK/2, D/2)}" fill="#aaa" font-size="7" transform="rotate(-20,${px(W+2,D/2)},${py(H_BACK/2,D/2)})">Side panel</text>`;
+    c += `<text x="${px(W+2, D/2)}" y="${py(H_BACK/2, D/2)}" fill="#555" font-size="7" transform="rotate(-20,${px(W+2,D/2)},${py(H_BACK/2,D/2)})">Side panel</text>`;
 
     // ROOF (top face - quadrilateral, starts at Z=LOGO_Z not Z=0)
     quad([
@@ -664,8 +647,8 @@ document.addEventListener('DOMContentLoaded', () => {
       [px(W, LOGO_Z), py(H_FRONT, LOGO_Z)],
       [px(W, D), py(H_BACK, D)],
       [px(0, D), py(H_BACK, D)],
-    ], 'rgba(26,95,122,0.2)', '#4fc3f7', 1);
-    c += `<text x="${(px(0,(LOGO_Z+D)/2)+px(W,(LOGO_Z+D)/2))/2}" y="${(py(H_FRONT,LOGO_Z)+py(H_BACK,D))/2}" fill="#aaa" font-size="7" text-anchor="middle">Roof</text>`;
+    ], 'rgba(0,0,0,0.03)', '#000', 1);
+    c += `<text x="${(px(0,(LOGO_Z+D)/2)+px(W,(LOGO_Z+D)/2))/2}" y="${(py(H_FRONT,LOGO_Z)+py(H_BACK,D))/2}" fill="#555" font-size="7" text-anchor="middle">Roof</text>`;
 
     // FRONT FACE — Logo panel LIGHTBOX (vertical at z=LOGO_Z, from FP_TOP_Y to H_FRONT)
     // Glow effect
@@ -678,18 +661,18 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     // Glow background
     const logoPath = logoQuad.map((p,i) => `${i?'L':'M'}${p[0]},${p[1]}`).join(' ') + ' Z';
-    c += `<path d="${logoPath}" fill="rgba(79,195,247,0.1)" stroke="none" filter="url(#glow3)"/>`;
+    c += `<path d="${logoPath}" fill="rgba(0,0,0,0.02)" stroke="none" />`;
     // Gradient fill
     c += `<defs><linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2196F3" stop-opacity="0.3"/><stop offset="50%" stop-color="#9C27B0" stop-opacity="0.15"/><stop offset="100%" stop-color="#2196F3" stop-opacity="0.3"/></linearGradient></defs>`;
-    quad(logoQuad, 'url(#logoGrad2)', '#4fc3f7', 1.5);
+    quad(logoQuad, 'rgba(0,0,0,0.04)', '#000', 1.5);
     // Wave line
     const lgCx = (px(0,LOGO_Z)+px(W,LOGO_Z))/2;
     const lgCy = (py(H_FRONT,LOGO_Z)+py(FP_TOP_Y,LOGO_Z))/2;
     const lgHalfW = (px(W,LOGO_Z)-px(0,LOGO_Z))/2;
-    c += `<path d="M${lgCx-lgHalfW},${lgCy+6} Q${lgCx-lgHalfW*0.5},${lgCy+1} ${lgCx},${lgCy+6} Q${lgCx+lgHalfW*0.5},${lgCy+11} ${lgCx+lgHalfW},${lgCy+6}" fill="none" stroke="rgba(79,195,247,0.4)" stroke-width="1.2"/>`;
+    c += `<path d="M${lgCx-lgHalfW},${lgCy+6} Q${lgCx-lgHalfW*0.5},${lgCy+1} ${lgCx},${lgCy+6} Q${lgCx+lgHalfW*0.5},${lgCy+11} ${lgCx+lgHalfW},${lgCy+6}" fill="none" stroke="#555" stroke-width="1.2"/>`;
     // NAIA text on logo
-    c += `<text x="${lgCx}" y="${lgCy+2}" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" font-style="italic">naia</text>`;
-    c += `<text x="${lgCx}" y="${lgCy+12}" fill="#4fc3f7" font-size="5" text-anchor="middle">hydro</text>`;
+    c += `<text x="${lgCx}" y="${lgCy+2}" fill="#000" font-size="14" font-weight="bold" text-anchor="middle" font-style="italic">naia</text>`;
+    c += `<text x="${lgCx}" y="${lgCy+12}" fill="#000" font-size="5" text-anchor="middle">hydro</text>`;
 
     // SOFFIT PANEL (G) — horizontal at Y=FP_TOP_Y, from Z=LOGO_Z to Z=FP_TOP_Z
     quad([
@@ -697,8 +680,8 @@ document.addEventListener('DOMContentLoaded', () => {
       [px(W, LOGO_Z), py(FP_TOP_Y, LOGO_Z)],
       [px(W, FP_TOP_Z), py(FP_TOP_Y, FP_TOP_Z)],
       [px(0, FP_TOP_Z), py(FP_TOP_Y, FP_TOP_Z)],
-    ], 'rgba(26,95,122,0.25)', '#4fc3f7', 1);
-    c += `<text x="${(px(0,(LOGO_Z+FP_TOP_Z)/2)+px(W,(LOGO_Z+FP_TOP_Z)/2))/2}" y="${py(FP_TOP_Y, (LOGO_Z+FP_TOP_Z)/2)+3}" fill="#aaa" font-size="6" text-anchor="middle">Soffit (G, 18cm)</text>`;
+    ], 'rgba(0,0,0,0.04)', '#000', 1);
+    c += `<text x="${(px(0,(LOGO_Z+FP_TOP_Z)/2)+px(W,(LOGO_Z+FP_TOP_Z)/2))/2}" y="${py(FP_TOP_Y, (LOGO_Z+FP_TOP_Z)/2)+3}" fill="#555" font-size="6" text-anchor="middle">Soffit (G, 18cm)</text>`;
 
     // SCREEN — drawn first, BEHIND the front panel
     const winCenterZ = 57 * Math.tan(TILT);
@@ -711,10 +694,10 @@ document.addEventListener('DOMContentLoaded', () => {
       [px(W/2+WIN_W/2, winTopZ+scrOff), py(57+WIN_H/2, winTopZ+scrOff)],
       [px(W/2+WIN_W/2, winBotZ+scrOff), py(57-WIN_H/2, winBotZ+scrOff)],
       [px(W/2-WIN_W/2, winBotZ+scrOff), py(57-WIN_H/2, winBotZ+scrOff)],
-    ], 'rgba(13,40,64,0.4)', '#4fc3f7', 0.5);
+    ], '#fff', '#000', 0.5);
     const scCx = (px(W/2, winTopZ+scrOff) + px(W/2, winBotZ+scrOff))/2;
     const scCy = (py(57+WIN_H/2, winTopZ+scrOff) + py(57-WIN_H/2, winBotZ+scrOff))/2;
-    c += `<text x="${scCx}" y="${scCy}" fill="#4fc3f7" font-size="8" text-anchor="middle" opacity="0.6">Screen</text>`;
+    c += `<text x="${scCx}" y="${scCy}" fill="#000" font-size="8" text-anchor="middle" opacity="0.6">Screen</text>`;
 
     // FRONT PANEL (TILTED 20°) — regular plywood
     // Bottom at z=0/Y=0, top at z=FP_TOP_Z/Y=FP_TOP_Y
@@ -728,9 +711,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const wBR = [px(W/2+WIN_W/2, winBotZ), py(57-WIN_H/2, winBotZ)];
     const wBL = [px(W/2-WIN_W/2, winBotZ), py(57-WIN_H/2, winBotZ)];
     // Front panel with window cutout — solid fill and solid stroke
-    c += `<path d="M${fpTL[0]},${fpTL[1]} L${fpTR[0]},${fpTR[1]} L${fpBR[0]},${fpBR[1]} L${fpBL[0]},${fpBL[1]} Z M${wTL[0]},${wTL[1]} L${wBL[0]},${wBL[1]} L${wBR[0]},${wBR[1]} L${wTR[0]},${wTR[1]} Z" fill="rgba(26,95,122,0.45)" stroke="#4fc3f7" stroke-width="1.5" fill-rule="evenodd"/>`;
+    c += `<path d="M${fpTL[0]},${fpTL[1]} L${fpTR[0]},${fpTR[1]} L${fpBR[0]},${fpBR[1]} L${fpBL[0]},${fpBL[1]} Z M${wTL[0]},${wTL[1]} L${wBL[0]},${wBL[1]} L${wBR[0]},${wBR[1]} L${wTR[0]},${wTR[1]} Z" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.5" fill-rule="evenodd"/>`;
     // Window cutout edge in contrasting color
-    c += `<path d="M${wTL[0]},${wTL[1]} L${wTR[0]},${wTR[1]} L${wBR[0]},${wBR[1]} L${wBL[0]},${wBL[1]} Z" fill="none" stroke="#ff7043" stroke-width="1.2"/>`;
+    c += `<path d="M${wTL[0]},${wTL[1]} L${wTR[0]},${wTR[1]} L${wBR[0]},${wBR[1]} L${wBL[0]},${wBL[1]} Z" fill="none" stroke="#000" stroke-width="1.2"/>`;
 
     // Mouse shelf — overhangs visible, center behind front panel (dotted)
     const msZ = 0; // mouse shelf at front edge
@@ -741,18 +724,18 @@ document.addEventListener('DOMContentLoaded', () => {
     quad([
       [lox, msTop], [px(0,0), msTop],
       [px(0,0), msBot], [lox, msBot]
-    ], 'rgba(26,109,138,0.3)', '#4fc3f7', 0.8);
+    ], 'rgba(0,0,0,0.04)', '#000', 0.8);
     // Right overhang (solid)
     const rox = px(W, 0) + MOUSE_OVERHANG * sc;
     quad([
       [px(W,0), msTop], [rox, msTop],
       [rox, msBot], [px(W,0), msBot]
-    ], 'rgba(26,109,138,0.3)', '#4fc3f7', 0.8);
+    ], 'rgba(0,0,0,0.04)', '#000', 0.8);
     // Center (dotted — behind front panel)
-    c += `<rect x="${px(0,0)}" y="${msTop}" width="${(px(W,0)-px(0,0))}" height="${msBot-msTop}" fill="none" stroke="#4fc3f7" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.4"/>`;
+    c += `<rect x="${px(0,0)}" y="${msTop}" width="${(px(W,0)-px(0,0))}" height="${msBot-msTop}" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.4"/>`;
     // Mouse pads
-    c += `<rect x="${lox+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#1a1a1a"/>`;
-    c += `<rect x="${px(W,0)+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#1a1a1a"/>`;
+    c += `<rect x="${lox+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#000"/>`;
+    c += `<rect x="${px(W,0)+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#000"/>`;
 
     // Dimensions
     c += svgDim(px(0,0), py(0,0), px(0,0), py(H_FRONT,0), `${H_FRONT}`, -22);
@@ -812,8 +795,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const crateOutH = stackH + 2*CRATE_WALL;
     const volume = (crateOutW * crateOutL * crateOutH) / 1000000;
 
-    const layerColors = ['#4fc3f7','#4fc3f7','#66bb6a','#ffd54f','#ff7043'];
-    const panelColors = ['#4fc3f7','#82b1ff','#66bb6a','#a5d6a7','#ffd54f','#ffe082','#ff7043','#ff8a65'];
+    // B&W technical doc: replace per-panel colors with a single grayscale
+    // token. Panels are differentiated by their letter labels rather than
+    // by hue.
+    const layerColors = ['#000','#000','#000','#000','#000'];
+    const panelColors = ['#000','#000','#000','#000','#000','#000','#000','#000'];
     let ci = 0;
 
     // ---- TOP VIEWS: one per layer ----
@@ -839,7 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
         content += `<text x="${pad}" y="${baseY+12}" fill="#fff" font-size="10" font-weight="bold">${layer.label}</text>`;
 
         // Crate outline
-        content += `<rect x="${tx(0)}" y="${ty(0)}" width="${crateInW*sc}" height="${crateInL*sc}" fill="none" stroke="#8B7355" stroke-width="1.5" stroke-dasharray="4,2"/>`;
+        content += `<rect x="${tx(0)}" y="${ty(0)}" width="${crateInW*sc}" height="${crateInL*sc}" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="4,2"/>`;
 
         // Panels
         layer.panels.forEach((p, pi) => {
@@ -871,23 +857,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const ty = (y) => pad + (stackH - y) * scY;
 
       let content = '';
-      content += `<rect x="${tx(0)}" y="${ty(stackH)}" width="${crateInW*scX}" height="${stackH*scY}" fill="none" stroke="#8B7355" stroke-width="2" stroke-dasharray="6,3"/>`;
+      content += `<rect x="${tx(0)}" y="${ty(stackH)}" width="${crateInW*scX}" height="${stackH*scY}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6,3"/>`;
 
       let curY = TEXTILE;
       ci = 0;
       layers.forEach((layer, li) => {
         // Textile
-        content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(139,115,85,0.3)"/>`;
+        content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(0,0,0,0.05)"/>`;
         // Panels in this layer
         layer.panels.forEach(p => {
           const col = panelColors[ci++ % panelColors.length];
           content += `<rect x="${tx(p.x)}" y="${ty(curY+T)}" width="${p.w*scX}" height="${T*scY}" fill="${col}" opacity="0.5" stroke="${col}" stroke-width="0.5"/>`;
         });
-        content += `<text x="${tx(crateInW+2)}" y="${ty(curY+T/2)+3}" fill="#aaa" font-size="7" dominant-baseline="middle">L${li+1}: ${layer.panels.map(p=>p.id).join('+')}</text>`;
+        content += `<text x="${tx(crateInW+2)}" y="${ty(curY+T/2)+3}" fill="#555" font-size="7" dominant-baseline="middle">L${li+1}: ${layer.panels.map(p=>p.id).join('+')}</text>`;
         curY += T + TEXTILE;
       });
       // Top textile
-      content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(139,115,85,0.3)"/>`;
+      content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(0,0,0,0.05)"/>`;
 
       content += svgDim(tx(0), ty(0), tx(0), ty(stackH), `${stackH.toFixed(1)}`, -18);
       content += svgDim(tx(0), ty(0), tx(crateInW), ty(0), `${crateInW}`, 14);
@@ -905,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.appendChild(tr);
       });
       const tr = document.createElement('tr');
-      tr.style.color = '#8B7355';
+      tr.style.fontStyle = 'italic';
       tr.innerHTML = `<td></td><td colspan="3">+ protective textile (${TEXTILE}cm) between each layer and on top/bottom = ${numLayers+1} × ${TEXTILE}cm</td>`;
       tbody.appendChild(tr);
     }
@@ -928,7 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <strong>Crate material:</strong> Pine plywood 9mm (${CRATE_WALL}cm walls, ${CRATE_KG_M2} kg/m²)<br>
       <strong>Volume:</strong> ${(volume*1000).toFixed(1)} liters<br>
       <strong>Layers:</strong> ${numLayers} (8 panels combined into ${numLayers} layers)<br>
-      <hr style="border-color:rgba(79,195,247,0.2); margin:8px 0">
+      <hr style="border-color:#000; margin:8px 0">
       <strong>Weight breakdown:</strong><br>
       &nbsp;&nbsp;Cabinet panels: ${panelWeight.toFixed(1)} kg<br>
       &nbsp;&nbsp;Crate (${crateSurface.toFixed(2)} m² pine 9mm): ${crateWeight.toFixed(1)} kg<br>
@@ -1007,21 +993,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const ROOF_COL_X = 100 + INNER_W;
       const placements = [
         // Bottom band: side panels + front + roof
-        {id:'A1', name:'Side L', x:0,            y:0,                       w:50,           h:95,        col:'#4fc3f7'},
-        {id:'A2', name:'Side R', x:50,           y:0,                       w:50,           h:95,        col:'#4fc3f7'},
-        {id:'D',  name:'Front',  x:100,          y:0,                       w:INNER_W,      h:FP_SURF,   col:'#82b1ff'},
-        {id:'E',  name:'Roof',   x:ROOF_COL_X,   y:0,                       w:INNER_W,      h:ROOF_LEN,  col:'#66bb6a'},
+        {id:'A1', name:'Side L', x:0,            y:0,                       w:50,           h:95,        col:'#000'},
+        {id:'A2', name:'Side R', x:50,           y:0,                       w:50,           h:95,        col:'#000'},
+        {id:'D',  name:'Front',  x:100,          y:0,                       w:INNER_W,      h:FP_SURF,   col:'#000'},
+        {id:'E',  name:'Roof',   x:ROOF_COL_X,   y:0,                       w:INNER_W,      h:ROOF_LEN,  col:'#000'},
         // Roof column continues upward: soffit on top of the roof, monitor shelf above the soffit
-        {id:'G',  name:'Soffit',        x:ROOF_COL_X, y:ROOF_LEN,                          w:INNER_W, h:SOFFIT_D, col:'#a5d6a7'},
-        {id:'H',  name:'Monitor shelf', x:ROOF_COL_X, y:ROOF_LEN + SOFFIT_D,               w:INNER_W, h:SHELF_D,  col:'#ffd54f'},
+        {id:'G',  name:'Soffit',        x:ROOF_COL_X, y:ROOF_LEN,                          w:INNER_W, h:SOFFIT_D, col:'#000'},
+        {id:'H',  name:'Monitor shelf', x:ROOF_COL_X, y:ROOF_LEN + SOFFIT_D,               w:INNER_W, h:SHELF_D,  col:'#000'},
         // Top band over the side panels — mouse shelf at the front edge
-        {id:'M',  name:'Mouse shelf',   x:0,          y:95,                                w:MOUSE_TOTAL_W, h:MOUSE_D, col:'#ff8a65'},
+        {id:'M',  name:'Mouse shelf',   x:0,          y:95,                                w:MOUSE_TOTAL_W, h:MOUSE_D, col:'#000'},
       ];
 
       let c = '';
       // Sheet outline
-      c += `<rect x="${tx(0)}" y="${ty(SHEET_H)}" width="${SHEET_W*sheetSc}" height="${SHEET_H*sheetSc}" fill="rgba(255,255,255,0.02)" stroke="#8B7355" stroke-width="2" stroke-dasharray="6,3"/>`;
-      c += `<text x="${tx(SHEET_W/2)}" y="${ty(SHEET_H)-8}" fill="#8B7355" font-size="10" text-anchor="middle">Poplar plywood 15 mm — 250 × 125 cm sheet</text>`;
+      c += `<rect x="${tx(0)}" y="${ty(SHEET_H)}" width="${SHEET_W*sheetSc}" height="${SHEET_H*sheetSc}" fill="rgba(255,255,255,0.02)" stroke="#000" stroke-width="2" stroke-dasharray="6,3"/>`;
+      c += `<text x="${tx(SHEET_W/2)}" y="${ty(SHEET_H)-8}" fill="#555" font-size="10" text-anchor="middle">Poplar plywood 15 mm — 250 × 125 cm sheet</text>`;
 
       // Panels
       placements.forEach(p => {
@@ -1043,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const usedArea = placements.reduce((s, p) => s + p.w * p.h, 0);
       const sheetArea = SHEET_W * SHEET_H;
       const wastePct = ((sheetArea - usedArea) / sheetArea * 100).toFixed(0);
-      c += `<text x="${tx(SHEET_W/2)}" y="${ty(0)+34}" fill="#aaa" font-size="10" text-anchor="middle">${wastePct}% offcuts (keep them — useful for shims and the mouse-shelf slot inserts)</text>`;
+      c += `<text x="${tx(SHEET_W/2)}" y="${ty(0)+34}" fill="#555" font-size="10" text-anchor="middle">${wastePct}% offcuts (keep them — useful for shims and the mouse-shelf slot inserts)</text>`;
 
       svg.innerHTML = c;
     }
@@ -1065,8 +1051,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Rectangle outline = the wood-shop deliverable
       let c = '';
-      c += `<rect x="${tx(0)}" y="${ty(RH)}" width="${RW*sc}" height="${RH*sc}" fill="rgba(26,95,122,0.15)" stroke="#8B7355" stroke-width="1.5" stroke-dasharray="4,2"/>`;
-      c += `<text x="${tx(RW/2)}" y="${ty(RH)-8}" fill="#8B7355" font-size="9" text-anchor="middle">Wood shop cut — 50 × 95 cm</text>`;
+      c += `<rect x="${tx(0)}" y="${ty(RH)}" width="${RW*sc}" height="${RH*sc}" fill="rgba(0,0,0,0.02)" stroke="#000" stroke-width="1.5" stroke-dasharray="4,2"/>`;
+      c += `<text x="${tx(RW/2)}" y="${ty(RH)-8}" fill="#555" font-size="9" text-anchor="middle">Wood shop cut — 50 × 95 cm</text>`;
 
       // Final panel polygon (the part you keep)
       const pts = [
@@ -1078,20 +1064,20 @@ document.addEventListener('DOMContentLoaded', () => {
         [50, 0],                 // F
       ];
       const polyPts = pts.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      c += `<polygon points="${polyPts}" fill="rgba(79,195,247,0.18)" stroke="#4fc3f7" stroke-width="1.5"/>`;
+      c += `<polygon points="${polyPts}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.5"/>`;
 
       // Waste fill — front-tilt triangle ABC and roof triangle D-corner-E
       const triFront = [[0,0],[FP_TOP_Z,FP_TOP_Y],[0,FP_TOP_Y]]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
       const triRoof = [[0,H_FRONT],[50,H_FRONT],[50,H_BACK]]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      c += `<polygon points="${triFront}" fill="rgba(255,112,67,0.18)" stroke="#ff7043" stroke-width="1.2" stroke-dasharray="3,2"/>`;
-      c += `<polygon points="${triRoof}" fill="rgba(255,112,67,0.18)" stroke="#ff7043" stroke-width="1.2" stroke-dasharray="3,2"/>`;
+      c += `<polygon points="${triFront}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2" stroke-dasharray="3,2"/>`;
+      c += `<polygon points="${triRoof}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2" stroke-dasharray="3,2"/>`;
 
       // Cut lines (highlighted)
-      c += `<line x1="${tx(0)}" y1="${ty(0)}" x2="${tx(FP_TOP_Z)}" y2="${ty(FP_TOP_Y)}" stroke="#ff7043" stroke-width="2"/>`;
-      c += `<line x1="${tx(FP_TOP_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(0)}" y2="${ty(FP_TOP_Y)}" stroke="#ff7043" stroke-width="2"/>`;
-      c += `<line x1="${tx(0)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#ff7043" stroke-width="2"/>`;
+      c += `<line x1="${tx(0)}" y1="${ty(0)}" x2="${tx(FP_TOP_Z)}" y2="${ty(FP_TOP_Y)}" stroke="#000" stroke-width="2"/>`;
+      c += `<line x1="${tx(FP_TOP_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(0)}" y2="${ty(FP_TOP_Y)}" stroke="#000" stroke-width="2"/>`;
+      c += `<line x1="${tx(0)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#000" stroke-width="2"/>`;
 
       // Mouse shelf slot — closed rectangle cut from the panel, sitting
       // SLOT_FRONT_MARGIN (3 cm) behind the tilted front edge so the
@@ -1111,43 +1097,43 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show alternative heights as faint dashed slot outlines.
       SLOT_HEIGHTS.filter(sh => sh !== slotChoiceY).forEach(sh => {
         const fx = sh * Math.tan(TILT) + SLOT_FRONT_MARGIN;
-        c += `<rect x="${tx(fx)}" y="${ty(sh + slotThick/2)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="none" stroke="#CE93D8" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.45"/>`;
-        c += `<text x="${tx(fx + slotDepth) + 4}" y="${ty(sh)+3}" fill="#CE93D8" font-size="6" opacity="0.6">alt h=${sh}</text>`;
+        c += `<rect x="${tx(fx)}" y="${ty(sh + slotThick/2)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="none" stroke="#000" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.45"/>`;
+        c += `<text x="${tx(fx + slotDepth) + 4}" y="${ty(sh)+3}" fill="#000" font-size="6" opacity="0.6">alt h=${sh}</text>`;
       });
       // Default slot (12 cm) — drawn solid + filled so it reads as the
       // intended cut. Slot waste is a closed rectangle.
-      c += `<rect x="${tx(slotFrontX)}" y="${ty(slotTopY)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1.2"/>`;
+      c += `<rect x="${tx(slotFrontX)}" y="${ty(slotTopY)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1.2"/>`;
       // Four cut lines for the slot: top, bottom, front, back — closed
       // rectangle. Highlight all four so the builder knows it's a
       // jigsawn rectangle, not a notch.
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotTopY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotBotY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotFrontX)}" y2="${ty(slotBotY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotBackX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
-      c += `<text x="${tx(slotFrontX + slotDepth/2)}" y="${ty(slotChoiceY)+12}" fill="#CE93D8" font-size="8" text-anchor="middle">cut 3: mouse slot · ${slotDepth} × ${slotThick} · h=${slotChoiceY} · ${SLOT_FRONT_MARGIN} cm front margin</text>`;
+      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotTopY)}" stroke="#000" stroke-width="1.6"/>`;
+      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotBotY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
+      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotFrontX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
+      c += `<line x1="${tx(slotBackX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
+      c += `<text x="${tx(slotFrontX + slotDepth/2)}" y="${ty(slotChoiceY)+12}" fill="#000" font-size="8" text-anchor="middle">cut 3: mouse slot · ${slotDepth} × ${slotThick} · h=${slotChoiceY} · ${SLOT_FRONT_MARGIN} cm front margin</text>`;
 
       // Vertex labels
       const labels = ['A','B','C','D','E','F'];
       pts.forEach((p, i) => {
         const ox = (i===0||i===2||i===3) ? -10 : (i===1 ? 4 : 8);
         const oy = (i===0||i===5) ? 12 : (i===3||i===4) ? -6 : 0;
-        c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3" fill="#4fc3f7"/>`;
+        c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3" fill="#000"/>`;
         c += `<text x="${tx(p[0])+ox}" y="${ty(p[1])+oy}" fill="#fff" font-size="9" font-weight="bold">${labels[i]}</text>`;
-        c += `<text x="${tx(p[0])+ox}" y="${ty(p[1])+oy+10}" fill="#aaa" font-size="7">(${p[0].toFixed(1)}, ${p[1].toFixed(1)})</text>`;
+        c += `<text x="${tx(p[0])+ox}" y="${ty(p[1])+oy+10}" fill="#555" font-size="7">(${p[0].toFixed(1)}, ${p[1].toFixed(1)})</text>`;
       });
 
       // Cut labels
-      c += `<text x="${tx(FP_TOP_Z/2)+12}" y="${ty(FP_TOP_Y/2)-2}" fill="#ff7043" font-size="9" text-anchor="middle">cut 1: A→B→C</text>`;
-      c += `<text x="${tx(25)}" y="${ty((H_FRONT+H_BACK)/2)-6}" fill="#ff7043" font-size="9" text-anchor="middle">cut 2: D→E</text>`;
+      c += `<text x="${tx(FP_TOP_Z/2)+12}" y="${ty(FP_TOP_Y/2)-2}" fill="#000" font-size="9" text-anchor="middle">cut 1: A→B→C</text>`;
+      c += `<text x="${tx(25)}" y="${ty((H_FRONT+H_BACK)/2)-6}" fill="#000" font-size="9" text-anchor="middle">cut 2: D→E</text>`;
 
       // Legend
       const legendY = h - 14;
-      c += `<rect x="${tx(0)}" y="${legendY-9}" width="10" height="9" fill="rgba(79,195,247,0.18)" stroke="#4fc3f7" stroke-width="1"/>`;
-      c += `<text x="${tx(0)+14}" y="${legendY-1}" fill="#aaa" font-size="9">keep</text>`;
-      c += `<rect x="${tx(0)+55}" y="${legendY-9}" width="10" height="9" fill="rgba(255,112,67,0.18)" stroke="#ff7043" stroke-width="1" stroke-dasharray="2,2"/>`;
-      c += `<text x="${tx(0)+71}" y="${legendY-1}" fill="#aaa" font-size="9">waste</text>`;
-      c += `<rect x="${tx(0)+115}" y="${legendY-9}" width="10" height="9" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1"/>`;
-      c += `<text x="${tx(0)+131}" y="${legendY-1}" fill="#aaa" font-size="9">mouse slot</text>`;
+      c += `<rect x="${tx(0)}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(0)+14}" y="${legendY-1}" fill="#333" font-size="9">keep</text>`;
+      c += `<rect x="${tx(0)+55}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/>`;
+      c += `<text x="${tx(0)+71}" y="${legendY-1}" fill="#333" font-size="9">waste</text>`;
+      c += `<rect x="${tx(0)+115}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(0)+131}" y="${legendY-1}" fill="#333" font-size="9">mouse slot</text>`;
 
       svg.innerHTML = c;
     }
@@ -1194,14 +1180,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const shelfFront = [shelfZ, SHELF_Y];
     const shelfBack  = [shelfZ + SHELF_D, SHELF_Y];
 
+    // B&W technical doc: joints are differentiated by a single letter
+    // inside the bolt circle (F = front, R = roof, S = soffit, M = monitor)
+    // rather than by color. The letter doubles as the joint legend.
     const joints = [
-      { name:'Front (D)',          color:'#FF7043', edge:[A, B],          n:3, pad:7,
+      { name:'Front (D)',          letter:'F', edge:[A, B],          n:3, pad:7,
         per:'3', total:'6' },
-      { name:'Roof (E)',           color:'#66BB6A', edge:[DD, E],         n:3, pad:6,
+      { name:'Roof (E)',           letter:'R', edge:[DD, E],         n:3, pad:6,
         per:'3', total:'6' },
-      { name:'Soffit (G)',         color:'#FFD54F', edge:[B, C],          n:2, pad:6,
+      { name:'Soffit (G)',         letter:'S', edge:[B, C],          n:2, pad:6,
         per:'2', total:'4' },
-      { name:'Monitor shelf (H)',  color:'#CE93D8', edge:[shelfFront, shelfBack], n:2, pad:6,
+      { name:'Monitor shelf (H)',  letter:'M', edge:[shelfFront, shelfBack], n:2, pad:6,
         per:'2', total:'4' },
     ];
 
@@ -1224,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Side panel polygon (interior view — same outline as before)
       const polyPts = [A, B, C, DD, E, F]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      c += `<polygon points="${polyPts}" fill="rgba(26,95,122,0.2)" stroke="#4fc3f7" stroke-width="1.5"/>`;
+      c += `<polygon points="${polyPts}" fill="rgba(0,0,0,0.03)" stroke="#000" stroke-width="1.5"/>`;
 
       // Mouse-shelf slot at the chosen height (12 cm by default).
       // Drawn here for context — shows the slot doesn't conflict with
@@ -1232,61 +1221,48 @@ document.addEventListener('DOMContentLoaded', () => {
       // Slot sits SLOT_FRONT_MARGIN (3 cm) behind the tilted front edge
       // so the front face stays continuous between conformats.
       const mFx = MOUSE_CURRENT * Math.tan(TILT) + SLOT_FRONT_MARGIN;
-      c += `<rect x="${tx(mFx)}" y="${ty(MOUSE_CURRENT + MOUSE_T/2)}" width="${MOUSE_D*sc}" height="${MOUSE_T*sc}" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1.2"/>`;
-      c += `<text x="${tx(mFx + MOUSE_D/2)}" y="${ty(MOUSE_CURRENT)+13}" fill="#CE93D8" font-size="8" text-anchor="middle">mouse slot · ${MOUSE_D}×${MOUSE_T} · h=${MOUSE_CURRENT}</text>`;
+      c += `<rect x="${tx(mFx)}" y="${ty(MOUSE_CURRENT + MOUSE_T/2)}" width="${MOUSE_D*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(mFx + MOUSE_D/2)}" y="${ty(MOUSE_CURRENT)+13}" fill="#000" font-size="8" text-anchor="middle">mouse slot · ${MOUSE_D}×${MOUSE_T} · h=${MOUSE_CURRENT}</text>`;
 
       // Shelf line at Y=38 (where the monitor shelf lands)
-      c += `<line x1="${tx(shelfFront[0])}" y1="${ty(shelfFront[1])}" x2="${tx(shelfBack[0])}" y2="${ty(shelfBack[1])}" stroke="#8B7355" stroke-width="1.5" stroke-dasharray="3,2"/>`;
-      c += `<text x="${tx(shelfFront[0]+SHELF_D/2)}" y="${ty(SHELF_Y)+12}" fill="#8B7355" font-size="8" text-anchor="middle">monitor shelf line · Y=${SHELF_Y}</text>`;
+      c += `<line x1="${tx(shelfFront[0])}" y1="${ty(shelfFront[1])}" x2="${tx(shelfBack[0])}" y2="${ty(shelfBack[1])}" stroke="#000" stroke-width="1.5" stroke-dasharray="3,2"/>`;
+      c += `<text x="${tx(shelfFront[0]+SHELF_D/2)}" y="${ty(SHELF_Y)+12}" fill="#555" font-size="8" text-anchor="middle">monitor shelf line · Y=${SHELF_Y}</text>`;
 
-      // Bolt-position dots — one per joint, color by joint type
-      let boltCount = 0;
+      // Bolt-position markers — solid black circle with the joint letter
+      // (F / R / S / M) in white inside. The letter replaces the color
+      // coding from the screen version so the print stays legible at any
+      // brightness.
       joints.forEach(j => {
         const positions = spaceAlong(j.edge[0], j.edge[1], j.n, j.pad);
-        positions.forEach((p, i) => {
-          boltCount++;
-          // Slight outward perpendicular offset of the label so it doesn't
-          // sit on top of the edge line.
-          const dx = j.edge[1][0] - j.edge[0][0];
-          const dy = j.edge[1][1] - j.edge[0][1];
-          const len = Math.sqrt(dx*dx + dy*dy);
-          // Perpendicular pointing INTO the panel interior (rough heuristic)
-          const px_off =  dy/len * 4;   // depth offset (cm)
-          const py_off = -dx/len * 4;
-          // Label coordinates (slightly inside the panel)
-          const lx = p[0] + px_off;
-          const ly = p[1] + py_off;
-          c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="5" fill="${j.color}" stroke="#fff" stroke-width="1.2"/>`;
-          c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="1.6" fill="#0a0a18"/>`;
-          c += `<text x="${tx(lx)}" y="${ty(ly)+3}" fill="${j.color}" font-size="8" text-anchor="middle" font-weight="bold">${boltCount}</text>`;
+        positions.forEach((p) => {
+          c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="#000" stroke="#fff" stroke-width="1"/>`;
+          c += `<text x="${tx(p[0])}" y="${ty(p[1])+3}" fill="#fff" font-size="8" text-anchor="middle" font-weight="700" font-family="'Inter',sans-serif">${j.letter}</text>`;
         });
       });
 
-      // Edge-thickness indicator: tiny notes near each joint name with bolt count
-      // Front edge label
+      // Joint name + count labels at each edge, in plain black.
       const fmid = [(A[0]+B[0])/2, (A[1]+B[1])/2];
-      c += `<text x="${tx(fmid[0])-22}" y="${ty(fmid[1])-8}" fill="#FF7043" font-size="9" font-weight="bold">Front: 3</text>`;
-      // Roof edge
+      c += `<text x="${tx(fmid[0])-22}" y="${ty(fmid[1])-8}" fill="#000" font-size="9" font-weight="700">F · Front: 3</text>`;
       const rmid = [(DD[0]+E[0])/2, (DD[1]+E[1])/2];
-      c += `<text x="${tx(rmid[0])}" y="${ty(rmid[1])-8}" fill="#66BB6A" font-size="9" font-weight="bold" text-anchor="middle">Roof: 3</text>`;
-      // Soffit
-      c += `<text x="${tx((B[0]+C[0])/2)}" y="${ty(B[1])-7}" fill="#FFD54F" font-size="9" font-weight="bold" text-anchor="middle">Soffit: 2</text>`;
-      // Monitor shelf
-      c += `<text x="${tx(shelfBack[0])+8}" y="${ty(SHELF_Y)+3}" fill="#CE93D8" font-size="9" font-weight="bold">Monitor: 2</text>`;
+      c += `<text x="${tx(rmid[0])}" y="${ty(rmid[1])-8}" fill="#000" font-size="9" font-weight="700" text-anchor="middle">R · Roof: 3</text>`;
+      c += `<text x="${tx((B[0]+C[0])/2)}" y="${ty(B[1])-7}" fill="#000" font-size="9" font-weight="700" text-anchor="middle">S · Soffit: 2</text>`;
+      c += `<text x="${tx(shelfBack[0])+8}" y="${ty(SHELF_Y)+3}" fill="#000" font-size="9" font-weight="700">M · Monitor: 2</text>`;
 
-      // Legend at bottom
+      // Legend at bottom — one entry per joint, with the same letter
+      // marker the side-panel uses, so the eye can match instantly.
       const legX = padPx, legY = h - 16;
       const legendItems = [
-        { label:'Front', color:'#FF7043' },
-        { label:'Roof', color:'#66BB6A' },
-        { label:'Soffit', color:'#FFD54F' },
-        { label:'Monitor shelf', color:'#CE93D8' },
+        { label:'F · Front',         letter:'F' },
+        { label:'R · Roof',          letter:'R' },
+        { label:'S · Soffit',        letter:'S' },
+        { label:'M · Monitor shelf', letter:'M' },
       ];
       let lx = legX;
       legendItems.forEach(it => {
-        c += `<circle cx="${lx+5}" cy="${legY}" r="4" fill="${it.color}" stroke="#fff" stroke-width="1"/>`;
-        c += `<text x="${lx+13}" y="${legY+3}" fill="#aaa" font-size="9">${it.label}</text>`;
-        lx += 13 + it.label.length*6 + 12;
+        c += `<circle cx="${lx+5}" cy="${legY}" r="5" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
+        c += `<text x="${lx+5}" y="${legY+3}" fill="#fff" font-size="7" text-anchor="middle" font-weight="700">${it.letter}</text>`;
+        c += `<text x="${lx+13}" y="${legY+3}" fill="#333" font-size="9">${it.label}</text>`;
+        lx += 13 + it.label.length*6 + 14;
       });
 
       svg.innerHTML = c;
@@ -1298,13 +1274,16 @@ document.addEventListener('DOMContentLoaded', () => {
       let perTotal = 0, allTotal = 0;
       joints.forEach(j => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><span style="display:inline-block; width:10px; height:10px; background:${j.color}; border-radius:50%; margin-right:6px"></span>${j.name}</td><td>${j.per}</td><td>${j.total}</td>`;
+        // Letter-in-circle swatch matches the side-panel diagram so the
+        // table reads the same in print as on screen.
+        const swatch = `<span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; background:#000; color:#fff; border-radius:50%; margin-right:6px; font-size:9px; font-weight:700; vertical-align:middle">${j.letter}</span>`;
+        tr.innerHTML = `<td>${swatch}${j.name}</td><td>${j.per}</td><td>${j.total}</td>`;
         tbody.appendChild(tr);
         perTotal += parseInt(j.per, 10);
         allTotal += parseInt(j.total, 10);
       });
       const tr = document.createElement('tr');
-      tr.style.color = '#4fc3f7';
+      tr.style.background = '#f0f0f0';
       tr.style.fontWeight = 'bold';
       tr.innerHTML = `<td>Total per side</td><td>${perTotal}</td><td>${allTotal}</td>`;
       tbody.appendChild(tr);
