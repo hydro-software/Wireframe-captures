@@ -944,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rows = [
       ['A','Side panel (rectangle)', 2, '50 × 95',
        'Poplar ply 15 mm',
-       'Cut front-tilt diagonal A→B + soffit B→C (one L-shaped jigsaw cut), then roof diagonal D→E. Optional: notch a 25 × 1.5 cm slot at the front edge for the mouse shelf.'],
+       'Cut front-tilt diagonal A→B + soffit B→C (one L-shaped jigsaw cut), then roof diagonal D→E, then a 25 × 1.5 cm slot opening at the tilted front edge for the mouse shelf (default height 12 cm; alternates 8 / 16 cm).'],
       ['D','Front panel', 1, `${INNER_W} × ${FP_SURF}`,
        'Poplar ply 15 mm',
        `Cut the ${WIN_W} × ${WIN_H} cm screen window: drill a starter hole inside one corner, then jigsaw the rectangle.`],
@@ -1084,6 +1084,37 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<line x1="${tx(FP_TOP_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(0)}" y2="${ty(FP_TOP_Y)}" stroke="#ff7043" stroke-width="2"/>`;
       c += `<line x1="${tx(0)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#ff7043" stroke-width="2"/>`;
 
+      // Mouse shelf slot — opens at the tilted front face, runs back
+      // MOUSE_D (25 cm) into the panel, MOUSE_T (1.5 cm) tall. Cut a
+      // single slot at one of the three reference heights (8 / 12 / 16
+      // cm); 12 cm is the design default. The slot's front edge
+      // coincides with the tilted front cut, so it's three new cuts
+      // in total: top-of-slot, bottom-of-slot, and the closed back end.
+      const slotChoiceY = MOUSE_CURRENT;       // 12 cm — design default
+      const slotThick = MOUSE_T;                // 1.5 cm
+      const slotDepth = MOUSE_D;                // 25 cm
+      const slotFrontX = slotChoiceY * Math.tan(TILT);   // tilt offset
+      const slotTopY = slotChoiceY + slotThick/2;
+      const slotBotY = slotChoiceY - slotThick/2;
+      const slotBackX = slotFrontX + slotDepth;
+      // Show alternative heights as faint dashed slot outlines.
+      SLOT_HEIGHTS.filter(sh => sh !== slotChoiceY).forEach(sh => {
+        const fx = sh * Math.tan(TILT);
+        c += `<rect x="${tx(fx)}" y="${ty(sh + slotThick/2)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="none" stroke="#CE93D8" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.45"/>`;
+        c += `<text x="${tx(fx + slotDepth) + 4}" y="${ty(sh)+3}" fill="#CE93D8" font-size="6" opacity="0.6">alt h=${sh}</text>`;
+      });
+      // Default slot (12 cm) — drawn solid + filled so it reads as the
+      // intended cut. Slot waste is a small rectangle the size of the
+      // mouse shelf cross-section.
+      c += `<rect x="${tx(slotFrontX)}" y="${ty(slotTopY)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1.2"/>`;
+      // Three cut lines for the slot: top, bottom, back. Front edge is
+      // already cut by the front-tilt diagonal A→B (the slot opens into
+      // that cut), so we don't draw a separate front-edge cut.
+      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotTopY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
+      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotBotY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
+      c += `<line x1="${tx(slotBackX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#CE93D8" stroke-width="1.6"/>`;
+      c += `<text x="${tx(slotFrontX + slotDepth/2)}" y="${ty(slotChoiceY)+12}" fill="#CE93D8" font-size="8" text-anchor="middle">cut 3: mouse slot · ${slotDepth} × ${slotThick} · h=${slotChoiceY}</text>`;
+
       // Vertex labels
       const labels = ['A','B','C','D','E','F'];
       pts.forEach((p, i) => {
@@ -1104,6 +1135,8 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${tx(0)+14}" y="${legendY-1}" fill="#aaa" font-size="9">keep</text>`;
       c += `<rect x="${tx(0)+55}" y="${legendY-9}" width="10" height="9" fill="rgba(255,112,67,0.18)" stroke="#ff7043" stroke-width="1" stroke-dasharray="2,2"/>`;
       c += `<text x="${tx(0)+71}" y="${legendY-1}" fill="#aaa" font-size="9">waste</text>`;
+      c += `<rect x="${tx(0)+115}" y="${legendY-9}" width="10" height="9" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1"/>`;
+      c += `<text x="${tx(0)+131}" y="${legendY-1}" fill="#aaa" font-size="9">mouse slot</text>`;
 
       svg.innerHTML = c;
     }
@@ -1181,6 +1214,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const polyPts = [A, B, C, DD, E, F]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
       c += `<polygon points="${polyPts}" fill="rgba(26,95,122,0.2)" stroke="#4fc3f7" stroke-width="1.5"/>`;
+
+      // Mouse-shelf slot at the chosen height (12 cm by default).
+      // Drawn here for context — shows the slot doesn't conflict with
+      // any of the conformat positions (which all sit at Y ≥ 38 cm).
+      const mFx = MOUSE_CURRENT * Math.tan(TILT);
+      c += `<rect x="${tx(mFx)}" y="${ty(MOUSE_CURRENT + MOUSE_T/2)}" width="${MOUSE_D*sc}" height="${MOUSE_T*sc}" fill="rgba(206,147,216,0.30)" stroke="#CE93D8" stroke-width="1.2"/>`;
+      c += `<text x="${tx(mFx + MOUSE_D/2)}" y="${ty(MOUSE_CURRENT)+13}" fill="#CE93D8" font-size="8" text-anchor="middle">mouse slot · ${MOUSE_D}×${MOUSE_T} · h=${MOUSE_CURRENT}</text>`;
 
       // Shelf line at Y=38 (where the monitor shelf lands)
       c += `<line x1="${tx(shelfFront[0])}" y1="${ty(shelfFront[1])}" x2="${tx(shelfBack[0])}" y2="${ty(shelfBack[1])}" stroke="#8B7355" stroke-width="1.5" stroke-dasharray="3,2"/>`;
@@ -1359,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="panel-card" style="flex: 1">
       <h3>Side panel — home cuts</h3>
-      <p class="qty">From a 50 × 95 cm rectangle, you mark points A–F, then make two jigsaw cuts to remove the <span style="color:#ff7043">orange waste triangles</span>: the front-tilt + soffit (one L-shaped cut), and the roof slope.</p>
+      <p class="qty">From a 50 × 95 cm rectangle, mark points A–F, then make three jigsaw cuts: the <span style="color:#ff7043">orange waste triangles</span> (front-tilt + soffit as one L-shaped cut, plus the roof slope), and the <span style="color:#CE93D8">mouse-shelf slot</span> opening at the tilted front edge. Faint dashed rectangles show the alternative slot heights — pick one.</p>
       <svg id="side-home-cuts-svg"></svg>
     </div>
   </div>
