@@ -755,40 +755,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const TEXTILE = 0.3;  // 3mm protective textile between panels
     const CRATE_WALL = 1.5; // 15mm plywood crate walls
 
-    // ---- OPTIMIZED LAYER PACKING ----
-    // Combine smaller panels side by side to minimize stack height.
-    // Crate footprint: 108 × 55 cm (mouse shelf 108 wide; 25+30=55 deep for mouse+monitor combo)
-    const RL = Math.round(ROOF_LEN*10)/10;  // 52.2
-    const LH = Math.round(LOGO_H*10)/10;    // 17.9
+    // ---- LAYER PACKING (sub-assembly-based) ----
+    // The cabinet ships as two pre-built folding sub-assemblies plus the
+    // remaining loose panels. Each sub-assembly is THICKER than a single
+    // panel because it carries its own hardware:
+    //
+    //   Sub-A1 = Side R + Roof folded along D→E
+    //          ≈ 2 × T plywood + a piano hinge ≈ 3.2 cm
+    //   Sub-A2 = Side L + Beam 1 + Beam 2 folded against the inside face
+    //          ≈ T plywood + BEAM_T cross-section ≈ 4.5 cm
+    //
+    // Footprints both stay within ~50 × 95 cm (the side panel's polygon
+    // bounds — the folded roof and the folded beams sit inside the
+    // polygon footprint thanks to the LOGO_Z=10 cm recess pulling
+    // corner D inward by 10 cm).
+    const RL = Math.round(ROOF_LEN*10)/10;
+    const LH = Math.round(LOGO_H*10)/10;
+    const SD = Math.round(SOFFIT_D*10)/10;
+    const SUB_A1_T = 2*T + 0.2;            // Side R + Roof + a hair of hinge clearance
+    const SUB_A2_T = T + 3;                 // Side L + folded beam (3 cm thick stock)
 
-    // Each layer: [label, [[id, name, w, l, x, y], ...]]
-    // x,y = position within crate footprint
+    // Crate footprint must accept the largest single layer in each
+    // direction. Mouse shelf needs 108 cm of width; everything else fits.
+    // Length grows from 54.4 (panels-only design) to 56 cm to give the
+    // sub-assemblies a margin around their 50 cm depth.
     const crateInW = 108;
-    const crateInL = 54.4;
-    const SD = Math.round(SOFFIT_D*10)/10; // 28.0
+    const crateInL = 56;
 
     const layers = [
-      { label:'Layer 1', panels:[
-        {id:'A1',name:'Side panel L', w:95, l:50, x:0, y:0}
+      { label:'Layer 1', t: SUB_A1_T, panels:[
+        {id:'A2+E',name:'Sub-assembly 1 (Side R + Roof folded)', w:95, l:50, x:0, y:0}
       ]},
-      { label:'Layer 2', panels:[
-        {id:'A2',name:'Side panel R', w:95, l:50, x:0, y:0}
+      { label:'Layer 2', t: SUB_A2_T, panels:[
+        {id:'A1+B1+B2',name:'Sub-assembly 2 (Side L + 2 beams folded)', w:95, l:50, x:0, y:0}
       ]},
-      { label:'Layer 3', panels:[
-        {id:'D',name:'Front panel', w:82, l:INNER_W, x:0, y:0},
-        {id:'F',name:'Logo panel', w:LH, l:INNER_W, x:82, y:0}
+      { label:'Layer 3', t: T, panels:[
+        {id:'D',name:'Front panel', w:82, l:INNER_W, x:0, y:0}
       ]},
-      { label:'Layer 4', panels:[
-        {id:'E',name:'Roof panel', w:RL, l:INNER_W, x:0, y:0},
-        {id:'G',name:'Soffit panel', w:SD, l:INNER_W, x:RL, y:0}
+      { label:'Layer 4', t: T, panels:[
+        {id:'F',name:'Logo panel', w:LH, l:INNER_W, x:0,        y:0},
+        {id:'G',name:'Soffit panel', w:SD, l:INNER_W, x:LH+2,    y:0},
+        {id:'H',name:'Monitor shelf', w:SHELF_D, l:INNER_W, x:LH+SD+4, y:0}
       ]},
-      { label:'Layer 5', panels:[
-        {id:'H',name:'Monitor shelf', w:INNER_W, l:SHELF_D, x:0, y:0},
-        {id:'M',name:'Mouse shelf', w:108, l:25, x:0, y:SHELF_D}
+      { label:'Layer 5', t: T, panels:[
+        {id:'M',name:'Mouse shelf', w:108, l:25, x:0, y:0}
       ]},
     ];
     const numLayers = layers.length;
-    const stackH = numLayers * T + (numLayers + 1) * TEXTILE;
+    // Per-layer thickness sum (sub-assemblies thicker than single panels) +
+    // textile padding between every layer + on top and bottom.
+    const stackH = layers.reduce((s, l) => s + l.t, 0) + (numLayers + 1) * TEXTILE;
 
     const crateOutW = crateInW + 2*CRATE_WALL;
     const crateOutL = crateInL + 2*CRATE_WALL;
@@ -864,13 +880,14 @@ document.addEventListener('DOMContentLoaded', () => {
       layers.forEach((layer, li) => {
         // Textile
         content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(0,0,0,0.05)"/>`;
-        // Panels in this layer
+        // Panels in this layer — uses per-layer thickness `layer.t` so
+        // sub-assemblies are visibly fatter than single panels.
         layer.panels.forEach(p => {
           const col = panelColors[ci++ % panelColors.length];
-          content += `<rect x="${tx(p.x)}" y="${ty(curY+T)}" width="${p.w*scX}" height="${T*scY}" fill="${col}" opacity="0.5" stroke="${col}" stroke-width="0.5"/>`;
+          content += `<rect x="${tx(p.x)}" y="${ty(curY+layer.t)}" width="${p.w*scX}" height="${layer.t*scY}" fill="${col}" opacity="0.5" stroke="${col}" stroke-width="0.5"/>`;
         });
-        content += `<text x="${tx(crateInW+2)}" y="${ty(curY+T/2)+3}" fill="#555" font-size="7" dominant-baseline="middle">L${li+1}: ${layer.panels.map(p=>p.id).join('+')}</text>`;
-        curY += T + TEXTILE;
+        content += `<text x="${tx(crateInW+2)}" y="${ty(curY+layer.t/2)+3}" fill="#555" font-size="7" dominant-baseline="middle">L${li+1}: ${layer.panels.map(p=>p.id).join('+')} · ${layer.t.toFixed(1)} cm</text>`;
+        curY += layer.t + TEXTILE;
       });
       // Top textile
       content += `<rect x="${tx(0)}" y="${ty(curY)}" width="${crateInW*scX}" height="${TEXTILE*scY}" fill="rgba(0,0,0,0.05)"/>`;
@@ -887,7 +904,7 @@ document.addEventListener('DOMContentLoaded', () => {
       layers.forEach((layer, li) => {
         const panelList = layer.panels.map(p => `${p.name} (${p.w}×${p.l})`).join(' + ');
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${li+1}</td><td>${panelList}</td><td>${layer.panels.length} panel${layer.panels.length>1?'s':''}</td><td>${T}</td>`;
+        tr.innerHTML = `<td>${li+1}</td><td>${panelList}</td><td>${layer.panels.length} item${layer.panels.length>1?'s':''}</td><td>${layer.t.toFixed(1)} cm</td>`;
         tbody.appendChild(tr);
       });
       const tr = document.createElement('tr');
@@ -913,10 +930,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <strong>Crate exterior:</strong> ${crateOutW} × ${crateOutL} × ${crateOutH.toFixed(1)} cm<br>
       <strong>Crate material:</strong> Pine plywood 9mm (${CRATE_WALL}cm walls, ${CRATE_KG_M2} kg/m²)<br>
       <strong>Volume:</strong> ${(volume*1000).toFixed(1)} liters<br>
-      <strong>Layers:</strong> ${numLayers} (8 panels combined into ${numLayers} layers)<br>
+      <strong>Layers:</strong> ${numLayers} (2 sub-assemblies + ${numLayers - 2} loose-panel layers)<br>
       <hr style="border-color:#000; margin:8px 0">
       <strong>Weight breakdown:</strong><br>
-      &nbsp;&nbsp;Cabinet panels: ${panelWeight.toFixed(1)} kg<br>
+      &nbsp;&nbsp;Cabinet panels + hardware: ${panelWeight.toFixed(1)} kg<br>
       &nbsp;&nbsp;Crate (${crateSurface.toFixed(2)} m² pine 9mm): ${crateWeight.toFixed(1)} kg<br>
       &nbsp;&nbsp;Textile padding: ~${textileWeight} kg<br>
       <strong>Total transport weight: ${totalTransport.toFixed(1)} kg</strong>
@@ -1720,11 +1737,11 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="panel-card" style="flex: 1">
       <h3>Sub-assembly 1 · Side R + Roof — folded</h3>
       <p class="qty">
-        Roof folds down along the D→E piano hinge. The folded roof's
-        projection extends past Side R's polygon to the upper-left
-        (dashed area outside the panel outline) — that's expected and
-        OK; the folded sub-assembly is still flatter than the un-hinged
-        crate version.
+        Roof folds down along the D→E piano hinge. With the
+        LOGO_Z = 10 cm recess pulling corner D inward, the roof's
+        folded projection sits entirely within Side R's polygon
+        footprint — no overhang. Sub-assembly bounding box stays
+        ≈ 50 × 95 cm (plus ~3 cm of stack thickness).
       </p>
       <svg id="kd2-folded-r-svg"></svg>
     </div>
