@@ -1490,22 +1490,31 @@ document.addEventListener('DOMContentLoaded', () => {
       // into cabinet" direction.
       c += `<g transform="rotate(${TILT_DEG} ${pivotSvgX} ${pivotSvgY})">`;
 
-      // Beam 2 (rectangle in local frame; tilts via the group)
-      c += `<rect x="${tx(beamFront)}" y="${ty(beamTop)}" width="${BEAM_T*sc}" height="${BEAM_X*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx((beamFront+beamBack)/2)}" y="${ty((beamTop+beamBot)/2)+3}" fill="#000" font-size="9" text-anchor="middle">Beam 2</text>`;
-      c += `<text x="${tx((beamFront+beamBack)/2)}" y="${ty((beamTop+beamBot)/2)-9}" fill="#555" font-size="7" text-anchor="middle">${BEAM_T} × ${BEAM_X} cm · tilted 20°</text>`;
-
-      // Wall cleat (cleat A) — lower-right triangle of the cleat square,
-      // glued to Beam 2's tilted front face. Hypotenuse goes from
-      // top-near-beam DOWN-AND-OUT to bottom-far in the local frame.
-      const wallCleat = [
-        [beamFront, beamTop],
-        [beamFront, wcBotY],
+      // Integrated Beam 2 — single trapezoidal cross-section that combines
+      // the rectangular beam with the wall cleat ripped into its front
+      // edge as a 45° bevel. One piece of stock + one rip cut on a table
+      // saw at 45° = no glue joint, no separate cleat strip.
+      // Cross-section vertices (local frame, going CCW):
+      //   bottom-left : (wcOuterX,  wcBotY)   — toe of the bevel, far from cabinet interior
+      //   bottom-right: (beamBack,  wcBotY)   — back-bottom corner
+      //   top-right   : (beamBack,  beamTop)  — back-top corner (where the bracket bolts attach)
+      //   top-left    : (beamFront, beamTop)  — apex of the bevel
+      // The bevel face runs from top-left DOWN-AND-OUT to bottom-left.
+      const beamCleat = [
         [wcOuterX,  wcBotY],
+        [beamBack,  wcBotY],
+        [beamBack,  beamTop],
+        [beamFront, beamTop],
       ];
-      c += `<polygon points="${wallCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
-      c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)}" fill="#000" font-size="8" text-anchor="end" font-weight="700">cleat A</text>`;
-      c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)+10}" fill="#555" font-size="6" text-anchor="end">on Beam 2 face</text>`;
+      c += `<polygon points="${beamCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.13)" stroke="#000" stroke-width="1.2"/>`;
+      // Beam label centered on the rectangular (non-bevelled) part.
+      const beamLblZ = (beamFront + beamBack)/2;
+      const beamLblY = (beamTop + wcBotY)/2;
+      c += `<text x="${tx(beamLblZ)}" y="${ty(beamLblY)+3}" fill="#000" font-size="9" text-anchor="middle">Beam 2</text>`;
+      c += `<text x="${tx(beamLblZ)}" y="${ty(beamLblY)-9}" fill="#555" font-size="7" text-anchor="middle">stock 7 × 4 cm · bevel rip 45°</text>`;
+      // "integrated cleat A" annotation pointing at the bevel face
+      c += `<text x="${tx((wcOuterX + beamFront)/2 - 0.4)}" y="${ty((wcBotY + beamTop)/2 + 0.6)}" fill="#000" font-size="7" text-anchor="end" font-weight="700">cleat A</text>`;
+      c += `<text x="${tx((wcOuterX + beamFront)/2 - 0.4)}" y="${ty((wcBotY + beamTop)/2 + 0.6)+9}" fill="#555" font-size="6" text-anchor="end">(integrated)</text>`;
 
       // Cabinet cleat (cleat B) — upper-left triangle of the cleat square,
       // glued to Front D's tilted back face. Mirror of cleat A; hypotenuses
@@ -1553,8 +1562,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ['Corner bracket 40 × 40 mm (4 holes)', '8', '2 at the free beam ends (Side R); rest for shelves'],
         ['Wing-nut bolt M6 × 30 mm (incl. nut)', '16', '2 per bracket'],
         ['Cross-dowel barrel nut M6', '16', 'embedded in side panels for the wing-nut threads'],
-        ['Hardwood 4 × 3 cm × 1.5 m', '1', 'rip into 2 × 54 cm beams'],
-        ['Hardwood 5 × 2 cm × 2.5 m', '1', 'rip at 45° for the two cleats + spares'],
+        ['Hardwood 7 × 4 cm × 1.2 m', '1', 'rip 45° bevel along front edge → integrated Beam 2 + cleat A in one piece (cut into 2 × 54 cm)'],
+        ['Hardwood 5 × 2 cm × 1.2 m', '1', 'rip at 45° for cleat B (the strip glued to Front D back) + spares'],
       ];
       rows.forEach(r => {
         const tr = document.createElement('tr');
@@ -1766,16 +1775,19 @@ document.addEventListener('DOMContentLoaded', () => {
       <h3>French-cleat detail · Beam 2 ↔ Front D</h3>
       <p class="qty">
         Cross-section in the depth-height plane at the top of the front
-        panel. <strong>Beam 2 itself is mounted at the same 20° tilt
-        as Front D</strong>, so its front face is parallel to the
-        panel's back. Both cleats are 45° wedges on these parallel
-        tilted faces — wall cleat A (on the beam) is the lower-right
-        triangle of the cleat square, cabinet cleat B (on Front D's
-        back) is the upper-left triangle, and their hypotenuses share
-        the same diagonal. Drop Front D in: gravity slides cabinet
-        cleat down onto wall cleat, the two bevel faces mate, the
-        joint locks. The vertical reference + 20° angle arc next to
-        the pivot make the tilt explicit.
+        panel. <strong>Beam 2 has the wall cleat ripped directly into
+        its front edge</strong> as a 45° bevel — one piece of stock
+        (7 × 4 cm hardwood, 54 cm long) with one rip cut on a table
+        saw replaces the previous beam + glued-cleat-strip approach.
+        No glue joint at this cleat, stronger, faster to make.
+        <strong>Cleat B</strong> (the wedge glued to Front D's back)
+        stays a separate strip — that joint is permanent and never
+        comes apart. Beam 2 is mounted with the same 20° tilt as
+        Front D so the bevel face and cleat B sit on parallel tilted
+        surfaces and mate at the same diagonal angle. Drop Front D
+        in: cabinet cleat slides down onto the integrated bevel,
+        gravity locks them. The vertical reference + 20° angle arc
+        next to the pivot make the tilt explicit.
       </p>
       <svg id="kd2-cleat-svg"></svg>
     </div>
