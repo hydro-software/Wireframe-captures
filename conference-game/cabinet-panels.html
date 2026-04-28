@@ -1174,8 +1174,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Side panel polygon shared by both sub-assembly diagrams.
     const POLY_A  = [0, 0];
     const POLY_B  = [FP_TOP_Z, FP_TOP_Y];
-    const POLY_C  = [0, FP_TOP_Y];
-    const POLY_D  = [0, H_FRONT];
+    // C and D are at LOGO_Z = 10 cm — the logo-panel recess pulls the
+    // top-front corner inward by that amount. Earlier this code carried
+    // stale z=0 values (left over from before the recess was added),
+    // which made the folded roof project ~7 cm past Side R's polygon to
+    // the upper-left. With the corrected coords, the projection sits
+    // right at the polygon's edge — sub-assembly bounding box ≈ 50.6 cm
+    // wide × 95 cm tall.
+    const POLY_C  = [LOGO_Z, FP_TOP_Y];
+    const POLY_D  = [LOGO_Z, H_FRONT];
     const POLY_E  = [50, H_BACK];
     const POLY_F  = [50, 0];
     const POLY = [POLY_A, POLY_B, POLY_C, POLY_D, POLY_E, POLY_F];
@@ -1420,121 +1427,119 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ---- French cleat detail ----
-    // Standard French-cleat geometry: wall cleat (on Beam 2) is the
-    // BOTTOM-RIGHT triangle of the cleat square — vertical leg glued to
-    // the beam, horizontal leg at the bottom, hypotenuse running from
-    // top-near-beam DOWN-AND-OUT to bottom-far. Cabinet cleat (on Front D)
-    // is the mirror: TOP-LEFT triangle of the same square — vertical leg
-    // glued to Front D, horizontal leg at the top, hypotenuse running
-    // from top-far DOWN-AND-IN to bottom-near-Front-D. Both hypotenuses
-    // lie on the same diagonal line; the cleats interlock face-to-face.
+    // Beam 2 sits behind the front panel and is mounted at the SAME 20°
+    // tilt as Front D, so its front face is parallel to the panel's back.
+    // The wall cleat (on the beam's tilted front face) and the cabinet
+    // cleat (on Front D's back) are therefore both tilted 20° in the
+    // global frame — they sit on parallel surfaces and mate at the same
+    // diagonal angle.
+    //
+    // Implementation: draw the entire cleat assembly (beam + 2 cleats +
+    // Front D) in a "horizontal" local frame, then wrap everything in an
+    // SVG rotation group at the cleat anchor point. Lighter on the math
+    // than computing every tilted coordinate by hand.
     {
       const svg = document.getElementById('kd2-cleat-svg');
       const sc = 14;
       const padPx = 30;
-      const drawW = 14, drawH = 18;
+      const drawW = 16, drawH = 18;
       const w = drawW*sc + padPx*2 + 60;
-      const h = drawH*sc + padPx*2 + 30;
+      const h = drawH*sc + padPx*2 + 40;
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
       svg.setAttribute('width', w);
       svg.setAttribute('height', h);
 
-      const tx = (depth)  => padPx + (depth + 2) * sc;
-      const ty = (height) => padPx + 16 + (drawH - height) * sc;
+      const tx = (depth)  => padPx + (depth + 4) * sc;
+      const ty = (height) => padPx + 24 + (drawH - height) * sc;
 
       let c = '';
 
-      // Beam 2 cross-section: BEAM_T × BEAM_X rectangle.
-      // Front face (toward player) at depth=4; top at height=12.
-      const beamFront = 4;
+      // Local-frame coordinates (un-tilted) — everything will be rotated
+      // 20° around the pivot at the end.
+      const beamFront = 6;
       const beamBack  = beamFront + BEAM_T;
       const beamTop   = 12;
       const beamBot   = beamTop - BEAM_X;
+      const wcOuterX  = beamFront - CLEAT_H;
+      const wcBotY    = beamTop - CLEAT_H;
+
+      // Caption + axis labels (drawn outside group, in the global frame).
+      c += `<text x="${tx(7)}" y="${padPx + 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Cross-section · French cleat (locked, tilted 20°)</text>`;
+      c += `<text x="${tx(0)}" y="${ty(0) + 24}" fill="#555" font-size="7">← player side  ·  cabinet interior →</text>`;
+
+      // Pivot at the cleat anchor (top-near-Front-D corner). Vertical
+      // dashed reference line at the pivot makes the 20° tilt visible.
+      const pivotZ = wcOuterX;
+      const pivotY = beamTop;
+      const pivotSvgX = tx(pivotZ);
+      const pivotSvgY = ty(pivotY);
+      c += `<line x1="${pivotSvgX}" y1="${pivotSvgY - 6*sc}" x2="${pivotSvgX}" y2="${pivotSvgY + 7*sc}" stroke="#999" stroke-width="0.6" stroke-dasharray="3,2"/>`;
+      c += `<text x="${pivotSvgX + 4}" y="${pivotSvgY - 6*sc + 8}" fill="#999" font-size="6">vertical ref.</text>`;
+
+      // 20° angle arc at the pivot (drawn outside the rotation group so it
+      // shows the tilt explicitly between the vertical reference and Front D).
+      const arcR = 4*sc;
+      const arcRad = TILT;   // 20° from the script's master constant
+      const arcEndSvgX = pivotSvgX + arcR * Math.sin(arcRad);
+      const arcEndSvgY = pivotSvgY - arcR * Math.cos(arcRad);
+      c += `<path d="M${pivotSvgX},${pivotSvgY - arcR} A${arcR},${arcR} 0 0,1 ${arcEndSvgX},${arcEndSvgY}" fill="none" stroke="#000" stroke-width="0.8"/>`;
+      c += `<text x="${pivotSvgX + arcR*0.45}" y="${pivotSvgY - arcR*0.92}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">20°</text>`;
+
+      // Open rotation group — tilts beam + cleats + Front D by 20°
+      // clockwise (in screen), matching the front panel's "top tilts
+      // into cabinet" direction.
+      c += `<g transform="rotate(${TILT_DEG} ${pivotSvgX} ${pivotSvgY})">`;
+
+      // Beam 2 (rectangle in local frame; tilts via the group)
       c += `<rect x="${tx(beamFront)}" y="${ty(beamTop)}" width="${BEAM_T*sc}" height="${BEAM_X*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
       c += `<text x="${tx((beamFront+beamBack)/2)}" y="${ty((beamTop+beamBot)/2)+3}" fill="#000" font-size="9" text-anchor="middle">Beam 2</text>`;
-      c += `<text x="${tx((beamFront+beamBack)/2)}" y="${ty((beamTop+beamBot)/2)-9}" fill="#555" font-size="7" text-anchor="middle">${BEAM_T} × ${BEAM_X} cm</text>`;
+      c += `<text x="${tx((beamFront+beamBack)/2)}" y="${ty((beamTop+beamBot)/2)-9}" fill="#555" font-size="7" text-anchor="middle">${BEAM_T} × ${BEAM_X} cm · tilted 20°</text>`;
 
-      // Wall cleat (cleat A) — bottom-right triangle of the cleat square.
-      // Vertices: top-near-beam, bottom-near-beam, bottom-far. Right angle
-      // at bottom-near-beam. Hypotenuse goes DOWN-AND-OUT from top of beam
-      // to bottom-far corner — matching the standard wall-cleat bevel.
-      const wcOuterX = beamFront - CLEAT_H;
-      const wcBotY   = beamTop - CLEAT_H;
+      // Wall cleat (cleat A) — lower-right triangle of the cleat square,
+      // glued to Beam 2's tilted front face. Hypotenuse goes from
+      // top-near-beam DOWN-AND-OUT to bottom-far in the local frame.
       const wallCleat = [
-        [beamFront, beamTop],     // top-near-beam (top of cleat at beam face)
-        [beamFront, wcBotY],      // bottom-near-beam (right angle here)
-        [wcOuterX,  wcBotY],      // bottom-far (away from beam)
+        [beamFront, beamTop],
+        [beamFront, wcBotY],
+        [wcOuterX,  wcBotY],
       ];
       c += `<polygon points="${wallCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
       c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)}" fill="#000" font-size="8" text-anchor="end" font-weight="700">cleat A</text>`;
-      c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)+10}" fill="#555" font-size="6" text-anchor="end">on Beam 2 front face</text>`;
+      c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)+10}" fill="#555" font-size="6" text-anchor="end">on Beam 2 face</text>`;
 
-      // Front D panel — drawn at its actual 20° tilt. The back surface
-      // passes through (wcOuterX, beamTop) — the cabinet-cleat's vertical
-      // leg anchors there — and slopes back as it rises (top tilts INTO
-      // the cabinet). Below the cleat, Front D leans forward toward the
-      // player; above the cleat, it leans back into the soffit area.
-      const tilt   = TILT;                   // 20° in radians
-      const dxdy   = Math.tan(tilt);         // depth shift per unit height (~0.364)
-      const cosT   = Math.cos(tilt);
-      const sinT   = Math.sin(tilt);
-      const fdTopY = beamTop + 4;
-      const fdBotY = wcBotY - 6;
-      // Back surface anchor: passes through (wcOuterX, beamTop)
-      const fdBackZ = (y) => wcOuterX + dxdy * (y - beamTop);
-      // Front face is offset CLEAT_T perpendicular to the tilted surface:
-      // perpendicular = (cos20°, -sin20°) pointing INTO cabinet, so front face
-      // is at back - CLEAT_T*(cos20°, -sin20°) → z shifts -cos20°, y shifts +sin20°.
-      const dzFront = -CLEAT_T * cosT;
-      const dyFront =  CLEAT_T * sinT;
-      const fdBackTop  = [fdBackZ(fdTopY),                 fdTopY];
-      const fdBackBot  = [fdBackZ(fdBotY),                 fdBotY];
-      const fdFrontTop = [fdBackTop[0] + dzFront,          fdBackTop[1] + dyFront];
-      const fdFrontBot = [fdBackBot[0] + dzFront,          fdBackBot[1] + dyFront];
-      const fdPoly = [fdBackTop, fdBackBot, fdFrontBot, fdFrontTop];
-      c += `<polygon points="${fdPoly.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
-      // Label centered on the front face, rotated to follow the panel.
-      const lblX = (fdFrontTop[0] + fdFrontBot[0])/2;
-      const lblY = (fdFrontTop[1] + fdFrontBot[1])/2;
-      const lblDeg = -tilt * 180 / Math.PI;
-      c += `<text x="${tx(lblX - 0.5)}" y="${ty(lblY)}" fill="#000" font-size="9" text-anchor="end" transform="rotate(${lblDeg} ${tx(lblX - 0.5)} ${ty(lblY)})">Front D</text>`;
-      c += `<text x="${tx(lblX - 0.5)}" y="${ty(lblY) + 11}" fill="#555" font-size="6" text-anchor="end" transform="rotate(${lblDeg} ${tx(lblX - 0.5)} ${ty(lblY) + 11})">tilted 20°</text>`;
-      // Tilt-angle indicator at the bottom of Front D — small arc + "20°" label.
-      const indCz = fdFrontBot[0];
-      const indCy = fdFrontBot[1];
-      c += `<line x1="${tx(indCz)}" y1="${ty(indCy)}" x2="${tx(indCz)}" y2="${ty(indCy + 2.5)}" stroke="#555" stroke-width="0.6" stroke-dasharray="2,2"/>`;
-      c += `<path d="M${tx(indCz)},${ty(indCy + 2.5)} A2,2 0 0,1 ${tx(indCz - 2.5*sinT)},${ty(indCy + 2.5*cosT)}" fill="none" stroke="#555" stroke-width="0.6"/>`;
-      c += `<text x="${tx(indCz - 1.5)}" y="${ty(indCy + 2)}" fill="#555" font-size="7" text-anchor="end">20°</text>`;
-
-      // Cabinet cleat (cleat B) — top-left triangle of the cleat square.
-      // Vertices: top-far, top-near-Front-D, bottom-near-Front-D. Right
-      // angle at top-near-Front-D. Hypotenuse coincides with cleat A's
-      // hypotenuse. In this drawing the cleats are shown LOCKED — cleat
-      // B sitting on cleat A.
-      const fdBack = wcOuterX;   // anchor: Front D's back face passes through this z at the cleat level
+      // Cabinet cleat (cleat B) — upper-left triangle of the cleat square,
+      // glued to Front D's tilted back face. Mirror of cleat A; hypotenuses
+      // share the same diagonal in the local frame, so the cleats interlock.
+      const fdBack = wcOuterX;
       const cabCleat = [
-        [beamFront, beamTop],     // top-far (touching cleat A's apex)
-        [fdBack,    beamTop],     // top-near-Front-D (right angle)
-        [fdBack,    wcBotY],      // bottom-near-Front-D
+        [beamFront, beamTop],
+        [fdBack,    beamTop],
+        [fdBack,    wcBotY],
       ];
       c += `<polygon points="${cabCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.14)" stroke="#000" stroke-width="1"/>`;
       c += `<text x="${tx((fdBack + beamFront)/2)}" y="${ty(beamTop)-3}" fill="#000" font-size="8" text-anchor="middle" font-weight="700">cleat B</text>`;
       c += `<text x="${tx(fdBack)+3}" y="${ty(beamTop)-12}" fill="#555" font-size="6">on Front D back</text>`;
 
-      // Drop-direction arrow showing how Front D engages the cleat.
-      // Anchored along Front D's tilted front face, slightly outboard
-      // (toward the player) so it doesn't collide with the panel itself.
-      const arrTopX = fdFrontTop[0] - 1.2;
-      const arrTopY = fdFrontTop[1] + 1.0;
-      const arrBotX = fdFrontTop[0] - 1.2 - dxdy * (arrTopY - beamTop);  // follow tilt
-      const arrBotY = beamTop;
-      c += `<line x1="${tx(arrTopX)}" y1="${ty(arrTopY)}" x2="${tx(arrBotX)}" y2="${ty(arrBotY)}" stroke="#000" stroke-width="1.2"/>`;
-      c += `<polygon points="${tx(arrBotX)-4},${ty(arrBotY)+6} ${tx(arrBotX)+4},${ty(arrBotY)+6} ${tx(arrBotX)},${ty(arrBotY)}" fill="#000"/>`;
-      c += `<text x="${tx(arrBotX) - 4}" y="${ty((arrTopY+arrBotY)/2) + 3}" fill="#000" font-size="8" text-anchor="end">drop Front D</text>`;
+      // Front D — vertical thin rectangle in local frame; the group's
+      // 20° rotation tilts it the same way the actual front panel tilts.
+      // Back face passes through the pivot (z = fdBack = wcOuterX).
+      const fdFront = fdBack - CLEAT_T;
+      const fdTop = beamTop + 5;
+      const fdBot = wcBotY - 6;
+      c += `<rect x="${tx(fdFront)}" y="${ty(fdTop)}" width="${CLEAT_T*sc}" height="${(fdTop-fdBot)*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(fdFront - 0.3)}" y="${ty((fdTop+fdBot)/2)}" fill="#000" font-size="9" text-anchor="end">Front D</text>`;
 
-      // Captions
-      c += `<text x="${tx(7)}" y="${padPx + 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Cross-section · French cleat (locked)</text>`;
-      c += `<text x="${tx(0)}" y="${ty(0) + 16}" fill="#555" font-size="7">← player side  ·  cabinet interior →</text>`;
+      // Drop-direction arrow inside the rotation group — runs along
+      // Front D's front face and tilts with it.
+      const arrTopX = fdFront - 0.6;
+      const arrTopYL = fdTop + 1;
+      const arrBotYL = beamTop + 0.8;
+      c += `<line x1="${tx(arrTopX)}" y1="${ty(arrTopYL)}" x2="${tx(arrTopX)}" y2="${ty(arrBotYL)}" stroke="#000" stroke-width="1.2"/>`;
+      c += `<polygon points="${tx(arrTopX)-4},${ty(arrBotYL)+6} ${tx(arrTopX)+4},${ty(arrBotYL)+6} ${tx(arrTopX)},${ty(arrBotYL)}" fill="#000"/>`;
+      c += `<text x="${tx(arrTopX) - 4}" y="${ty((arrTopYL+arrBotYL)/2) + 3}" fill="#000" font-size="8" text-anchor="end">drop Front D</text>`;
+
+      // Close rotation group
+      c += `</g>`;
 
       svg.innerHTML = c;
     }
@@ -1737,11 +1742,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="panel-card" style="flex: 1">
       <h3>Sub-assembly 1 · Side R + Roof — folded</h3>
       <p class="qty">
-        Roof folds down along the D→E piano hinge. With the
-        LOGO_Z = 10 cm recess pulling corner D inward, the roof's
-        folded projection sits entirely within Side R's polygon
-        footprint — no overhang. Sub-assembly bounding box stays
-        ≈ 50 × 95 cm (plus ~3 cm of stack thickness).
+        Roof folds down along the D→E piano hinge. With the LOGO_Z
+        = 10 cm recess pulling corner D inward, the roof's folded
+        projection (shown dashed) sits almost entirely within Side
+        R's polygon — sub-assembly bounding box ≈ 50.6 × 95 cm,
+        plus ~3 cm of stack thickness from the two stacked panels
+        and the piano hinge.
       </p>
       <svg id="kd2-folded-r-svg"></svg>
     </div>
@@ -1760,13 +1766,16 @@ document.addEventListener('DOMContentLoaded', () => {
       <h3>French-cleat detail · Beam 2 ↔ Front D</h3>
       <p class="qty">
         Cross-section in the depth-height plane at the top of the front
-        panel. The wall cleat (on Beam 2's front face) has its 45° bevel
-        going DOWN-AND-OUT from the top of the beam to the lower-far
-        corner. The cabinet cleat on Front D's back is the mirror —
-        bevel UP-AND-IN. Cabinet cleat drops vertically onto wall cleat;
-        the diagonal faces mate and gravity locks them.
-        Front panel still sits at its normal 20° tilt — the cleat
-        carries that tilt at the joint.
+        panel. <strong>Beam 2 itself is mounted at the same 20° tilt
+        as Front D</strong>, so its front face is parallel to the
+        panel's back. Both cleats are 45° wedges on these parallel
+        tilted faces — wall cleat A (on the beam) is the lower-right
+        triangle of the cleat square, cabinet cleat B (on Front D's
+        back) is the upper-left triangle, and their hypotenuses share
+        the same diagonal. Drop Front D in: gravity slides cabinet
+        cleat down onto wall cleat, the two bevel faces mate, the
+        joint locks. The vertical reference + 20° angle arc next to
+        the pivot make the tilt explicit.
       </p>
       <svg id="kd2-cleat-svg"></svg>
     </div>
