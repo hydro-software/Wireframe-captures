@@ -1594,6 +1594,220 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+  // ========================
+  // CRATE AS BOOTH TABLE
+  // ========================
+  // The crate is intentionally taller than the panel stack so it can
+  // serve double-duty as the booth table. Lid splits into two trestle
+  // legs that lock with a turning-stick latch.
+  {
+    const CRATE_W = 108;          // long dimension (cm)
+    const CRATE_L = 56;           // short dimension (cm)
+    const CRATE_H = 40;           // crate body height
+    const LEG_H   = 54;           // each leg = half the lid's long dim
+    const TABLE_H = CRATE_H + LEG_H;  // 94 cm — close to the user's 90 cm target
+
+    // ---- Closed crate · TOP VIEW ----
+    {
+      const svg = document.getElementById('crate-table-top-svg');
+      const sc = 3;
+      const padPx = 30;
+      const w = CRATE_W*sc + padPx*2 + 20;
+      const h = CRATE_L*sc + padPx*2 + 30;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+
+      const tx = (x) => padPx + x * sc;
+      const ty = (y) => padPx + 16 + y * sc;
+      let c = '';
+
+      // Crate footprint
+      c += `<rect x="${tx(0)}" y="${ty(0)}" width="${CRATE_W*sc}" height="${CRATE_L*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.2"/>`;
+      // Lid split line at x = CRATE_W/2
+      c += `<line x1="${tx(CRATE_W/2)}" y1="${ty(0)}" x2="${tx(CRATE_W/2)}" y2="${ty(CRATE_L)}" stroke="#000" stroke-width="0.8" stroke-dasharray="4,2"/>`;
+      // Lid labels
+      c += `<text x="${tx(CRATE_W/4)}" y="${ty(CRATE_L/2 - 4)+3}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Lid 1</text>`;
+      c += `<text x="${tx(CRATE_W/4)}" y="${ty(CRATE_L/2 + 6)+3}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W/2} × ${CRATE_L} cm</text>`;
+      c += `<text x="${tx(3*CRATE_W/4)}" y="${ty(CRATE_L/2 - 4)+3}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Lid 2</text>`;
+      c += `<text x="${tx(3*CRATE_W/4)}" y="${ty(CRATE_L/2 + 6)+3}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W/2} × ${CRATE_L} cm</text>`;
+
+      // Hinge marks on the short sides (each lid hinges on the short side
+      // closest to its outer edge).
+      function hingeMarks(xPos, label) {
+        // 3 small hinge marks distributed along the short side
+        const ys = [0.2, 0.5, 0.8].map(t => CRATE_L * t);
+        ys.forEach(yc => {
+          c += `<rect x="${tx(xPos) - 4}" y="${ty(yc) - 3}" width="8" height="6" fill="#fff" stroke="#000" stroke-width="0.8"/>`;
+        });
+        c += `<text x="${tx(xPos)}" y="${ty(-2)}" fill="#555" font-size="7" text-anchor="middle">${label}</text>`;
+      }
+      hingeMarks(0, 'Lid 1 hinge axis');
+      hingeMarks(CRATE_W, 'Lid 2 hinge axis');
+
+      // Turning stick latches — symbol on each short side, near the lid edge
+      function stickMark(xPos, yPos, label) {
+        c += `<circle cx="${tx(xPos)}" cy="${ty(yPos)}" r="3" fill="#000"/>`;
+        c += `<text x="${tx(xPos)}" y="${ty(yPos) + 12}" fill="#555" font-size="7" text-anchor="middle">${label}</text>`;
+      }
+      stickMark(2, CRATE_L*0.25, 'stick');
+      stickMark(2, CRATE_L*0.75, 'stick');
+      stickMark(CRATE_W - 2, CRATE_L*0.25, 'stick');
+      stickMark(CRATE_W - 2, CRATE_L*0.75, 'stick');
+
+      // Dimensions
+      c += svgDim(tx(0), ty(CRATE_L)+10, tx(CRATE_W), ty(CRATE_L)+10, `${CRATE_W} cm`, 12);
+      c += svgDim(tx(CRATE_W)+10, ty(0), tx(CRATE_W)+10, ty(CRATE_L), `${CRATE_L} cm`, 12);
+
+      // Caption
+      c += `<text x="${tx(CRATE_W/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Top view · lids closed</text>`;
+
+      svg.innerHTML = c;
+    }
+
+    // ---- Table mode · SIDE VIEW (long-axis) ----
+    {
+      const svg = document.getElementById('crate-table-side-svg');
+      const sc = 3;
+      const padPx = 30;
+      const drawW = CRATE_W;
+      const drawH = TABLE_H + 12;     // a little headroom for floor + caption
+      const w = drawW*sc + padPx*2 + 30;
+      const h = drawH*sc + padPx*2 + 20;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+
+      const tx = (x) => padPx + x * sc;
+      const ty = (y) => padPx + 14 + (drawH - y) * sc;
+      let c = '';
+
+      // Floor line
+      c += `<line x1="${tx(-4)}" y1="${ty(0)}" x2="${tx(CRATE_W+4)}" y2="${ty(0)}" stroke="#000" stroke-width="1.5"/>`;
+      // Hatch pattern under the floor
+      for (let i = -4; i < CRATE_W + 4; i += 3) {
+        c += `<line x1="${tx(i)}" y1="${ty(0)}" x2="${tx(i + 2)}" y2="${ty(-2)}" stroke="#555" stroke-width="0.5"/>`;
+      }
+
+      // Crate body (now flipped — original bottom is the top, now the table surface)
+      c += `<rect x="${tx(0)}" y="${ty(TABLE_H)}" width="${CRATE_W*sc}" height="${CRATE_H*sc}" fill="rgba(0,0,0,0.05)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H + CRATE_H/2)}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Crate body (now upside-down)</text>`;
+      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H + CRATE_H/2) + 13}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W} × ${CRATE_L} × ${CRATE_H} cm · stores PC + monitor + cables in transit</text>`;
+      // Table-surface highlight
+      c += `<rect x="${tx(0)}" y="${ty(TABLE_H) - 4}" width="${CRATE_W*sc}" height="4" fill="rgba(0,0,0,0.15)" stroke="#000" stroke-width="0.6"/>`;
+      c += `<text x="${tx(CRATE_W/2)}" y="${ty(TABLE_H) - 8}" fill="#555" font-size="8" text-anchor="middle">cabinet bolts here ↓</text>`;
+
+      // Legs — drawn at each short end. In side view they appear as thin
+      // strips (1.5 cm thick); we draw them slightly wider for legibility.
+      const LEG_DRAW_T = 2.2;  // visual thickness only, not real
+      // Left leg
+      c += `<rect x="${tx(0)}" y="${ty(LEG_H)}" width="${LEG_DRAW_T*sc}" height="${LEG_H*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(LEG_DRAW_T/2)}" y="${ty(LEG_H/2)}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(LEG_DRAW_T/2)} ${ty(LEG_H/2)})">Leg 1 (Lid 1)</text>`;
+      // Right leg
+      c += `<rect x="${tx(CRATE_W - LEG_DRAW_T)}" y="${ty(LEG_H)}" width="${LEG_DRAW_T*sc}" height="${LEG_H*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(CRATE_W - LEG_DRAW_T/2)}" y="${ty(LEG_H/2)}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(CRATE_W - LEG_DRAW_T/2)} ${ty(LEG_H/2)})">Leg 2 (Lid 2)</text>`;
+
+      // Hinge marks at the leg-crate junction (formerly the crate's top edge,
+      // now the bottom edge of the body after the flip).
+      [0, CRATE_W].forEach(xc => {
+        c += `<circle cx="${tx(xc)}" cy="${ty(LEG_H)}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+      });
+
+      // Note about leg width into the page
+      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H/3)}" fill="#555" font-size="7" text-anchor="middle">(each leg is ${CRATE_L} cm wide into the page)</text>`;
+
+      // Dimensions
+      c += svgDim(tx(CRATE_W) + 14, ty(0), tx(CRATE_W) + 14, ty(LEG_H), `${LEG_H}`, 14);
+      c += svgDim(tx(CRATE_W) + 14, ty(LEG_H), tx(CRATE_W) + 14, ty(TABLE_H), `${CRATE_H}`, 14);
+      c += svgDim(tx(-8), ty(0), tx(-8), ty(TABLE_H), `${TABLE_H} cm`, -16);
+
+      // Caption
+      c += `<text x="${tx(CRATE_W/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Side view · table mode (legs deployed, crate flipped)</text>`;
+
+      svg.innerHTML = c;
+    }
+
+    // ---- Turning-stick latch detail ----
+    {
+      const svg = document.getElementById('crate-table-stick-svg');
+      const sc = 14;
+      const padPx = 30;
+      // Two states drawn side by side: STOWED (transport) and ENGAGED (deployed)
+      const stateW = 14;     // each state's drawing width (cm)
+      const stateH = 9;
+      const drawW = stateW * 2 + 4;
+      const drawH = stateH;
+      const w = drawW*sc + padPx*2 + 20;
+      const h = drawH*sc + padPx*2 + 30;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+
+      const tx = (x) => padPx + (x + 1) * sc;
+      const ty = (y) => padPx + 16 + (drawH - y) * sc;
+      let c = '';
+
+      // Helper to draw one state at the given x-offset.
+      function drawState(xOffset, label, engaged) {
+        const wallX = xOffset + 5;        // crate wall position
+        const wallT = 1.5;                 // wall thickness
+        const legX = wallX + wallT + 0.3;  // leg sits just outside the wall
+        const legT = 1.5;                  // leg thickness
+
+        // Crate wall (vertical strip)
+        c += `<rect x="${tx(wallX)}" y="${ty(stateH - 1)}" width="${wallT*sc}" height="${(stateH - 2)*sc}" fill="rgba(0,0,0,0.08)" stroke="#000" stroke-width="1"/>`;
+        c += `<text x="${tx(wallX + wallT/2)}" y="${ty(stateH - 0.4)}" fill="#555" font-size="7" text-anchor="middle">crate wall</text>`;
+
+        // Leg (vertical strip outside the wall, with a notch in its middle for the engaged stick)
+        const legTop = stateH - 1;
+        const legBot = 1;
+        const notchY = (legTop + legBot)/2;
+        const notchH = 1.2;
+        // Draw leg as a path with a rectangular notch carved from the wall-side face
+        const legPath =
+          `M ${tx(legX)},${ty(legTop)} ` +
+          `L ${tx(legX + legT)},${ty(legTop)} ` +
+          `L ${tx(legX + legT)},${ty(legBot)} ` +
+          `L ${tx(legX)},${ty(legBot)} ` +
+          `L ${tx(legX)},${ty(notchY - notchH/2)} ` +
+          `L ${tx(legX + 0.6)},${ty(notchY - notchH/2)} ` +
+          `L ${tx(legX + 0.6)},${ty(notchY + notchH/2)} ` +
+          `L ${tx(legX)},${ty(notchY + notchH/2)} ` +
+          `Z`;
+        c += `<path d="${legPath}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
+        c += `<text x="${tx(legX + legT/2)}" y="${ty(legBot - 0.4)}" fill="#555" font-size="7" text-anchor="middle">leg</text>`;
+
+        // Turning stick — drawn either parallel to the wall (stowed) or perpendicular (engaged)
+        const stickPivotX = wallX + wallT/2;
+        const stickPivotY = notchY;
+        const stickLen = 1.8;       // length on each side of the pivot
+        const stickW   = 0.5;       // stick "thickness" perpendicular to its length
+        const pivotSvgX = tx(stickPivotX);
+        const pivotSvgY = ty(stickPivotY);
+        const stickAngle = engaged ? 0 : 90;   // 0° = horizontal (engaged through the wall), 90° = vertical (stowed)
+        c += `<g transform="rotate(${stickAngle} ${pivotSvgX} ${pivotSvgY})">`;
+        c += `<rect x="${pivotSvgX - stickLen*sc}" y="${pivotSvgY - stickW*sc/2}" width="${stickLen*2*sc}" height="${stickW*sc}" fill="#000"/>`;
+        c += `</g>`;
+        // Pivot dot
+        c += `<circle cx="${pivotSvgX}" cy="${pivotSvgY}" r="2" fill="#fff" stroke="#000" stroke-width="0.8"/>`;
+        // Annotation arrow showing which side is "inside the crate"
+        c += `<text x="${tx(wallX - 0.6)}" y="${ty(stateH - 4)+3}" fill="#555" font-size="7" text-anchor="end">interior</text>`;
+        c += `<text x="${tx(legX + legT + 0.6)}" y="${ty(stateH - 4)+3}" fill="#555" font-size="7">exterior</text>`;
+
+        // State label
+        c += `<text x="${tx(xOffset + stateW/2)}" y="${ty(stateH - 0.1) + 10}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">${label}</text>`;
+      }
+
+      drawState(0,           'STOWED · transport', false);
+      drawState(stateW + 4,  'ENGAGED · leg locked', true);
+
+      // Caption
+      c += `<text x="${tx(drawW/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Plan view at the leg-to-crate joint</text>`;
+
+      svg.innerHTML = c;
+    }
+  }
 });
 </script>
 
@@ -1863,6 +2077,73 @@ document.addEventListener('DOMContentLoaded', () => {
     </table>
     <div id="crate-dims" style="margin-top:12px; color:#4fc3f7; font-size:14px;"></div>
   </div>
+</div>
+
+<div class="section">
+  <h2>Crate as Booth Table</h2>
+  <p class="note">
+    The crate doubles as the booth table the cabinet sits on. Make
+    the crate <strong>40 cm tall</strong> (deeper than the panel
+    stack needs — the extra space stores the PC, monitor, cables and
+    accessories). Split the top lid into two halves; each half
+    hinges on one of the crate's <strong>short ends</strong> and
+    folds open to form a trestle-style leg. A <strong>turning-stick
+    latch</strong> on each short side locks the leg upright. Flip
+    the crate over (legs down) and you have a 90–95 cm tall booth
+    table — crate body 40 cm + leg ~54 cm.
+  </p>
+
+  <div class="panels">
+    <div class="panel-card" style="flex: 1">
+      <h3>Closed · top view (transport)</h3>
+      <p class="qty">
+        Lid is two equal halves split across the long axis. Hinges
+        live on the short sides — flush-mount butt hinges or piano
+        hinges, mounted to the OUTSIDE so the lid can swing 180°
+        outward without binding on the crate wall.
+      </p>
+      <svg id="crate-table-top-svg"></svg>
+    </div>
+    <div class="panel-card" style="flex: 1">
+      <h3>Deployed · table mode (side view)</h3>
+      <p class="qty">
+        Lift each lid 90° outward, rotate the turning stick to lock
+        it perpendicular, then flip the whole crate so the original
+        bottom is now the table surface. Each leg is 54 cm tall ×
+        56 cm wide × 1.5 cm thick — the wide footprint at each short
+        end gives a stable trestle base. The cabinet bolts to the top
+        surface via the same wing-nut + cross-dowel scheme as the
+        rest of the build.
+      </p>
+      <svg id="crate-table-side-svg"></svg>
+    </div>
+  </div>
+
+  <div class="panel-card" style="margin-top: 16px">
+    <h3>Turning-stick latch · two states</h3>
+    <p class="qty">
+      Plan view at the leg-to-crate joint. A short wooden pivot
+      mounts through the crate's short-side wall, with a handle on
+      the inside and a tongue on the outside. In transport, the
+      tongue lies flat against the wall (parallel) so the lid can
+      close. To deploy: rotate the handle 90°; the tongue swings
+      perpendicular and engages a small notch cut into the leg's
+      inside face, locking the leg in its upright (table-deployed)
+      position. Two latches per leg — one near the front edge of the
+      crate, one near the back — keep the leg from rocking.
+    </p>
+    <svg id="crate-table-stick-svg"></svg>
+  </div>
+
+  <p class="note" style="margin-top: 12px">
+    <strong>Order-of-operations on arrival:</strong>
+    (1) unlatch the lids · (2) swing each lid 90° upward to vertical
+    · (3) rotate both turning sticks to lock the legs ·
+    (4) tip the crate end-over-end so the legs land on the floor ·
+    (5) open the (now-bottom) crate door, take out the cabinet
+    sub-assemblies, monitor, PC · (6) build the cabinet on top of
+    the table. Total table-deployment: under a minute.
+  </p>
 </div>
 
 </body>
