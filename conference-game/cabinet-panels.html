@@ -1494,6 +1494,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // angle at top-near-Front-D. Hypotenuse coincides with cleat A's
       // hypotenuse. In this drawing the cleats are shown LOCKED — cleat
       // B sitting on cleat A.
+      const fdBack = wcOuterX;   // anchor: Front D's back face passes through this z at the cleat level
       const cabCleat = [
         [beamFront, beamTop],     // top-far (touching cleat A's apex)
         [fdBack,    beamTop],     // top-near-Front-D (right angle)
