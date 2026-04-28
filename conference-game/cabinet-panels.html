@@ -1140,161 +1140,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================
-  // CONFORMAT BOLT POSITIONS
+  // KNOCK-DOWN ASSEMBLY
   // ========================
-  // Each bolt passes through the side panel face into the mating panel's
-  // edge (with a cross-dowel sitting in the edge to receive the threads).
-  // Positions chosen for ~5–8 cm end clearance and even spacing along
-  // each joint, which keeps the joint stiff without splitting the
-  // plywood near a free edge.
-  {
-    // ---- Compute bolt positions on the side panel ----
-    // Linear interpolation along an edge: returns N evenly spaced points
-    // with `pad` cm of clearance from each end.
-    function spaceAlong(p0, p1, n, pad) {
-      const dx = p1[0] - p0[0], dy = p1[1] - p0[1];
-      const len = Math.sqrt(dx*dx + dy*dy);
-      const ux = dx/len, uy = dy/len;
-      const usable = len - 2*pad;
-      const pts = [];
-      if (n === 1) {
-        pts.push([p0[0] + (len/2)*ux, p0[1] + (len/2)*uy]);
-      } else {
-        for (let i = 0; i < n; i++) {
-          const d = pad + (usable * i / (n - 1));
-          pts.push([p0[0] + d*ux, p0[1] + d*uy]);
-        }
-      }
-      return pts;
-    }
-
-    // Joint definitions on the side panel.
-    // Edge endpoints in (depth, height) — same coords as the side-panel SVG.
-    const A = [0, 0],
-          B = [FP_TOP_Z, FP_TOP_Y],
-          C = [0, FP_TOP_Y],
-          DD = [0, H_FRONT],
-          E = [D, H_BACK],
-          F = [D, 0];
-    const shelfZ = SHELF_Y * Math.tan(TILT);
-    const shelfFront = [shelfZ, SHELF_Y];
-    const shelfBack  = [shelfZ + SHELF_D, SHELF_Y];
-
-    // B&W technical doc: joints are differentiated by a single letter
-    // inside the bolt circle (F = front, R = roof, S = soffit, M = monitor)
-    // rather than by color. The letter doubles as the joint legend.
-    const joints = [
-      { name:'Front (D)',          letter:'F', edge:[A, B],          n:3, pad:7,
-        per:'3', total:'6' },
-      { name:'Roof (E)',           letter:'R', edge:[DD, E],         n:3, pad:6,
-        per:'3', total:'6' },
-      { name:'Soffit (G)',         letter:'S', edge:[B, C],          n:2, pad:6,
-        per:'2', total:'4' },
-      { name:'Monitor shelf (H)',  letter:'M', edge:[shelfFront, shelfBack], n:2, pad:6,
-        per:'2', total:'4' },
-    ];
-
-    // ---- Side-panel SVG ----
-    {
-      const svg = document.getElementById('conformat-side-svg');
-      const sc = 4.5;
-      const padPx = 30;
-      const w = D*sc + padPx*2 + 50;
-      const h = H_FRONT*sc + padPx*2 + 30;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      svg.setAttribute('width', w);
-      svg.setAttribute('height', h);
-
-      const tx = (x) => padPx + x * sc;
-      const ty = (y) => padPx + (H_FRONT - y) * sc;
-
-      let c = '';
-
-      // Side panel polygon (interior view — same outline as before)
-      const polyPts = [A, B, C, DD, E, F]
-        .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      c += `<polygon points="${polyPts}" fill="rgba(0,0,0,0.03)" stroke="#000" stroke-width="1.5"/>`;
-
-      // Mouse-shelf slot at the chosen height (12 cm by default).
-      // Drawn here for context — shows the slot doesn't conflict with
-      // any of the conformat positions (which all sit at Y ≥ 38 cm).
-      // Slot sits SLOT_FRONT_MARGIN (3 cm) behind the tilted front edge
-      // so the front face stays continuous between conformats.
-      const mFx = MOUSE_CURRENT * Math.tan(TILT) + SLOT_FRONT_MARGIN;
-      c += `<rect x="${tx(mFx)}" y="${ty(MOUSE_CURRENT + MOUSE_T/2)}" width="${MOUSE_D*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(mFx + MOUSE_D/2)}" y="${ty(MOUSE_CURRENT)+13}" fill="#000" font-size="8" text-anchor="middle">mouse slot · ${MOUSE_D}×${MOUSE_T} · h=${MOUSE_CURRENT}</text>`;
-
-      // Shelf line at Y=38 (where the monitor shelf lands)
-      c += `<line x1="${tx(shelfFront[0])}" y1="${ty(shelfFront[1])}" x2="${tx(shelfBack[0])}" y2="${ty(shelfBack[1])}" stroke="#000" stroke-width="1.5" stroke-dasharray="3,2"/>`;
-      c += `<text x="${tx(shelfFront[0]+SHELF_D/2)}" y="${ty(SHELF_Y)+12}" fill="#555" font-size="8" text-anchor="middle">monitor shelf line · Y=${SHELF_Y}</text>`;
-
-      // Bolt-position markers — solid black circle with the joint letter
-      // (F / R / S / M) in white inside. The letter replaces the color
-      // coding from the screen version so the print stays legible at any
-      // brightness.
-      joints.forEach(j => {
-        const positions = spaceAlong(j.edge[0], j.edge[1], j.n, j.pad);
-        positions.forEach((p) => {
-          c += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="#000" stroke="#fff" stroke-width="1"/>`;
-          c += `<text x="${tx(p[0])}" y="${ty(p[1])+3}" fill="#fff" font-size="8" text-anchor="middle" font-weight="700" font-family="'Inter',sans-serif">${j.letter}</text>`;
-        });
-      });
-
-      // Joint name + count labels at each edge, in plain black.
-      const fmid = [(A[0]+B[0])/2, (A[1]+B[1])/2];
-      c += `<text x="${tx(fmid[0])-22}" y="${ty(fmid[1])-8}" fill="#000" font-size="9" font-weight="700">F · Front: 3</text>`;
-      const rmid = [(DD[0]+E[0])/2, (DD[1]+E[1])/2];
-      c += `<text x="${tx(rmid[0])}" y="${ty(rmid[1])-8}" fill="#000" font-size="9" font-weight="700" text-anchor="middle">R · Roof: 3</text>`;
-      c += `<text x="${tx((B[0]+C[0])/2)}" y="${ty(B[1])-7}" fill="#000" font-size="9" font-weight="700" text-anchor="middle">S · Soffit: 2</text>`;
-      c += `<text x="${tx(shelfBack[0])+8}" y="${ty(SHELF_Y)+3}" fill="#000" font-size="9" font-weight="700">M · Monitor: 2</text>`;
-
-      // Legend at bottom — one entry per joint, with the same letter
-      // marker the side-panel uses, so the eye can match instantly.
-      const legX = padPx, legY = h - 16;
-      const legendItems = [
-        { label:'F · Front',         letter:'F' },
-        { label:'R · Roof',          letter:'R' },
-        { label:'S · Soffit',        letter:'S' },
-        { label:'M · Monitor shelf', letter:'M' },
-      ];
-      let lx = legX;
-      legendItems.forEach(it => {
-        c += `<circle cx="${lx+5}" cy="${legY}" r="5" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
-        c += `<text x="${lx+5}" y="${legY+3}" fill="#fff" font-size="7" text-anchor="middle" font-weight="700">${it.letter}</text>`;
-        c += `<text x="${lx+13}" y="${legY+3}" fill="#333" font-size="9">${it.label}</text>`;
-        lx += 13 + it.label.length*6 + 14;
-      });
-
-      svg.innerHTML = c;
-    }
-
-    // ---- Count table ----
-    {
-      const tbody = document.getElementById('conformat-count-body');
-      let perTotal = 0, allTotal = 0;
-      joints.forEach(j => {
-        const tr = document.createElement('tr');
-        // Letter-in-circle swatch matches the side-panel diagram so the
-        // table reads the same in print as on screen.
-        const swatch = `<span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; background:#000; color:#fff; border-radius:50%; margin-right:6px; font-size:9px; font-weight:700; vertical-align:middle">${j.letter}</span>`;
-        tr.innerHTML = `<td>${swatch}${j.name}</td><td>${j.per}</td><td>${j.total}</td>`;
-        tbody.appendChild(tr);
-        perTotal += parseInt(j.per, 10);
-        allTotal += parseInt(j.total, 10);
-      });
-      const tr = document.createElement('tr');
-      tr.style.background = '#f0f0f0';
-      tr.style.fontWeight = 'bold';
-      tr.innerHTML = `<td>Total per side</td><td>${perTotal}</td><td>${allTotal}</td>`;
-      tbody.appendChild(tr);
-    }
-  }
-
-  // ========================
-  // KNOCK-DOWN ASSEMBLY V2
-  // ========================
-  // Folding-roof + 2 hinged beams + French-cleat front. Replaces the
-  // conformat scheme above for the planned build.
+  // Folding-roof + 2 hinged beams + French-cleat front. The cabinet's
+  // structural skeleton is two side panels + roof + two cross-rails;
+  // shelves and front panel hang off this frame.
   {
     // Beam dimensions — kept as constants so a future change here ripples
     // through both the diagram and the hardware list.
@@ -1324,6 +1174,127 @@ document.addEventListener('DOMContentLoaded', () => {
         c.s += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="2" fill="#000"/>`;
         c.s += `<text x="${tx(p[0])+ox}" y="${ty(p[1])+oy}" fill="#000" font-size="9" font-weight="700">${lab}</text>`;
       });
+    }
+
+    // ---- Skeleton — 45° perspective view (deployed) ----
+    // The 4 structural pieces only: 2 side panels, roof, 2 cross-rails.
+    // Reuses the same projection math as the full perspective view.
+    {
+      const svg = document.getElementById('kd2-skeleton-svg');
+      const padSk = 30;
+      const scSk = 3.4;
+      const DF = 0.45;
+      const ANG = 35 * Math.PI / 180;
+      const dxPerD = Math.cos(ANG) * DF * scSk;
+      const dyPerD = -Math.sin(ANG) * DF * scSk;
+      const viewW = W * scSk + D * dxPerD / scSk * scSk + padSk*2 + 40;
+      const viewH = H_FRONT * scSk + D * Math.abs(dyPerD/scSk) * scSk + padSk*2 + 30;
+      svg.setAttribute('viewBox', `0 0 ${viewW} ${viewH}`);
+      svg.setAttribute('width', viewW);
+      svg.setAttribute('height', viewH);
+
+      const px = (x, z) => padSk + x * scSk + z * dxPerD;
+      const py = (y, z) => padSk + 14 + (H_FRONT - y) * scSk + z * dyPerD;
+
+      let c = '';
+
+      const quad = (pts, fill, stroke, sw=1, dash='') => {
+        const d = pts.map((p,i) => `${i?'L':'M'}${p[0]},${p[1]}`).join(' ') + ' Z';
+        const da = dash ? ` stroke-dasharray="${dash}"` : '';
+        c += `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${da}/>`;
+      };
+
+      // Side panel profile (uses the same LOGO_Z-aware geometry as the rest of the doc).
+      const sideProfile = [
+        [0, 0],
+        [FP_TOP_Z, FP_TOP_Y],
+        [LOGO_Z, FP_TOP_Y],
+        [LOGO_Z, H_FRONT],
+        [D, H_BACK],
+        [D, 0],
+      ];
+
+      // Side R (right side, fully visible — closer to the viewer in this projection).
+      const sideR = sideProfile.map(([z,y]) => [px(W, z), py(y, z)]);
+      quad(sideR, 'rgba(0,0,0,0.05)', '#000', 1.2);
+      c += `<text x="${px(W+2, D*0.55)}" y="${py(H_BACK*0.3, D*0.55)+3}" fill="#000" font-size="8" transform="rotate(-22,${px(W+2, D*0.55)},${py(H_BACK*0.3, D*0.55)+3})">Side R</text>`;
+
+      // Side L (left side, partially behind front structure — drawn dashed for hidden-edge feel).
+      const sideL = sideProfile.map(([z,y]) => [px(0, z), py(y, z)]);
+      quad(sideL, 'rgba(0,0,0,0.03)', '#000', 0.8, '4,2');
+      c += `<text x="${px(-2, D*0.55)}" y="${py(H_BACK*0.3, D*0.55)+3}" fill="#000" font-size="8" text-anchor="end" transform="rotate(-22,${px(-2, D*0.55)},${py(H_BACK*0.3, D*0.55)+3})">Side L</text>`;
+
+      // Roof — quad spanning between the two side panels at the top.
+      const roofQuad = [
+        [px(0, LOGO_Z), py(H_FRONT, LOGO_Z)],
+        [px(W, LOGO_Z), py(H_FRONT, LOGO_Z)],
+        [px(W, D),      py(H_BACK,  D)],
+        [px(0, D),      py(H_BACK,  D)],
+      ];
+      quad(roofQuad, 'rgba(0,0,0,0.08)', '#000', 1);
+      const roofCx = (roofQuad[0][0]+roofQuad[1][0]+roofQuad[2][0]+roofQuad[3][0])/4;
+      const roofCy = (roofQuad[0][1]+roofQuad[1][1]+roofQuad[2][1]+roofQuad[3][1])/4;
+      c += `<text x="${roofCx}" y="${roofCy+3}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">Roof</text>`;
+      c += `<text x="${roofCx}" y="${roofCy+13}" fill="#555" font-size="7" text-anchor="middle">hinged to Side R (D→E)</text>`;
+
+      // Beam helper: draws a 3D-looking box spanning between Side L and Side R
+      // at the given (zMin, yMin) corner with thickness BEAM_T × BEAM_X.
+      function drawBeam(zMin, yMin, label) {
+        const zMax = zMin + BEAM_T;
+        const yMax = yMin + BEAM_X;
+        const front = [
+          [px(0, zMin), py(yMax, zMin)],
+          [px(W, zMin), py(yMax, zMin)],
+          [px(W, zMin), py(yMin, zMin)],
+          [px(0, zMin), py(yMin, zMin)],
+        ];
+        const top = [
+          [px(0, zMin), py(yMax, zMin)],
+          [px(W, zMin), py(yMax, zMin)],
+          [px(W, zMax), py(yMax, zMax)],
+          [px(0, zMax), py(yMax, zMax)],
+        ];
+        const right = [
+          [px(W, zMin), py(yMax, zMin)],
+          [px(W, zMin), py(yMin, zMin)],
+          [px(W, zMax), py(yMin, zMax)],
+          [px(W, zMax), py(yMax, zMax)],
+        ];
+        quad(top,   'rgba(0,0,0,0.10)', '#000', 0.8);
+        quad(right, 'rgba(0,0,0,0.14)', '#000', 0.8);
+        quad(front, 'rgba(0,0,0,0.18)', '#000', 1);
+        c += `<text x="${(front[0][0]+front[1][0])/2}" y="${(front[0][1]+front[2][1])/2 + 3}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">${label}</text>`;
+      }
+      drawBeam(0, 0, 'Beam 1');
+      drawBeam(FP_TOP_Z - BEAM_T, FP_TOP_Y, 'Beam 2');
+
+      // Hinge marks on Side L (where the beams hinge) and on Side R (roof).
+      function hingeMark3D(x, y, z, label) {
+        const cxp = px(x, z), cyp = py(y, z);
+        c += `<circle cx="${cxp}" cy="${cyp}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+        c += `<text x="${cxp + 6}" y="${cyp + 3}" fill="#555" font-size="7">${label}</text>`;
+      }
+      hingeMark3D(0, 0, 0, 'hinge');
+      hingeMark3D(0, FP_TOP_Y, FP_TOP_Z, 'hinge');
+      hingeMark3D(W, H_FRONT, LOGO_Z, 'piano hinge');
+
+      // Bolted-end markers on Side R (where the free beam ends bolt with wing nuts).
+      function boltMark3D(x, y, z) {
+        const cxp = px(x, z), cyp = py(y, z);
+        c += `<circle cx="${cxp}" cy="${cyp}" r="3" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
+      }
+      boltMark3D(W, BEAM_X/2, BEAM_T/2);
+      boltMark3D(W, FP_TOP_Y + BEAM_X/2, FP_TOP_Z - BEAM_T/2);
+
+      // Caption + legend
+      c += `<text x="${padSk + (viewW - padSk*2)/2}" y="${padSk - 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Skeleton — 4 structural pieces</text>`;
+      const legY = viewH - 8;
+      c += `<circle cx="${padSk + 6}" cy="${legY-3}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${padSk + 16}" y="${legY}" fill="#333" font-size="8">hinge (folds for transport)</text>`;
+      c += `<circle cx="${padSk + 175}" cy="${legY-3}" r="3" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
+      c += `<text x="${padSk + 184}" y="${legY}" fill="#333" font-size="8">bracket + wing-nut bolt</text>`;
+
+      svg.innerHTML = c;
     }
 
     // ---- Sub-assembly 1: Side R with Roof folded ----
@@ -1481,17 +1452,42 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)}" fill="#000" font-size="8" text-anchor="end" font-weight="700">cleat A</text>`;
       c += `<text x="${tx(beamFront - 0.7)}" y="${ty(wcBotY + 1)+10}" fill="#555" font-size="6" text-anchor="end">on Beam 2 front face</text>`;
 
-      // Front D panel — drawn at z = wcOuterX (so its back face sits flush
-      // against the cleat A's bottom-far edge in this LOCKED-position view).
-      // Real panel tilts 20°; we draw vertical here for legibility and call
-      // out the tilt in the panel-card copy.
-      const fdBack  = wcOuterX;
-      const fdFront = fdBack - CLEAT_T;
-      const fdTop   = beamTop + 4;
-      const fdBot   = wcBotY - 5;
-      c += `<rect x="${tx(fdFront)}" y="${ty(fdTop)}" width="${CLEAT_T*sc}" height="${(fdTop-fdBot)*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(fdFront - 0.3)}" y="${ty((fdTop+fdBot)/2)}" fill="#000" font-size="9" text-anchor="end">Front D</text>`;
-      c += `<text x="${tx(fdFront - 0.3)}" y="${ty((fdTop+fdBot)/2)-10}" fill="#555" font-size="6" text-anchor="end">(tilts 20°, drawn vertical)</text>`;
+      // Front D panel — drawn at its actual 20° tilt. The back surface
+      // passes through (wcOuterX, beamTop) — the cabinet-cleat's vertical
+      // leg anchors there — and slopes back as it rises (top tilts INTO
+      // the cabinet). Below the cleat, Front D leans forward toward the
+      // player; above the cleat, it leans back into the soffit area.
+      const tilt   = TILT;                   // 20° in radians
+      const dxdy   = Math.tan(tilt);         // depth shift per unit height (~0.364)
+      const cosT   = Math.cos(tilt);
+      const sinT   = Math.sin(tilt);
+      const fdTopY = beamTop + 4;
+      const fdBotY = wcBotY - 6;
+      // Back surface anchor: passes through (wcOuterX, beamTop)
+      const fdBackZ = (y) => wcOuterX + dxdy * (y - beamTop);
+      // Front face is offset CLEAT_T perpendicular to the tilted surface:
+      // perpendicular = (cos20°, -sin20°) pointing INTO cabinet, so front face
+      // is at back - CLEAT_T*(cos20°, -sin20°) → z shifts -cos20°, y shifts +sin20°.
+      const dzFront = -CLEAT_T * cosT;
+      const dyFront =  CLEAT_T * sinT;
+      const fdBackTop  = [fdBackZ(fdTopY),                 fdTopY];
+      const fdBackBot  = [fdBackZ(fdBotY),                 fdBotY];
+      const fdFrontTop = [fdBackTop[0] + dzFront,          fdBackTop[1] + dyFront];
+      const fdFrontBot = [fdBackBot[0] + dzFront,          fdBackBot[1] + dyFront];
+      const fdPoly = [fdBackTop, fdBackBot, fdFrontBot, fdFrontTop];
+      c += `<polygon points="${fdPoly.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
+      // Label centered on the front face, rotated to follow the panel.
+      const lblX = (fdFrontTop[0] + fdFrontBot[0])/2;
+      const lblY = (fdFrontTop[1] + fdFrontBot[1])/2;
+      const lblDeg = -tilt * 180 / Math.PI;
+      c += `<text x="${tx(lblX - 0.5)}" y="${ty(lblY)}" fill="#000" font-size="9" text-anchor="end" transform="rotate(${lblDeg} ${tx(lblX - 0.5)} ${ty(lblY)})">Front D</text>`;
+      c += `<text x="${tx(lblX - 0.5)}" y="${ty(lblY) + 11}" fill="#555" font-size="6" text-anchor="end" transform="rotate(${lblDeg} ${tx(lblX - 0.5)} ${ty(lblY) + 11})">tilted 20°</text>`;
+      // Tilt-angle indicator at the bottom of Front D — small arc + "20°" label.
+      const indCz = fdFrontBot[0];
+      const indCy = fdFrontBot[1];
+      c += `<line x1="${tx(indCz)}" y1="${ty(indCy)}" x2="${tx(indCz)}" y2="${ty(indCy + 2.5)}" stroke="#555" stroke-width="0.6" stroke-dasharray="2,2"/>`;
+      c += `<path d="M${tx(indCz)},${ty(indCy + 2.5)} A2,2 0 0,1 ${tx(indCz - 2.5*sinT)},${ty(indCy + 2.5*cosT)}" fill="none" stroke="#555" stroke-width="0.6"/>`;
+      c += `<text x="${tx(indCz - 1.5)}" y="${ty(indCy + 2)}" fill="#555" font-size="7" text-anchor="end">20°</text>`;
 
       // Cabinet cleat (cleat B) — top-left triangle of the cleat square.
       // Vertices: top-far, top-near-Front-D, bottom-near-Front-D. Right
@@ -1508,12 +1504,15 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${tx(fdBack)+3}" y="${ty(beamTop)-12}" fill="#555" font-size="6">on Front D back</text>`;
 
       // Drop-direction arrow showing how Front D engages the cleat.
-      const arrX = fdFront - 1.2;
-      const arrTopY = fdTop + 1.5;
+      // Anchored along Front D's tilted front face, slightly outboard
+      // (toward the player) so it doesn't collide with the panel itself.
+      const arrTopX = fdFrontTop[0] - 1.2;
+      const arrTopY = fdFrontTop[1] + 1.0;
+      const arrBotX = fdFrontTop[0] - 1.2 - dxdy * (arrTopY - beamTop);  // follow tilt
       const arrBotY = beamTop;
-      c += `<line x1="${tx(arrX)}" y1="${ty(arrTopY)}" x2="${tx(arrX)}" y2="${ty(arrBotY)}" stroke="#000" stroke-width="1.2"/>`;
-      c += `<polygon points="${tx(arrX)-4},${ty(arrBotY)+6} ${tx(arrX)+4},${ty(arrBotY)+6} ${tx(arrX)},${ty(arrBotY)}" fill="#000"/>`;
-      c += `<text x="${tx(arrX) - 4}" y="${ty((arrTopY+arrBotY)/2) + 3}" fill="#000" font-size="8" text-anchor="end">drop Front D</text>`;
+      c += `<line x1="${tx(arrTopX)}" y1="${ty(arrTopY)}" x2="${tx(arrBotX)}" y2="${ty(arrBotY)}" stroke="#000" stroke-width="1.2"/>`;
+      c += `<polygon points="${tx(arrBotX)-4},${ty(arrBotY)+6} ${tx(arrBotX)+4},${ty(arrBotY)+6} ${tx(arrBotX)},${ty(arrBotY)}" fill="#000"/>`;
+      c += `<text x="${tx(arrBotX) - 4}" y="${ty((arrTopY+arrBotY)/2) + 3}" fill="#000" font-size="8" text-anchor="end">drop Front D</text>`;
 
       // Captions
       c += `<text x="${tx(7)}" y="${padPx + 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Cross-section · French cleat (locked)</text>`;
@@ -1687,65 +1686,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div class="section">
-  <h2>Knock-Down Assembly — Conformat Bolts</h2>
+  <h2>Knock-Down Assembly — Folding Roof + French-Cleat Front</h2>
   <p class="note">
-    The cabinet is held together with <strong>conformat bolts</strong> (also
-    called cross-dowel + machine-screw, or barrel-nut bolts — the same
-    fastener every IKEA cabinet uses). One Allen key, no glue, hundreds of
-    assembly cycles. Each joint shows up as a single hole drilled through
-    the side panel face into the mating panel's edge.
-  </p>
-
-  <div class="panels">
-    <div class="panel-card" style="flex:1.4">
-      <h3>Side panel — conformat positions (×2, mirror)</h3>
-      <p class="qty">Drill these from the inside face of each side panel.
-        Mirror the second side. Counter-bore the bolt-side face slightly so
-        the bolt heads sit flush.</p>
-      <svg id="conformat-side-svg"></svg>
-    </div>
-
-    <div class="panel-card" style="flex:1">
-      <h3>Hardware shopping list</h3>
-      <table>
-        <thead>
-          <tr><th>Joint</th><th>Per side</th><th>Total</th></tr>
-        </thead>
-        <tbody id="conformat-count-body"></tbody>
-      </table>
-      <p class="note" style="margin-top:8px">
-        <strong>Buy 24 conformat sets</strong> (20 needed + 4 spares).<br>
-        M6 × 50 mm machine bolt + barrel nut, sold in packs of 4–10 at
-        any hardware shop or online (search "vis conformat" / "cross-dowel
-        bolt"). One 6 mm Allen key handles all of them.
-      </p>
-      <p class="note" style="margin-top:8px; color:#aaa">
-        <strong>Drilling guide:</strong> bolt hole 7 mm ⌀ through the side
-        panel face. Cross-dowel hole 10 mm ⌀ × ~25 mm deep, drilled
-        perpendicular into the mating panel's edge, so the bolt threads
-        engage the cross-dowel sitting inside.
-      </p>
-    </div>
-  </div>
-
-  <p class="note" style="margin-top:12px">
-    <strong>Shelf-on-side joints (G, H) also get a shallow dado:</strong>
-    a 1.5 cm × 0.5 cm groove cut across the inside face of the side panel
-    where each shelf lands. The shelf slides into the groove for shear
-    strength (carries the weight without depending on the bolts), and the
-    conformats clamp it from pulling out. No glue needed — the dado is a
-    dry friction fit. Standard router bit, one pass per groove.
-  </p>
-</div>
-
-<div class="section">
-  <h2>Knock-Down Assembly v2 — Folding Roof + French-Cleat Front</h2>
-  <p class="note">
-    <strong>Chosen build approach.</strong> The conformat scheme above
-    works but is slow at the booth. v2 trades a small amount of hardware
-    complexity for a tool-free 3-minute assembly that survives many
-    transport cycles. The hinges are split across BOTH side panels so
-    nothing competes for stack-height with anything else:
+    Tool-free 3-minute assembly, survives many transport cycles. The
+    hinges are split across BOTH side panels so each sub-assembly stays
+    within its own polygon footprint:
     <strong>Side R + Roof</strong> are hinged together (Roof folds flat
     against Side R via a long piano hinge along D→E).
     <strong>Side L + two horizontal cross-rails</strong> form the second
@@ -1758,7 +1703,19 @@ document.addEventListener('DOMContentLoaded', () => {
     weight.
   </p>
 
-  <div class="panels">
+  <div class="panel-card">
+    <h3>Skeleton — 45° perspective (deployed)</h3>
+    <p class="qty">
+      Just the four structural pieces: two side panels, the roof
+      (hinged to Side R along D→E), and the two cross-rails (hinged
+      to Side L at corners A and B, bolted to Side R at the free
+      ends). No shelves, no front panel, no logo — this is what
+      holds the cabinet square. Everything else hangs off this frame.
+    </p>
+    <svg id="kd2-skeleton-svg"></svg>
+  </div>
+
+  <div class="panels" style="margin-top: 16px">
     <div class="panel-card" style="flex: 1">
       <h3>Sub-assembly 1 · Side R + Roof — folded</h3>
       <p class="qty">
@@ -1818,8 +1775,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <tbody id="kd2-transport-body"></tbody>
       </table>
       <p class="note" style="margin-top:8px">
-        Total stack height ~14 cm, footprint 108 × 95 cm — fits a crate
-        marginally taller and shallower than the v1 design. Or skip the
+        Total stack height ~14 cm, footprint 108 × 95 cm. Or skip the
         crate and carry the seven pieces in textile sleeves.
       </p>
     </div>
