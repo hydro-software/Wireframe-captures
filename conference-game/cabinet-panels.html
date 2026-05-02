@@ -956,7 +956,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rows = [
       ['A','Side panel (rectangle)', 2, '50 × 95',
        'Poplar ply 15 mm',
-       'Cut front-tilt diagonal A→B + soffit B→C (one L-shaped jigsaw cut), then roof diagonal D→E, then a 25 × 1.5 cm closed rectangular slot for the mouse shelf, set 3 cm back from the tilted front edge for strength (default height 12 cm; alternates 8 / 16 cm). Drill a starter hole inside the slot, then jigsaw the perimeter.'],
+       `Cut 1 (one continuous L-shaped jigsaw cut from the front edge): front-tilt diagonal A→B + soffit horizontal B→C + logo-recess vertical C→D — the C→D segment pulls the top-front corner ${LOGO_Z} cm inward to clear the screen sight-line. Cut 2: roof diagonal D→E. Cut 3: a 25 × 1.5 cm closed rectangular slot for the mouse shelf, set 3 cm back from the tilted front edge for strength (default height 12 cm; alternates 8 / 16 cm). Drill a starter hole inside the slot, then jigsaw the perimeter.`],
       ['D','Front panel', 1, `${INNER_W} × ${FP_SURF}`,
        'Poplar ply 15 mm',
        `Cut the ${WIN_W} × ${WIN_H} cm screen window: drill a starter hole inside one corner, then jigsaw the rectangle.`],
@@ -1071,30 +1071,42 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<rect x="${tx(0)}" y="${ty(RH)}" width="${RW*sc}" height="${RH*sc}" fill="rgba(0,0,0,0.02)" stroke="#000" stroke-width="1.5" stroke-dasharray="4,2"/>`;
       c += `<text x="${tx(RW/2)}" y="${ty(RH)-8}" fill="#555" font-size="9" text-anchor="middle">Wood shop cut — 50 × 95 cm</text>`;
 
-      // Final panel polygon (the part you keep)
+      // Final panel polygon (the part you keep). C and D are at LOGO_Z (10 cm)
+      // — the logo-panel recess pulls the top-front corner inward by that
+      // amount so the screen sight-line clears for tall players.
       const pts = [
         [0, 0],                  // A
         [FP_TOP_Z, FP_TOP_Y],    // B
-        [0, FP_TOP_Y],           // C
-        [0, H_FRONT],            // D
+        [LOGO_Z, FP_TOP_Y],      // C  (recessed 10 cm back from front face)
+        [LOGO_Z, H_FRONT],       // D  (recessed 10 cm back from front face)
         [50, H_BACK],            // E
         [50, 0],                 // F
       ];
       const polyPts = pts.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
       c += `<polygon points="${polyPts}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.5"/>`;
 
-      // Waste fill — front-tilt triangle ABC and roof triangle D-corner-E
-      const triFront = [[0,0],[FP_TOP_Z,FP_TOP_Y],[0,FP_TOP_Y]]
+      // Waste fill — two pieces:
+      //  1. Front-tilt + logo-recess waste: the entire upper-front-left
+      //     L-shape that comes off in cut 1 (A→B→C→D). Pentagon with
+      //     vertices at the rectangle's bottom-left, B, C, D, and the
+      //     rectangle's top-left.
+      //  2. Roof-slope waste: the small triangle above the roof slope.
+      //     With the 10 cm logo recess, this triangle now starts at D
+      //     (z = 10) instead of the rectangle's top-left corner.
+      const wasteFront = [[0,0],[FP_TOP_Z,FP_TOP_Y],[LOGO_Z,FP_TOP_Y],[LOGO_Z,H_FRONT],[0,H_FRONT]]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      const triRoof = [[0,H_FRONT],[50,H_FRONT],[50,H_BACK]]
+      const triRoof = [[LOGO_Z,H_FRONT],[50,H_FRONT],[50,H_BACK]]
         .map(p => `${tx(p[0])},${ty(p[1])}`).join(' ');
-      c += `<polygon points="${triFront}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2" stroke-dasharray="3,2"/>`;
+      c += `<polygon points="${wasteFront}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2" stroke-dasharray="3,2"/>`;
       c += `<polygon points="${triRoof}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2" stroke-dasharray="3,2"/>`;
 
-      // Cut lines (highlighted)
+      // Cut lines (highlighted) — cut 1 is one continuous L-shaped path
+      // from A → B → C → D (front-tilt diagonal, soffit horizontal, logo
+      // recess vertical). Cut 2 is the roof slope D → E.
       c += `<line x1="${tx(0)}" y1="${ty(0)}" x2="${tx(FP_TOP_Z)}" y2="${ty(FP_TOP_Y)}" stroke="#000" stroke-width="2"/>`;
-      c += `<line x1="${tx(FP_TOP_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(0)}" y2="${ty(FP_TOP_Y)}" stroke="#000" stroke-width="2"/>`;
-      c += `<line x1="${tx(0)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#000" stroke-width="2"/>`;
+      c += `<line x1="${tx(FP_TOP_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(LOGO_Z)}" y2="${ty(FP_TOP_Y)}" stroke="#000" stroke-width="2"/>`;
+      c += `<line x1="${tx(LOGO_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(LOGO_Z)}" y2="${ty(H_FRONT)}" stroke="#000" stroke-width="2"/>`;
+      c += `<line x1="${tx(LOGO_Z)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#000" stroke-width="2"/>`;
 
       // Mouse shelf slot — closed rectangle cut from the panel, sitting
       // SLOT_FRONT_MARGIN (3 cm) behind the tilted front edge so the
@@ -1140,8 +1152,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Cut labels
-      c += `<text x="${tx(FP_TOP_Z/2)+12}" y="${ty(FP_TOP_Y/2)-2}" fill="#000" font-size="9" text-anchor="middle">cut 1: A→B→C</text>`;
-      c += `<text x="${tx(25)}" y="${ty((H_FRONT+H_BACK)/2)-6}" fill="#000" font-size="9" text-anchor="middle">cut 2: D→E</text>`;
+      c += `<text x="${tx(FP_TOP_Z/2)+12}" y="${ty(FP_TOP_Y/2)-2}" fill="#000" font-size="9" text-anchor="middle">cut 1: A→B→C→D (L-shape, ${LOGO_Z} cm recess)</text>`;
+      c += `<text x="${tx((LOGO_Z+50)/2)}" y="${ty((H_FRONT+H_BACK)/2)-6}" fill="#000" font-size="9" text-anchor="middle">cut 2: D→E (roof slope)</text>`;
 
       // Legend
       const legendY = h - 14;
