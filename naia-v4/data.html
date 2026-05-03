@@ -4,90 +4,179 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Données — Naia</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="css/style.css" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* Type de données segmented control */
+  .type-seg { display: inline-flex; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 999px; padding: 3px; gap: 1px; }
+  .type-seg button { padding: 6px 14px; font-size: 13px; border: 0; background: transparent; color: var(--text-muted); border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 500; }
+  .type-seg button.on { background: var(--brand-blue-strong); color: white; }
+  /* Dropzone */
+  .dropzone {
+    border: 2px dashed var(--border-default);
+    border-radius: 12px;
+    padding: 36px 24px;
+    text-align: center;
+    background: var(--bg-base);
+    transition: all 0.15s;
+  }
+  .dropzone:hover { border-color: var(--brand-cyan); background: var(--bg-card-hover); }
+  .dropzone i { color: var(--text-muted); }
+</style>
 </head>
-<body data-page="data" data-section="data">
-
+<body data-page="data" data-section="data" data-centrale="moulins">
 <div class="app-shell">
   <aside class="sidebar"></aside>
   <main class="main-area">
     <header class="topbar">
       <div>
         <div class="page-eyebrow">Données</div>
-        <div style="font-size:18px; font-weight:600">Ingestion &amp; santé des flux</div>
+        <div style="font-size:18px; font-weight:600">Importer &amp; gérer vos flux</div>
       </div>
-      <div class="topbar-meta"><div class="plant">Toutes les centrales</div><div>Dernier upload : il y a 2 h</div></div>
+      <div class="topbar-meta"><div class="plant" data-centrale-name>Centrale des Moulins</div><div>Dernier upload : il y a 2 h</div></div>
     </header>
 
-    <!-- Centrales as tabs (per #261) -->
+    <!-- Centrales as tabs (#261) -->
     <div class="centrale-tabs">
-      <a class="centrale-tab all active" href="data.html"><span>Toutes</span></a>
-      <a class="centrale-tab" href="#"><span>Centrale des Moulins</span><span class="cap">450 kW</span></a>
-      <a class="centrale-tab" href="#"><span>Moulin du Bocq</span><span class="cap">210 kW</span></a>
-      <a class="centrale-tab" href="#"><span>Centrale d'Ariège</span><span class="cap">780 kW</span></a>
-      <a class="centrale-tab" href="#"><span>Moulin de la Lesse</span><span class="cap">320 kW</span></a>
+      <a class="centrale-tab" href="data.html" data-centrale="all"><span>Toutes · santé des flux</span></a>
+      <a class="centrale-tab active" data-centrale="moulins" onclick="switchCentrale(event, 'moulins')"><span>Centrale des Moulins</span><span class="cap">450 kW</span></a>
+      <a class="centrale-tab" data-centrale="bocq" onclick="switchCentrale(event, 'bocq')"><span>Moulin du Bocq</span><span class="cap">210 kW</span></a>
+      <a class="centrale-tab" data-centrale="ariege" onclick="switchCentrale(event, 'ariege')"><span>Centrale d'Ariège</span><span class="cap">780 kW</span></a>
+      <a class="centrale-tab" data-centrale="lesse" onclick="switchCentrale(event, 'lesse')"><span>Moulin de la Lesse</span><span class="cap">320 kW</span></a>
     </div>
 
     <div class="page-content">
-      <div style="display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom:18px">
-        <div class="kpi-card"><div class="kpi-label">Couverture de données · 30 j</div><div class="kpi-value tabular">98,4 %</div><div class="kpi-delta up">objectif 95 %</div></div>
-        <div class="kpi-card"><div class="kpi-label">Trous identifiés</div><div class="kpi-value tabular">2</div><div class="kpi-delta muted">14 fév., 22 fév.</div></div>
-        <div class="kpi-card"><div class="kpi-label">Flux actifs</div><div class="kpi-value tabular">7</div><div class="kpi-delta muted">SCADA · IRM · ENEDIS</div></div>
-        <div class="kpi-card"><div class="kpi-label">Dernier upload</div><div class="kpi-value tabular" style="font-size:18px">il y a 2 h</div><div class="kpi-delta up">automatisé</div></div>
+
+      <!-- Type de données segmented -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-body" style="padding:18px 20px">
+          <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap">
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:6px">Type de données</div>
+              <div class="type-seg">
+                <button class="on" data-type="production" onclick="switchType('production')">Production</button>
+                <button data-type="indicateurs" onclick="switchType('indicateurs')">Indicateurs</button>
+                <button data-type="comparateurs" onclick="switchType('comparateurs')">Comparateurs</button>
+              </div>
+            </div>
+
+            <!-- Production: meter + unit -->
+            <div id="prod-controls" style="display:flex; gap:14px; align-items:end">
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:6px">Compteur</div>
+                <select class="select" style="min-width:200px"><option>MOU-PRINC · principal</option><option>MOU-AUX · auxiliaires</option></select>
+              </div>
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:6px">Unité</div>
+                <select class="select" style="min-width:120px"><option selected>kWh</option><option>MWh</option><option>kW</option><option>W</option></select>
+              </div>
+            </div>
+
+            <!-- Indicators / Comparators: entity picker -->
+            <div id="entity-controls" style="display:none; align-items:end">
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:6px"><span id="entity-label">Indicateur</span></div>
+                <select class="select" id="entity-select" style="min-width:280px"></select>
+              </div>
+            </div>
+
+            <p class="muted" style="font-size:12px; max-width:320px; line-height:1.5; margin-left:auto; margin-bottom:0">
+              <b>#261 v3</b> — La création d'un indicateur ou comparateur se fait depuis <a class="link" href="parametres.html">Paramètres → Centrale</a>. Cette page ne sert qu'à l'<b>upload de données</b> (tâche fréquente).
+            </p>
+          </div>
+        </div>
       </div>
 
-      <!-- Upload area -->
+      <!-- Upload card -->
       <div class="card" style="margin-bottom:14px">
-        <div class="card-head">
-          <div>
-            <div class="card-head-title">Charger de nouvelles données</div>
-            <div class="card-head-sub">CSV / XLSX / Enedis R63 — détection automatique du format</div>
-          </div>
-          <span class="badge badge-cyan"><i data-lucide="upload"></i> Production</span>
-        </div>
+        <div class="card-head"><div><div class="card-head-title">Charger un fichier</div><div class="card-head-sub" id="upload-context">Données de production pour <b data-centrale-name>Centrale des Moulins</b> · compteur MOU-PRINC · unité kWh</div></div></div>
         <div class="card-body">
-          <div style="border:2px dashed var(--border-default); border-radius:12px; padding:32px; text-align:center; background:var(--bg-base)">
-            <i data-lucide="upload-cloud" style="width:36px; height:36px; color:var(--text-muted)"></i>
-            <div style="font-size:14px; color:var(--text-primary); margin-top:10px; font-weight:500">Glissez-déposez un fichier ici, ou choisissez</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:6px">CSV avec en-têtes ISO · XLSX · Enedis R63 · max 50 Mo</div>
+          <div class="dropzone">
+            <i data-lucide="upload-cloud" style="width:36px; height:36px"></i>
+            <div style="font-size:14px; color:var(--text-primary); margin-top:10px; font-weight:500">Glissez-déposez un fichier ici</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px">CSV avec horodatages ISO · XLSX · Enedis R63 · max 50 Mo</div>
             <button class="btn btn-secondary" style="margin-top:14px"><i data-lucide="folder-open"></i> Parcourir</button>
           </div>
+          <div style="display:flex; gap:8px; align-items:center; margin-top:12px; font-size:12px; color:var(--text-muted)">
+            <i data-lucide="info" style="width:13px; height:13px"></i>
+            Les doublons (mêmes horodatages) seront remplacés. Couverture par défaut : 1 valeur par 15 min.
+          </div>
         </div>
       </div>
 
-      <!-- Recent uploads -->
+      <!-- Recent uploads (this centrale) -->
       <div class="card" style="margin-bottom:14px">
-        <div class="card-head">
-          <div class="card-head-title">Imports récents</div>
-          <a href="#" class="link" style="font-size:12px">Voir tout l'historique →</a>
-        </div>
+        <div class="card-head"><div class="card-head-title">Imports récents · <span data-centrale-name>Centrale des Moulins</span></div><a href="#" class="link" style="font-size:12px">Voir tout l'historique →</a></div>
         <table class="data-table">
-          <thead><tr><th>Date</th><th>Centrale</th><th>Source</th><th>Période</th><th>Lignes</th><th>Statut</th></tr></thead>
+          <thead><tr><th>Date</th><th>Compteur / Indicateur</th><th>Type</th><th>Période</th><th>Lignes</th><th>Statut</th></tr></thead>
           <tbody>
-            <tr><td class="tabular">23 avr. 14:23</td><td>Moulins</td><td>SCADA</td><td>auto · jan. 2026</td><td class="num">8 640</td><td><span class="badge badge-green">Validé</span></td></tr>
-            <tr><td class="tabular">23 avr. 04:15</td><td>Ariège</td><td>SCADA</td><td>auto · jan. 2026</td><td class="num">8 640</td><td><span class="badge badge-green">Validé</span></td></tr>
-            <tr><td class="tabular">22 avr. 16:02</td><td>Bocq</td><td>CSV (manuel)</td><td>10–22 avr.</td><td class="num">288</td><td><span class="badge badge-amber">2 trous détectés</span></td></tr>
-            <tr><td class="tabular">22 avr. 09:48</td><td>Lesse</td><td>Enedis R63</td><td>jan.–mars 2026</td><td class="num">8 640</td><td><span class="badge badge-green">Validé</span></td></tr>
+            <tr><td class="tabular">23 avr. 14:23</td><td>MOU-PRINC</td><td><span class="badge badge-blue">Production · SCADA</span></td><td>auto · 1–22 avr.</td><td class="num">8 640</td><td><span class="badge badge-green">Validé</span></td></tr>
+            <tr><td class="tabular">22 avr. 09:12</td><td>Pluie · Bergerac</td><td><span class="badge badge-cyan">Indicateur · Météo</span></td><td>1–22 avr.</td><td class="num">22</td><td><span class="badge badge-green">Validé</span></td></tr>
+            <tr><td class="tabular">10 avr. 16:48</td><td>MOU-PRINC</td><td><span class="badge badge-blue">Production · CSV</span></td><td>1–9 avr.</td><td class="num">864</td><td><span class="badge badge-amber">2 trous détectés</span></td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Per #261 — indicators creation 1-click but secondary -->
-      <div style="display:flex; gap:14px">
-        <div class="card" style="flex:1">
-          <div class="card-head"><div class="card-head-title">Indicateurs &amp; comparateurs</div><span class="badge badge-slate">Action rare · une fois par an</span></div>
-          <div class="card-body">
-            <p class="muted" style="font-size:13px; line-height:1.5; margin:0 0 12px">La création d'indicateurs et de comparateurs est une action de configuration. La majorité du temps, vous chargez juste de nouvelles données ci-dessus.</p>
-            <a href="parametres.html" class="btn btn-secondary"><i data-lucide="settings-2"></i> Aller aux paramètres</a>
-          </div>
-        </div>
+      <!-- Sources health (compact) -->
+      <div class="card">
+        <div class="card-head"><div class="card-head-title">Sources automatisées</div></div>
+        <table class="data-table">
+          <thead><tr><th>Source</th><th>Type</th><th>Dernière maj.</th><th>Fréquence</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td>SCADA · MOU-PRINC</td><td>Production</td><td>il y a 2 h</td><td>quart-horaire</td><td><span class="badge badge-green">OK</span></td></tr>
+            <tr><td>Enedis R63 · MOU-PRINC</td><td>Production · backup</td><td>hier</td><td>quotidien</td><td><span class="badge badge-green">OK</span></td></tr>
+            <tr><td>Météo France · Bergerac</td><td>Indicateur · pluie</td><td>il y a 35 min</td><td>quotidien</td><td><span class="badge badge-green">OK</span></td></tr>
+            <tr><td>SCHAPI · Dordogne</td><td>Indicateur · débit</td><td>il y a 14 min</td><td>quart-horaire</td><td><span class="badge badge-green">OK</span></td></tr>
+          </tbody>
+        </table>
       </div>
+
     </div>
   </main>
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="js/app.js"></script>
-</body>
-</html>
+<script>
+function switchType(type) {
+  document.querySelectorAll(".type-seg button").forEach(b => b.classList.toggle("on", b.dataset.type === type));
+  const prodControls = document.getElementById("prod-controls");
+  const entityControls = document.getElementById("entity-controls");
+  const ctx = document.getElementById("upload-context");
+  const entityLabel = document.getElementById("entity-label");
+  const entitySelect = document.getElementById("entity-select");
+  const centrale = document.querySelector('[data-centrale-name]')?.textContent || "Centrale des Moulins";
+
+  if (type === "production") {
+    prodControls.style.display = "flex";
+    entityControls.style.display = "none";
+    ctx.innerHTML = `Données de production pour <b>${centrale}</b> · compteur MOU-PRINC · unité kWh`;
+  } else if (type === "indicateurs") {
+    prodControls.style.display = "none";
+    entityControls.style.display = "flex";
+    entityLabel.textContent = "Indicateur";
+    entitySelect.innerHTML = '<option>Pluie · Bergerac (Météo)</option><option selected>Débit · Dordogne (Hydro)</option><option>Spot Belpex (Prix)</option>';
+    ctx.innerHTML = `Données pour l'indicateur <b>Débit · Dordogne</b> sur <b>${centrale}</b>`;
+  } else {
+    prodControls.style.display = "none";
+    entityControls.style.display = "flex";
+    entityLabel.textContent = "Comparateur";
+    entitySelect.innerHTML = '<option selected>AGG DAILY MDA (×1.38)</option><option>Centrale d\'Ariège (×0.58)</option>';
+    ctx.innerHTML = `Données pour le comparateur <b>AGG DAILY MDA</b> sur <b>${centrale}</b>`;
+  }
+}
+
+function switchCentrale(e, slug) {
+  if (e) e.preventDefault();
+  document.querySelectorAll(".centrale-tab").forEach(t => t.classList.toggle("active", t.dataset.centrale === slug));
+  const map = {
+    moulins: "Centrale des Moulins",
+    bocq:    "Moulin du Bocq",
+    ariege:  "Centrale d'Ariège",
+    lesse:   "Moulin de la Lesse",
+  };
+  const name = map[slug] || "Centrale";
+  document.querySelectorAll('[data-centrale-name]').forEach(el => el.textContent = name);
+  document.body.dataset.centrale = slug;
+}
+</script>
+</body></html>

@@ -34,13 +34,52 @@
         <div><b>V2 :</b> module de simulation Valorise (BTM, batterie, digital twin) — visible dans le mockup pour validation, non livré en V1.</div>
       </div>
 
-      <div class="card" style="margin-bottom:14px">
-        <div class="card-head">
-          <div class="card-head-title">Revenus quotidiens · 60 derniers jours</div>
-          <div style="display:flex; gap:8px"><button class="btn btn-secondary btn-sm"><i data-lucide="git-compare"></i> Comparateur</button><button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export</button></div>
+      <div class="card-head" style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px 12px 0 0; border-bottom:0">
+        <div>
+          <div class="card-head-title">Revenus quotidiens</div>
+          <div class="card-head-sub">Mars 2026 · barres = revenus = production × prix vendu</div>
         </div>
-        <div class="card-body" style="height:380px; padding:14px"><div class="chart-container" style="height:100%"><canvas id="production-chart"></canvas></div></div>
+        <div style="display:flex; gap:8px">
+          <button class="btn btn-secondary btn-sm" id="indicateurs-toggle" onclick="toggleIndicateursPanel()"><i data-lucide="layers"></i> Indicateurs</button>
+          <button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export</button>
+        </div>
       </div>
+      <div class="chart-with-panel collapsed" id="chart-with-panel" style="border-top:0; border-radius:0 0 12px 12px; margin-bottom:14px">
+        <div class="indicateurs-panel collapsed" id="indicateurs-panel">
+          <div class="indicateurs-panel-title">
+            <span>Indicateurs contextuels</span>
+            <span class="collapse" onclick="toggleIndicateursPanel()">«</span>
+          </div>
+          <div class="ind-headers"><span></span><span>Int.</span><span>30j</span><span>12m</span><span>Ann.</span></div>
+          <div class="ind-section">
+            <div class="ind-section-title">Indicateurs inversés</div>
+            <div class="ind-row"><label><span class="swatch" style="background:#60a5fa"></span>Météo</label><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span></div>
+          </div>
+          <div class="ind-section">
+            <div class="ind-section-title">Indicateurs courbes</div>
+            <div class="ind-row"><label><span class="swatch" style="background:#fbbf24"></span>Prix spot Belpex</label><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span></div>
+            <div class="ind-row"><label><span class="swatch" style="background:#a3e635"></span>Débit</label><span class="ind-cell"><input type="checkbox"></span><span class="ind-cell"><input type="checkbox"></span><span class="ind-cell"><input type="checkbox"></span><span class="ind-cell"><input type="checkbox"></span></div>
+          </div>
+          <div class="ind-section">
+            <div class="ind-section-title">Comparateurs</div>
+            <div class="ind-row"><label><span class="swatch" style="background:#7dd3fc"></span>Revenus N-1</label><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span><span class="ind-cell"><input type="checkbox" checked></span></div>
+          </div>
+        </div>
+        <div style="height:380px; padding:14px"><div class="chart-container" style="height:100%"><canvas id="production-chart"></canvas></div></div>
+      </div>
+
+      <script>
+        function toggleIndicateursPanel() {
+          const wrap = document.getElementById('chart-with-panel');
+          const panel = document.getElementById('indicateurs-panel');
+          const btn = document.getElementById('indicateurs-toggle');
+          const wasCollapsed = panel.classList.contains('collapsed');
+          panel.classList.toggle('collapsed');
+          wrap.classList.toggle('collapsed');
+          if (btn) btn.classList.toggle('btn-primary', wasCollapsed);
+          if (btn) btn.classList.toggle('btn-secondary', !wasCollapsed);
+        }
+      </script>
 
       <div class="card">
         <div class="card-head"><div class="card-head-title">Décomposition par centrale · YTD</div></div>

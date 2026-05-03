@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Centrale des Moulins — Naia</title>
+<title>Centrale — Naia</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -27,8 +27,8 @@
 
     <header class="topbar">
       <div>
-        <div class="page-eyebrow"><a href="parametres.html" class="link" style="color:var(--brand-cyan)">Paramètres</a> ·  Centrale des Moulins</div>
-        <div style="font-size:18px; font-weight:600">Centrale des Moulins</div>
+        <div class="page-eyebrow"><a href="parametres.html" class="link" style="color:var(--brand-cyan)">Paramètres</a> ·  <span data-pd-name>Centrale des Moulins</span></div>
+        <div style="font-size:18px; font-weight:600"><span data-pd-name>Centrale des Moulins</span></div>
       </div>
       <div style="display:flex; gap:8px">
         <button class="btn btn-secondary btn-sm"><i data-lucide="share-2"></i> Partager l'accès</button>
@@ -47,7 +47,7 @@
         <div class="pd-section-body">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
             <div>
-              <div class="pd-info-row"><span class="lbl">Nom</span><span>Centrale des Moulins</span></div>
+              <div class="pd-info-row"><span class="lbl">Nom</span><span><span data-pd-name>Centrale des Moulins</span></span></div>
               <div class="pd-info-row"><span class="lbl">Alias court</span><span>MOU</span></div>
               <div class="pd-info-row"><span class="lbl">Pays / région</span><span>France · Dordogne (24)</span></div>
               <div class="pd-info-row"><span class="lbl">Localité</span><span>Bergerac</span></div>
@@ -180,4 +180,24 @@
 </div>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="js/app.js"></script>
+<script>
+  // Adapt title + body data-centrale based on ?slug= URL param.
+  (function () {
+    const slug = (new URLSearchParams(location.search).get("slug") || "moulins").toLowerCase();
+    const map = {
+      moulins: { name: "<span data-pd-name>Centrale des Moulins</span>", capacity: "450 kW", country: "Bergerac, Dordogne · FR", alias: "MOU", tz: "Europe/Paris" },
+      bocq:    { name: "Moulin du Bocq",       capacity: "210 kW", country: "Spontin, Namur · BE",     alias: "BOC", tz: "Europe/Brussels" },
+      ariege:  { name: "Centrale d'Ariège",    capacity: "780 kW", country: "Foix, Ariège · FR",       alias: "ARI", tz: "Europe/Paris" },
+      lesse:   { name: "Moulin de la Lesse",   capacity: "320 kW", country: "Houyet, Namur · BE",      alias: "LES", tz: "Europe/Brussels" },
+    };
+    const c = map[slug] || map.moulins;
+    document.body.dataset.centrale = slug;
+    document.title = `${c.name} — Naia`;
+    document.querySelectorAll("[data-pd-name]").forEach(el => el.textContent = c.name);
+    document.querySelectorAll("[data-pd-capacity]").forEach(el => el.textContent = c.capacity);
+    document.querySelectorAll("[data-pd-country]").forEach(el => el.textContent = c.country);
+    document.querySelectorAll("[data-pd-alias]").forEach(el => el.textContent = c.alias);
+    document.querySelectorAll("[data-pd-tz]").forEach(el => el.textContent = c.tz);
+  })();
+</script>
 </body></html>

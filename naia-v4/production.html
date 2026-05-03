@@ -33,25 +33,25 @@
         <div class="kpi-card"><div class="kpi-label">Débit moyen</div><div class="kpi-value tabular">3,4 m³/s</div><div class="kpi-delta muted">tous bassins</div></div>
       </div>
 
-      <!-- Main chart with Indicateurs panel on the left (per indicateurs.png from game/UI) -->
+      <!-- Main chart with Indicateurs panel that slides out only when "Indicateurs" is clicked -->
       <div class="card-head" style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px 12px 0 0; border-bottom:0">
         <div>
           <div class="card-head-title">Production quotidienne</div>
-          <div class="card-head-sub">Barres bleu foncé = kWh produits · barres bleu clair = comparateur AGG DAILY MDA · ligne verte = débit · barres bleu pâle en haut = pluie</div>
+          <div class="card-head-sub">Mars 2026 · données quotidiennes</div>
         </div>
         <div style="display:flex; gap:8px">
-          <button class="btn btn-secondary btn-sm"><i data-lucide="git-compare"></i> Comparer</button>
+          <button class="btn btn-secondary btn-sm" id="indicateurs-toggle" onclick="toggleIndicateursPanel()"><i data-lucide="layers"></i> Indicateurs</button>
           <button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export</button>
           <button class="btn btn-secondary btn-sm"><i data-lucide="settings"></i> Configuration</button>
         </div>
       </div>
-      <div class="chart-with-panel" style="border-top:0; border-radius:0 0 12px 12px; margin-bottom:14px">
+      <div class="chart-with-panel collapsed" id="chart-with-panel" style="border-top:0; border-radius:0 0 12px 12px; margin-bottom:14px">
 
-        <!-- Indicateurs panel (left) — single button covering Indicateurs + Comparateurs per #261 -->
-        <div class="indicateurs-panel">
+        <!-- Indicateurs panel — collapsed by default; toggled by the Indicateurs button -->
+        <div class="indicateurs-panel collapsed" id="indicateurs-panel">
           <div class="indicateurs-panel-title">
             <span>Indicateurs contextuels</span>
-            <span class="collapse" onclick="this.closest('.chart-with-panel').classList.toggle('collapsed'); this.closest('.indicateurs-panel').classList.toggle('collapsed')">«</span>
+            <span class="collapse" onclick="toggleIndicateursPanel()">«</span>
           </div>
 
           <div class="ind-headers">
@@ -97,17 +97,24 @@
               <span class="ind-cell"><input type="checkbox"></span>
             </div>
           </div>
-
-          <!-- Bottom timeframe / view tabs (per indicateurs.png MDA / Hydro... pills) -->
-          <div class="indicateurs-panel-foot">
-            <button class="pf-tab active">MDA</button>
-            <button class="pf-tab">Hydro</button>
-          </div>
         </div>
 
         <!-- Chart -->
         <div style="height:480px; padding:14px"><div class="chart-container" style="height:100%"><canvas id="production-chart"></canvas></div></div>
       </div>
+
+      <script>
+        function toggleIndicateursPanel() {
+          const wrap = document.getElementById('chart-with-panel');
+          const panel = document.getElementById('indicateurs-panel');
+          const btn = document.getElementById('indicateurs-toggle');
+          const wasCollapsed = panel.classList.contains('collapsed');
+          panel.classList.toggle('collapsed');
+          wrap.classList.toggle('collapsed');
+          if (btn) btn.classList.toggle('btn-primary', wasCollapsed);
+          if (btn) btn.classList.toggle('btn-secondary', !wasCollapsed);
+        }
+      </script>
 
       <div class="card">
         <div class="card-head">

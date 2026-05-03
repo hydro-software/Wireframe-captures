@@ -818,10 +818,10 @@ table.data-table { width: 100%; border-collapse: collapse; }
   color: white;
 }
 
-/* Collapsed state */
-.indicateurs-panel.collapsed { padding: 16px 8px; }
-.indicateurs-panel.collapsed > *:not(.indicateurs-panel-title) { display: none; }
-.chart-with-panel.collapsed { grid-template-columns: 50px 1fr; }
+/* Collapsed state — panel fully hidden; chart goes full width.
+   User clicks the "Indicateurs" button in the chart toolbar to fold it out. */
+.indicateurs-panel.collapsed { display: none; }
+.chart-with-panel.collapsed { grid-template-columns: 1fr; }
 
 /* ============ ANIMATIONS ============ */
 

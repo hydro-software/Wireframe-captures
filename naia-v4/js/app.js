@@ -61,17 +61,32 @@ function buildSidebar() {
     admin:      section === "admin",
   };
 
-  const centraleItems = (sectionSlug) => CENTRALES.map(c =>
-    `<a href="${sectionSlug}-${c.slug}.html" class="subnav-item ${centrale === c.slug && section === sectionSlug ? 'active' : ''}"
-        onclick="if(!document.querySelector('a[href=&quot;${sectionSlug}-${c.slug}.html&quot;]')?.getAttribute('data-real')) { event.preventDefault(); alert('Mockup: ${c.label} — ${sectionLabel(sectionSlug)} (page de détail à venir).'); }">
-      <span>${c.label}</span>
-    </a>`
-  ).join("");
+  // Centrale sub-items per section:
+  // - production / revenue: stay on the section page, switch via URL hash (one page handles all centrales)
+  // - parametres: navigate into plant-detail.html?slug=... (each centrale has its own detail surface)
+  const centraleItems = (sectionSlug) => {
+    const buildHref = (slug) => {
+      if (sectionSlug === "parametres") return `plant-detail.html?slug=${slug}`;
+      // production / revenue: same page, hash drives the active centrale
+      return `${sectionSlug}.html#${slug}`;
+    };
+    return CENTRALES.map(c => {
+      const isActive =
+        (sectionSlug === section && centrale === c.slug) ||
+        (sectionSlug === "parametres" && section === "parametres-detail" && centrale === c.slug);
+      return `<a href="${buildHref(c.slug)}" class="subnav-item ${isActive ? 'active' : ''}">
+        <span>${c.label}</span>
+      </a>`;
+    }).join("");
+  };
 
-  const allItem = (sectionSlug, label, currentSection) => `<a href="${sectionSlug}.html" class="subnav-item ${centrale === 'all' && section === sectionSlug ? 'active' : ''}"
-        style="font-weight:600">
+  const allItem = (sectionSlug) => {
+    const href = sectionSlug === "parametres" ? "parametres.html" : `${sectionSlug}.html#all`;
+    const isActive = section === sectionSlug && centrale === "all" && section !== "parametres-detail";
+    return `<a href="${href}" class="subnav-item ${isActive ? 'active' : ''}" style="font-weight:600">
       <span>Tous · agrégé</span>
     </a>`;
+  };
 
   const communityItems = COMMUNITY_TOPICS.map(t => {
     const activeClass = (page === t.slug) ? "active" : "";
@@ -163,6 +178,7 @@ function buildSidebar() {
         <i data-lucide="chevron-right" class="chev" onclick="event.preventDefault(); event.stopPropagation(); toggleFoldByLink(this)"></i>
       </a>
       <div class="subnav" data-open="${open.parametres}">
+        ${allItem('parametres')}
         ${centraleItems('parametres')}
       </div>
 
@@ -419,46 +435,52 @@ function buildProductionChart() {
     return r;
   });
 
+  // Calibrate axis ranges so each layer occupies its own visual band:
+  // - Production bars (kWh) — bottom ~35% of canvas
+  // - Flow line (m³/s)      — middle band
+  // - Rain bars (mm)        — top ~15% of canvas, hanging downward from 0 (reversed axis)
+  const peakProd = Math.max(...compMda, ...production);
+  const peakRain = Math.max(...rain) || 1;
+
   _productionChartInstance = new Chart(c.getContext("2d"), {
     type: "bar",
     data: {
       labels: days,
       datasets: [
-        // Comparator overlay (rendered behind / on top of production)
-        { label: "AGG DAILY MDA", data: compMda, backgroundColor: "#7dd3fc", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.92, stack: "prod", order: 4 },
-        // Production (primary)
-        { label: "Production (kWh)", data: production, backgroundColor: "#1d4ed8", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.46, order: 3 },
-        // Flow line
+        // Comparator overlay (light blue, wider bars behind)
+        { label: "AGG DAILY MDA", data: compMda, backgroundColor: "#7dd3fc", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.92, order: 4, yAxisID: "y" },
+        // Production (dark blue, primary, narrower bars in front)
+        { label: "Production (kWh)", data: production, backgroundColor: "#1d4ed8", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.46, order: 3, yAxisID: "y" },
+        // Flow line (green, middle band)
         { label: "Débit (m³/s)", type: "line", data: flow, borderColor: colors.line, borderWidth: 2, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, yAxisID: "yFlow", fill: false, order: 1 },
-        // Rain bars hanging from top — negative values on rain axis (axis is reversed so they appear at top)
-        { label: "Météo · pluie (mm)", data: rain.map(v => -v), backgroundColor: "#60a5fa", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.55, yAxisID: "yRain", order: 2 }
+        // Rain bars (pale blue, hang from top — positive values on a REVERSED axis,
+        // so 0 mm sits at the top of the canvas and bars grow downward)
+        { label: "Météo · pluie (mm)", data: rain, backgroundColor: "#60a5fa", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.55, yAxisID: "yRain", order: 2 }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
       scales: {
-        x: { grid: { display: false }, ticks: { color: colors.axis, font: { size: 10 }, maxTicksLimit: 31 }, stacked: false },
-        // Production axis (left). Range extends well above the bars to leave room
-        // for rain at the top and the flow line through the middle.
+        x: { grid: { display: false }, ticks: { color: colors.axis, font: { size: 10 }, maxTicksLimit: 31 } },
+        // Production axis (left): max set high so production bars only fill the bottom band
         y: {
           position: "left",
           beginAtZero: true,
-          // Max ≈ 3× peak production so bars occupy lower third of the canvas
-          suggestedMax: Math.max(...compMda, ...production) * 3,
+          suggestedMax: Math.max(peakProd * 2.4, 1),
           grid: { color: colors.grid, drawTicks: false },
           ticks: {
             color: colors.axis, font: { size: 11 },
-            // Hide ticks above the typical production range — keep the axis label clean
-            callback: function(v) { const peak = this.chart.data.datasets[1].data; const m = Math.max(...peak) * 1.1; return v <= m ? v : ""; }
+            // Only show ticks within the production range to keep the axis tidy
+            callback: function(v) { return v <= peakProd * 1.05 ? v : ""; }
           },
           title: { display: true, text: "kWh", color: colors.axis }
         },
-        // Flow axis (right). Same vertical extent — same chart canvas.
+        // Flow axis (right inner): wide range so the flow line sits in the middle band
         yFlow: {
           position: "right",
           beginAtZero: true,
-          suggestedMax: 18, // wide range so the flow line sits in the middle band
+          suggestedMax: 14,
           grid: { display: false },
           ticks: {
             color: colors.axis, font: { size: 11 },
@@ -466,16 +488,17 @@ function buildProductionChart() {
           },
           title: { display: true, text: "Débit m³/s", color: colors.axis }
         },
-        // Rain axis (right, reversed). Range goes negative so rain bars appear at the
-        // top of the chart canvas. Visually labeled 0 → 50 mm increasing downward.
+        // Rain axis (right, REVERSED). 0 at the top, max at the bottom.
+        // Max chosen large enough that rain bars only fill the top ~15% of canvas.
         yRain: {
           position: "right",
-          min: -50, max: 100,
-          reverse: false,
+          min: 0,
+          max: Math.max(peakRain * 6.5, 30),
+          reverse: true,
           grid: { display: false },
           ticks: {
             color: "#60a5fa", font: { size: 10 },
-            callback: function(v) { return v < 0 ? Math.abs(v) : ""; }
+            callback: function(v) { return v <= peakRain * 1.4 ? v : ""; }
           },
           title: { display: true, text: "mm", color: "#60a5fa" }
         }
@@ -487,7 +510,7 @@ function buildProductionChart() {
           callbacks: {
             label: function(ctx) {
               const ds = ctx.dataset.label;
-              if (ds === "Météo · pluie (mm)") return `Pluie : ${Math.abs(ctx.parsed.y).toFixed(1)} mm`;
+              if (ds === "Météo · pluie (mm)") return `Pluie : ${ctx.parsed.y.toFixed(1)} mm`;
               if (ds === "Débit (m³/s)") return `Débit : ${ctx.parsed.y.toFixed(2)} m³/s`;
               if (ds === "AGG DAILY MDA") return `MDA : ${ctx.parsed.y} kWh`;
               return `${ds} : ${ctx.parsed.y} kWh`;
