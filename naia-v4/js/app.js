@@ -435,32 +435,34 @@ function buildProductionChart() {
     return r;
   });
 
-  // Visual contract per game/.claude/skills/uplot-multi-scale-axes/SKILL.md:
-  //   - Production bars   → bottom ~33% of canvas (left axis, normal)
-  //   - Rain bars + Flow line → top ~25%, SHARING ONE INVERTED axis (right side)
-  //   - Middle band       → breathing room (loss-segment overlays land here in the game)
+  // Visual layering per Jan's preference (different from the game's "rain + flow share
+  // upper band" pattern — Jan wants the flow line in the middle band, not at the top):
   //
-  // We use the SKILL's intraday-chart pattern (rain + flow share one reversed scale)
-  // rather than the 30-day pattern (three separate scales). Reason: Chart.js's
-  // `reverse: true` doesn't reliably stack with another reversed axis on the same
-  // side — the m³/s line was rendering on a normal-direction axis and ended up
-  // riding through the production bars. Sharing one inverted scale sidesteps this.
+  //   top of canvas ────────────────────────
+  //                 ╔═╗   ╔═╗   ╔═╗            ← rain bars      (top ~25%)
+  //                 ╚═╝   ╚═╝   ╚═╝
+  //                 ─── flow line ───              ← flow line   (middle ~30-50%)
+  //                 ┌─┐ ┌─┐ ┌─┐                ← production    (bottom ~33%)
+  //                 │ │ │ │ │ │
+  //   bottom ──────┴─┴─┴─┴─┴─┴───────────
   //
-  // The unit mismatch (mm vs m³/s) is fine because typical rain peaks (~30 mm/day)
-  // and flow values (~5 m³/s) both fit cleanly inside a 0..30 numeric range, with
-  // flow occupying the top tenth and rain the top quarter — no visual collision.
+  // Three separate axes, NO axis-stacking conflict:
+  //   - kwh    (left, normal)              → max = peak × 3 → bottom ~33%
+  //   - yFlow  (right inner, NORMAL)       → max = peak × 2 → values land in middle
+  //   - yRain  (right outer, reversed)     → max = peak × 4 → bars hang from top
   //
-  // Both peaks are CLOSED OVER (computed once before chart options) — never derived
-  // from Chart.js's runtime dMax. Skill's gotcha #1.
+  // The flow axis is normal direction (NOT reversed). Setting max ≈ 2×peak parks the
+  // peak value at 50% canvas height — middle band. This avoids the Chart.js "two
+  // reversed y-axes on same side" rendering quirk that scrambled the previous
+  // attempts.
+  //
+  // Both peaks closed over before chart construction. Skill's gotcha #1.
 
   const productionPeak = Math.max(1, ...compMda, ...production);
   const rainPeak = Math.max(1, ...rain);
   const flowPeak = Math.max(1, ...flow);
 
   const kwhMax = Math.ceil((productionPeak * 3) / 500) * 500;
-  // Shared upper-band scale: max chosen so rain peak occupies ~25% and flow peak
-  // ~10% of canvas height (after the reverse flips them to the top).
-  const upperMax = Math.max(rainPeak * 4, flowPeak * 6, 25);
 
   _productionChartInstance = new Chart(c.getContext("2d"), {
     type: "bar",
@@ -469,8 +471,8 @@ function buildProductionChart() {
       datasets: [
         { label: "AGG DAILY MDA",      data: compMda,    backgroundColor: "#7dd3fc", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.92, order: 4, yAxisID: "y" },
         { label: "Production (kWh)",   data: production, backgroundColor: "#1d4ed8", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.46, order: 3, yAxisID: "y" },
-        { label: "Débit (m³/s)",       data: flow,       type: "line", borderColor: colors.line, borderWidth: 2, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, yAxisID: "yUpper", fill: false, order: 1 },
-        { label: "Météo · pluie (mm)", data: rain,       backgroundColor: "#60a5fa", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.55, yAxisID: "yUpper", order: 2 }
+        { label: "Débit (m³/s)",       data: flow,       type: "line", borderColor: colors.line, borderWidth: 2.2, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, yAxisID: "yFlow", fill: false, order: 1 },
+        { label: "Météo · pluie (mm)", data: rain,       backgroundColor: "#60a5fa", borderRadius: 2, categoryPercentage: 0.85, barPercentage: 0.55, yAxisID: "yRain", order: 2 }
       ]
     },
     options: {
@@ -492,25 +494,35 @@ function buildProductionChart() {
           title: { display: true, text: "kWh", color: colors.axis }
         },
 
-        // Shared inverted upper-band axis (right). Carries BOTH flow (m³/s) and rain (mm).
-        // reverse:true → 0 at top of canvas, max at bottom → values render in upper portion.
-        // Rain bars peak ~25% from top; flow line peaks ~17% from top (well above production).
-        yUpper: {
+        // Flow axis (right inner, NORMAL direction). Max = peak × 2 → line peaks at
+        // 50% canvas height. Values 3–5 land between 30% and 50% from bottom — i.e.
+        // immediately above the production band, in the middle of the canvas.
+        yFlow: {
+          position: "right",
+          min: 0,
+          max: flowPeak * 2,
+          grid: { display: false },
+          ticks: {
+            color: colors.axis, font: { size: 11 },
+            // Show ticks only within the realistic flow range (0..1.1×peak)
+            callback: function(v) { return v <= flowPeak * 1.1 ? v : ""; }
+          },
+          title: { display: true, text: "m³/s", color: colors.axis }
+        },
+
+        // Rain axis (right outer, REVERSED). 0 at top of canvas, max at bottom →
+        // bars hang from top edge. Max = peak × 4 → bars peak at ~25% from top.
+        yRain: {
           position: "right",
           reverse: true,
           min: 0,
-          max: upperMax,
+          max: rainPeak * 4,
           grid: { display: false },
           ticks: {
-            color: colors.axis, font: { size: 10 },
-            // Show ticks for both rain and flow magnitudes
-            callback: function(v) {
-              if (v === 0) return "0";
-              if (v <= rainPeak * 1.1) return v + " mm";
-              return "";
-            }
+            color: "#60a5fa", font: { size: 10 },
+            callback: function(v) { return v <= rainPeak * 1.1 ? v : ""; }
           },
-          title: { display: true, text: "mm   ·   m³/s", color: colors.axis }
+          title: { display: true, text: "mm", color: "#60a5fa" }
         }
       },
       plugins: {
