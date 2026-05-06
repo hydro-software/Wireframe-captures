@@ -29,6 +29,10 @@ const ADMIN_TOPICS = [
   { slug: "admin-abonnements", label: "Clients",              icon: "credit-card",  href: "admin-abonnements.html" },
   { slug: "admin-leads",       label: "Leads",                icon: "filter",       href: "admin-leads.html" },
   { slug: "admin-pricing",     label: "Pricing schedules",    icon: "list-ordered", href: "admin-pricing.html" },
+  { slug: "admin-promotions",  label: "Promotions",           icon: "ticket",       href: "admin-promotions.html" },
+  { slug: "admin-dso",         label: "Mandats DSO",          icon: "file-signature", href: "admin-dso.html" },
+  { slug: "admin-onboarding",  label: "Onboarding emails",    icon: "send",         href: "admin-onboarding.html" },
+  { slug: "admin-audit",       label: "Audit log",            icon: "shield",       href: "admin-audit.html" },
 ];
 
 // ---- THEME ----

@@ -176,51 +176,129 @@
             </div>
           </div>
 
-          <!-- Section: Modification history -->
+          <!-- Section: Subscription state machine log -->
           <div class="cd-section">
-            <div class="cd-section-head"><div class="cd-section-title"><i data-lucide="history" style="width:15px; color:var(--brand-cyan)"></i> Historique</div><select class="select" style="max-width:140px; font-size:11px"><option>Toutes</option><option>Plan</option><option>Facturation</option><option>Notes admin</option></select></div>
+            <div class="cd-section-head"><div class="cd-section-title"><i data-lucide="git-branch" style="width:15px; color:var(--brand-cyan)"></i> États abonnement (FR-SUB-11)</div><a class="link" style="font-size:11px" href="admin-audit.html?entity=sub_8a4f">Audit complet →</a></div>
+            <div class="cd-section-body" style="padding:14px 18px">
+              <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-family:'JetBrains Mono', monospace; font-size:11px; line-height:2">
+                <span class="badge badge-slate">demo</span><span class="muted">→</span>
+                <span class="badge badge-purple">pending_signature</span><span class="muted">→</span>
+                <span class="badge badge-blue">active+pending_payment</span><span class="muted">→</span>
+                <span class="badge badge-green">active</span><span class="muted">←</span>
+                <span style="color:var(--text); font-weight:600">vous êtes ici</span>
+              </div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.7">
+                14 sept. 2024 · <span class="tabular">demo</span> → <span class="tabular">pending_signature</span> · admin Bernard L. (FR-SIGNUP)<br>
+                14 sept. 2024 · <span class="tabular">pending_signature</span> → <span class="tabular">active+pending_payment</span> · système Yousign (envelope.signed)<br>
+                28 sept. 2024 · <span class="tabular">active+pending_payment</span> → <span class="tabular">active</span> · système PayPlug (charge.succeeded)
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Modification history (diff format) -->
+          <div class="cd-section">
+            <div class="cd-section-head"><div class="cd-section-title"><i data-lucide="history" style="width:15px; color:var(--brand-cyan)"></i> Historique modifications</div><select class="select" style="max-width:140px; font-size:11px"><option>Toutes</option><option>Plan</option><option>Identité</option><option>Facturation</option><option>Notes admin</option><option>Système</option></select></div>
             <div class="cd-section-body">
+
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:rgba(251,191,36,0.18); color:#fcd34d"><i data-lucide="repeat"></i></div>
+                <div class="timeline-main">
+                  <div class="timeline-title">Plan modifié</div>
+                  <div style="font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px">
+                    <span class="muted">cadence:</span>
+                    <span style="background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through">monthly</span>
+                    <span class="muted">→</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">quarterly</span><br>
+                    <span class="muted">mode:</span>
+                    <span style="background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through">per_plant</span>
+                    <span class="muted">→</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">enterprise</span>
+                  </div>
+                  <div class="timeline-meta">2 mai · par Ugo D. · raison: « demande Pierre »</div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="building-2"></i></div>
+                <div class="timeline-main">
+                  <div class="timeline-title">Email facturation modifié</div>
+                  <div style="font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px">
+                    <span style="background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through">comptable@convert-fmg.fr</span>
+                    <span class="muted">→</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">finance@convert-fmg.fr</span>
+                  </div>
+                  <div class="timeline-meta">3 mai · par Pierre Lefebvre (client) · via portail self-serve</div>
+                </div>
+              </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="user-plus"></i></div>
                 <div class="timeline-main">
-                  <div class="timeline-title">Nouvel utilisateur invité — Marie Lambert</div>
-                  <div class="timeline-meta">il y a 2 j · par Pierre Lefebvre</div>
+                  <div class="timeline-title">Utilisateur invité · Marie Lambert</div>
+                  <div style="font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px">
+                    <span class="muted">rôle:</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">member</span>
+                    <span class="muted">· magic-link envoyé</span>
+                  </div>
+                  <div class="timeline-meta">1 mai · par Pierre Lefebvre (client)</div>
                 </div>
               </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(132,204,22,0.18); color:#bef264"><i data-lucide="check-circle"></i></div>
                 <div class="timeline-main">
                   <div class="timeline-title">Paiement reçu · 895,40 €</div>
-                  <div class="timeline-meta">1 mai · SEPA — facture 2026-05-018</div>
+                  <div class="timeline-meta">1 mai · système PayPlug · SEPA •• 4218 · facture 2026-05-018</div>
                 </div>
               </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(167,139,250,0.18); color:#c4b5fd"><i data-lucide="message-square"></i></div>
                 <div class="timeline-main">
-                  <div class="timeline-title">Note admin (Ugo) : « tickets ouverts depuis 2 sem., à relancer »</div>
-                  <div class="timeline-meta">26 avr.</div>
+                  <div class="timeline-title">Note admin ajoutée</div>
+                  <div style="font-size:12px; color:var(--text-muted); font-style:italic; margin-top:4px">« tickets ouverts depuis 2 sem., à relancer »</div>
+                  <div class="timeline-meta">26 avr. · par Ugo D.</div>
                 </div>
               </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(251,191,36,0.18); color:#fcd34d"><i data-lucide="alert-triangle"></i></div>
                 <div class="timeline-main">
                   <div class="timeline-title">Health passé en Watch (auto)</div>
-                  <div class="timeline-meta">22 avr. · usage 30j en baisse de 18 %</div>
+                  <div style="font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px">
+                    <span style="background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through">Healthy (78)</span>
+                    <span class="muted">→</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">Watch (62)</span>
+                  </div>
+                  <div class="timeline-meta">22 avr. · système (cron) · trigger: usage 30j en baisse de 18 %</div>
                 </div>
               </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="zap"></i></div>
                 <div class="timeline-main">
-                  <div class="timeline-title">Centrale ajoutée — Microcentrale du Saux</div>
-                  <div class="timeline-meta">15 mars · capacité +480 kW · MRR +10 €</div>
+                  <div class="timeline-title">Centrale ajoutée · Microcentrale du Saux</div>
+                  <div style="font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px">
+                    <span class="muted">capacité totale:</span>
+                    <span style="background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through">10,5 MW · 8 plants</span>
+                    <span class="muted">→</span>
+                    <span style="background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px">11 MW · 9 plants</span>
+                    <span class="muted">· MRR +10 €</span>
+                  </div>
+                  <div class="timeline-meta">15 mars · par Ugo D.</div>
                 </div>
               </div>
+
               <div class="timeline-item">
                 <div class="timeline-dot" style="background:rgba(132,204,22,0.18); color:#bef264"><i data-lucide="user-plus"></i></div>
                 <div class="timeline-main">
-                  <div class="timeline-title">Compte créé · onboarding terminé</div>
-                  <div class="timeline-meta">14 sept. 2024 · code promo <span class="tabular">HYDRO24</span> appliqué</div>
+                  <div class="timeline-title">Compte créé · onboarding J+0/J+3/J+10 envoyés</div>
+                  <div class="timeline-meta">14 sept. 2024 · promo <span class="tabular">HYDRO24</span> appliqué (lead conversion)</div>
                 </div>
+              </div>
+
+              <div style="text-align:center; margin-top:10px">
+                <a class="link" style="font-size:11px" href="admin-audit.html?entity=convert-fmg">Voir 42 évènements de plus dans l'audit log →</a>
               </div>
             </div>
           </div>
@@ -237,6 +315,7 @@
               <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="gift"></i> Appliquer un crédit</button>
               <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="flask-conical"></i> Marquer comme test_subscriber</button>
               <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="message-square"></i> Ajouter une note admin</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="pause-circle"></i> Pause séquence onboarding <span class="badge badge-slate" style="margin-left:auto; font-size:10px">J+10 dans 4 j</span></button>
               <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="user-plus"></i> Escalader vers CSM</button>
               <button class="btn btn-secondary btn-sm" style="justify-content:flex-start; color:var(--accent-red)"><i data-lucide="pause"></i> Suspendre l'abonnement</button>
             </div>

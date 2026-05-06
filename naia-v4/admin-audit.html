@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Audit log — Naia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .audit-row { display:grid; grid-template-columns: 130px 28px 1fr 200px; gap:14px; padding:14px 18px; border-bottom:1px solid var(--border-subtle); align-items:start; cursor:pointer; transition: background 0.15s; }
+  .audit-row:hover { background: var(--bg-input); }
+  .audit-row:last-child { border-bottom:0; }
+  .audit-when { font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono', monospace; padding-top:2px; }
+  .audit-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .audit-icon i { width:14px; height:14px; }
+  .audit-main b { font-size:13px; font-weight:500; }
+  .audit-actor { font-size:11px; color:var(--text-muted); padding-top:2px; }
+  .audit-diff { display:inline-flex; gap:6px; align-items:center; font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px; }
+  .audit-old { background:rgba(244,63,94,0.12); color:#fda4af; padding:1px 6px; border-radius:4px; text-decoration:line-through; }
+  .audit-new { background:rgba(132,204,22,0.18); color:#bef264; padding:1px 6px; border-radius:4px; }
+  .audit-arrow { color:var(--text-muted); }
+</style>
+</head>
+<body data-page="admin-audit" data-section="admin">
+<div class="app-shell">
+  <aside class="sidebar"></aside>
+  <main class="main-area">
+    <header class="topbar">
+      <div><div class="page-eyebrow">Administration · Audit log</div><div style="font-size:18px; font-weight:600">Toutes modifications · qui, quoi, quand</div></div>
+      <div style="display:flex; gap:8px">
+        <button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export CSV</button>
+        <button class="btn btn-secondary btn-sm"><i data-lucide="filter"></i> Filtres avancés</button>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- KPIs -->
+      <div style="display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom:18px">
+        <div class="kpi-card"><div class="kpi-label">Évènements · 30j</div><div class="kpi-value tabular">1 248</div><div class="kpi-delta up">+18 %</div></div>
+        <div class="kpi-card"><div class="kpi-label">Acteurs distincts</div><div class="kpi-value tabular">6</div><div class="kpi-delta muted">3 admin · 3 système</div></div>
+        <div class="kpi-card"><div class="kpi-label">Modif. abonnement</div><div class="kpi-value tabular">42</div><div class="kpi-delta muted">plan · cadence · mode</div></div>
+        <div class="kpi-card"><div class="kpi-label">Modif. client</div><div class="kpi-value tabular">87</div><div class="kpi-delta muted">contacts · TVA · email</div></div>
+        <div class="kpi-card"><div class="kpi-label">Évènements système</div><div class="kpi-value tabular">1 062</div><div class="kpi-delta muted">webhooks · cron</div></div>
+      </div>
+
+      <!-- Filters -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-body" style="padding:14px 18px; display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+          <select class="select" style="max-width:180px"><option>Toutes catégories</option><option>Client (CRUD)</option><option>Abonnement (état)</option><option>Promotion</option><option>DSO mandate</option><option>Onboarding</option><option>Facturation</option><option>Auth / users</option></select>
+          <select class="select" style="max-width:180px"><option>Tous acteurs</option><option>Bernard L. (admin)</option><option>Ugo D. (admin)</option><option>Jan D. (admin)</option><option>système (Yousign)</option><option>système (PayPlug)</option><option>système (cron)</option></select>
+          <select class="select" style="max-width:160px"><option>Toute la période</option><option>Aujourd'hui</option><option>7 derniers jours</option><option>30 derniers jours</option><option>Période custom…</option></select>
+          <input class="input" placeholder="Recherche entité (client, code, plant)…" style="max-width:260px">
+          <span class="muted" style="font-size:12px; margin-left:auto">12 affichés sur 1 248</span>
+        </div>
+      </div>
+
+      <!-- Audit log stream -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Flux d'évènements</div><span class="muted" style="font-size:11px">tri descendant · auto-refresh 30 s</span></div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">3 mai · 14:22:08</div>
+          <div class="audit-icon" style="background:rgba(167,139,250,0.18); color:#c4b5fd"><i data-lucide="ticket"></i></div>
+          <div class="audit-main">
+            <b>Promotion <span class="tabular">RENOV-2026-MAI</span> appliquée à <a class="link" href="admin-customer.html">Pyrénées Hydroélec</a></b>
+            <div class="audit-diff">
+              <span class="muted">prix mensuel:</span>
+              <span class="audit-old">320 €</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">100 €</span>
+              <span class="muted">· schedule v01 · 12 mois bundle</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Bernard L.</b><br>via wizard FR-SIGNUP étape 3</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">3 mai · 14:21:55</div>
+          <div class="audit-icon" style="background:rgba(132,204,22,0.18); color:#bef264"><i data-lucide="check-circle"></i></div>
+          <div class="audit-main">
+            <b>Abonnement <a class="link" href="admin-customer.html">Pyrénées Hydroélec</a> — transition d'état</b>
+            <div class="audit-diff">
+              <span class="audit-old">pending_signature</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">active + pending_payment</span>
+              <span class="muted">· FR-SUB-11 · webhook envelope.signed</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (Yousign)</b><br>envelope-pyr-3</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">3 mai · 11:08:42</div>
+          <div class="audit-icon" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="building-2"></i></div>
+          <div class="audit-main">
+            <b>Modification client <a class="link" href="admin-customer.html">Convert FMG</a></b>
+            <div class="audit-diff">
+              <span class="muted">billing_email:</span>
+              <span class="audit-old">comptable@convert-fmg.fr</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">finance@convert-fmg.fr</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Pierre Lefebvre</b> (client)<br>via portail self-serve</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">3 mai · 09:51:14</div>
+          <div class="audit-icon" style="background:rgba(132,204,22,0.18); color:#bef264"><i data-lucide="file-signature"></i></div>
+          <div class="audit-main">
+            <b>Mandat DSO signé · plant <i>Microcentrale Doubs-A</i></b>
+            <div class="audit-diff">
+              <span class="muted">Enedis · template</span>
+              <span class="audit-new">v3</span>
+              <span class="muted">· event <span class="tabular">plant.dso_mandate_signed</span> émis</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (Yousign)</b><br>envelope-doubs-1</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">2 mai · 16:15:30</div>
+          <div class="audit-icon" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="send"></i></div>
+          <div class="audit-main">
+            <b>Email J+3 envoyé à <a class="link" href="admin-customer.html">Microcentrale du Doubs</a></b>
+            <div class="audit-diff">
+              <span class="muted">template:</span>
+              <span class="audit-new">onboarding-day3@v4 · FR</span>
+              <span class="muted">· brevo msg-id <span class="tabular">b3f-2841</span></span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (cron)</b><br>FR-ONBOARD-3</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">2 mai · 14:08:11</div>
+          <div class="audit-icon" style="background:rgba(251,191,36,0.18); color:#fcd34d"><i data-lucide="repeat"></i></div>
+          <div class="audit-main">
+            <b>Plan modifié · <a class="link" href="admin-customer.html">Convert FMG</a></b>
+            <div class="audit-diff">
+              <span class="muted">cadence:</span>
+              <span class="audit-old">monthly</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">quarterly</span>
+            </div>
+            <div class="audit-diff">
+              <span class="muted">mode:</span>
+              <span class="audit-old">per_plant</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">enterprise</span>
+              <span class="muted">· effectif au prochain renouvel.</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Ugo D.</b><br>raison: « demande Pierre »</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">2 mai · 09:08:22</div>
+          <div class="audit-icon" style="background:rgba(132,204,22,0.18); color:#bef264"><i data-lucide="receipt"></i></div>
+          <div class="audit-main">
+            <b>Paiement reçu · <a class="link" href="admin-customer.html">Microcentrale du Doubs</a></b>
+            <div class="audit-diff">
+              <span class="audit-new">895,40 €</span>
+              <span class="muted">· SEPA •• 4218 · facture 2026-05-018 · payplug ch_</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (PayPlug)</b><br>webhook charge.succeeded</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">1 mai · 22:00:00</div>
+          <div class="audit-icon" style="background:rgba(56,189,248,0.18); color:#7dd3fc"><i data-lucide="file-text"></i></div>
+          <div class="audit-main">
+            <b>Factures cycliques générées · 14 clients</b>
+            <div class="audit-diff">
+              <span class="audit-new">14 invoices</span>
+              <span class="muted">· total 12 480 € HT · NET-14 · run-id <span class="tabular">cron-2026-05-01</span></span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (cron)</b><br>FR-BILLING</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">1 mai · 11:42:18</div>
+          <div class="audit-icon" style="background:rgba(167,139,250,0.18); color:#c4b5fd"><i data-lucide="user-plus"></i></div>
+          <div class="audit-main">
+            <b>Utilisateur invité · <a class="link" href="admin-customer.html">Convert FMG</a></b>
+            <div class="audit-diff">
+              <span class="muted">rôle:</span>
+              <span class="audit-new">member</span>
+              <span class="muted">· email: marie.lambert@convert-fmg.fr · magic-link envoyé</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Pierre Lefebvre</b> (client)<br>via paramètres</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">28 avr. · 16:40:11</div>
+          <div class="audit-icon" style="background:rgba(167,139,250,0.18); color:#c4b5fd"><i data-lucide="ticket"></i></div>
+          <div class="audit-main">
+            <b>Promotion <span class="tabular">FRIEND25</span> appliquée à <a class="link" href="admin-customer.html">Hydromill SRL</a></b>
+            <div class="audit-diff">
+              <span class="muted">−1 mois offert · schedule v01 · ref. parrainage par <a class="link">Microcentrale du Doubs</a></span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Bernard L.</b><br>via fiche client</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">26 avr. · 10:18:47</div>
+          <div class="audit-icon" style="background:rgba(167,139,250,0.18); color:#c4b5fd"><i data-lucide="message-square"></i></div>
+          <div class="audit-main">
+            <b>Note admin ajoutée · <a class="link" href="admin-customer.html">Convert FMG</a></b>
+            <div class="audit-diff">
+              <span class="muted">« tickets ouverts depuis 2 sem., à relancer »</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>Ugo D.</b><br>via fiche client</div>
+        </div>
+
+        <div class="audit-row" onclick="openOverlay('audit-detail')">
+          <div class="audit-when">22 avr. · 03:00:00</div>
+          <div class="audit-icon" style="background:rgba(251,191,36,0.18); color:#fcd34d"><i data-lucide="alert-triangle"></i></div>
+          <div class="audit-main">
+            <b>Health passé en Watch · <a class="link" href="admin-customer.html">Convert FMG</a></b>
+            <div class="audit-diff">
+              <span class="audit-old">Healthy (78)</span>
+              <span class="audit-arrow">→</span>
+              <span class="audit-new">Watch (62)</span>
+              <span class="muted">· trigger: usage 30j en baisse de 18 %</span>
+            </div>
+          </div>
+          <div class="audit-actor"><b>système (cron)</b><br>FR-PAD health-score</div>
+        </div>
+
+        <div style="padding:14px 18px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; font-size:12px">
+          <span class="muted">Page 1 / 105 · 12 / 1 248</span>
+          <div style="display:flex; gap:6px">
+            <button class="btn btn-secondary btn-sm" disabled><i data-lucide="chevron-left"></i></button>
+            <button class="btn btn-secondary btn-sm">Suivant <i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <p class="muted" style="font-size:12px; margin-top:14px; max-width:780px; line-height:1.6">
+        <b>Audit log immuable · rétention 7 ans.</b> Couvre toutes modifications de clients, abonnements, plants, promotions, mandats DSO, factures, sessions auth + tous évènements système (webhooks, cron). Diff <i>before → after</i> stocké pour chaque champ modifié, avec acteur, IP, user-agent. Référence : FR-PROMO-4, FR-CUS-6, transitions d'état FR-SUB-11. <a class="link">Documentation rétention →</a>
+      </p>
+
+    </div>
+  </main>
+</div>
+
+<!-- Audit detail modal -->
+<div class="overlay" id="audit-detail">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <div>
+        <div class="page-eyebrow">Évènement audit</div>
+        <div style="font-size:16px; font-weight:600">Plan modifié · Convert FMG</div>
+      </div>
+      <button class="icon-btn" onclick="closeOverlay('audit-detail')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:14px">
+        <div>
+          <div class="muted" style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em">Quand</div>
+          <div class="tabular" style="font-size:13px; margin-top:2px">2 mai 2026 · 14:08:22 (Europe/Paris)</div>
+        </div>
+        <div>
+          <div class="muted" style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em">Acteur</div>
+          <div style="font-size:13px; margin-top:2px"><b>Ugo Duraffourd</b> · admin</div>
+        </div>
+        <div>
+          <div class="muted" style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em">Entité</div>
+          <div style="font-size:13px; margin-top:2px"><a class="link" href="admin-customer.html">Convert FMG</a> · <span class="tabular">subscription:sub_8a4f</span></div>
+        </div>
+        <div>
+          <div class="muted" style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em">Origine</div>
+          <div class="tabular" style="font-size:12px; margin-top:2px">IP 81.92.184.7 · Firefox 124 · Bruxelles</div>
+        </div>
+      </div>
+
+      <h4 style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin:14px 0 8px">Diff (JSON)</h4>
+      <div style="background:var(--bg-input); padding:12px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:11px; line-height:1.7">
+<pre style="margin:0; color:var(--text)">{
+  <span style="color:#7dd3fc">"subscription_id"</span>: "sub_8a4f",
+  <span style="color:#7dd3fc">"changes"</span>: [
+    {
+      <span style="color:#7dd3fc">"field"</span>: "billing_cadence",
+      <span style="color:#7dd3fc">"old"</span>: <span style="color:#fda4af">"monthly"</span>,
+      <span style="color:#7dd3fc">"new"</span>: <span style="color:#bef264">"quarterly"</span>
+    },
+    {
+      <span style="color:#7dd3fc">"field"</span>: "billing_mode",
+      <span style="color:#7dd3fc">"old"</span>: <span style="color:#fda4af">"per_plant"</span>,
+      <span style="color:#7dd3fc">"new"</span>: <span style="color:#bef264">"enterprise"</span>
+    }
+  ],
+  <span style="color:#7dd3fc">"effective_at"</span>: "2026-05-22T00:00:00Z",
+  <span style="color:#7dd3fc">"reason"</span>: "demande Pierre",
+  <span style="color:#7dd3fc">"actor_role"</span>: "admin"
+}</pre>
+      </div>
+
+      <h4 style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin:14px 0 8px">Évènements liés</h4>
+      <ul style="font-size:12px; line-height:1.9; margin:0; padding-left:20px; color:var(--text-muted)">
+        <li>2 mai 14:08:22 · webhook <span class="tabular">subscription.updated</span> émis vers Insight + Community</li>
+        <li>2 mai 14:08:23 · proration calculée par PayPlug · 0 € (effective fin de période)</li>
+        <li>22 mai 00:00:00 · prochain run cron — bascule effective</li>
+      </ul>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeOverlay('audit-detail')">Fermer</button>
+      <button class="btn btn-secondary"><i data-lucide="external-link"></i> Voir client</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="js/app.js"></script>
+</body></html>
