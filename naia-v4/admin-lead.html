@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Lead — Naia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .ld-section { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; margin-bottom: 12px; }
+  .ld-section-head { padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; }
+  .ld-section-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .ld-section-body { padding: 18px 20px; }
+  .ld-info-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border-subtle); font-size: 13px; }
+  .ld-info-row:last-child { border-bottom: 0; }
+  .ld-info-row .lbl { color: var(--text-muted); }
+  .funnel-step { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-subtle); align-items: center; }
+  .funnel-step:last-child { border-bottom: 0; }
+  .funnel-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; }
+  .funnel-step.done .funnel-dot { background: rgba(132,204,22,0.18); color: #bef264; }
+  .funnel-step.current .funnel-dot { background: var(--brand-cyan-soft); color: var(--brand-cyan); border: 2px solid var(--brand-cyan); }
+  .funnel-step.future .funnel-dot { background: var(--bg-input); color: var(--text-subtle); }
+  .funnel-main { flex: 1; }
+  .funnel-title { font-size: 13px; font-weight: 500; }
+  .funnel-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+</style>
+</head>
+<body data-page="admin-leads" data-section="admin">
+<div class="app-shell">
+  <aside class="sidebar"></aside>
+  <main class="main-area">
+
+    <header class="topbar">
+      <div>
+        <div class="page-eyebrow"><a class="link" href="admin-leads.html">Administration · Leads</a> ·  <span data-lead-org>Microcentrale du Doubs</span></div>
+        <div style="font-size:18px; font-weight:600; display:flex; align-items:center; gap:10px">
+          <span data-lead-org>Microcentrale du Doubs</span> <span class="badge badge-blue" data-lead-status>Demo provisionnée</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px">
+        <button class="btn btn-secondary btn-sm"><i data-lucide="mail"></i> Contacter</button>
+        <button class="btn btn-secondary btn-sm"><i data-lucide="external-link"></i> Brevo</button>
+        <a class="btn btn-primary btn-sm" id="promote-btn" href="admin-abonnements.html?promote=doubs-micro">
+          <i data-lucide="user-plus"></i> Promouvoir → signature
+        </a>
+      </div>
+    </header>
+
+    <div class="page-content" style="max-width:1100px">
+
+      <!-- KPI strip -->
+      <div style="display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom:18px">
+        <div class="kpi-card"><div class="kpi-label">Statut</div><div class="kpi-value" style="font-size:18px" data-lead-status-kpi>Demo provisionnée</div><div class="kpi-delta muted" data-lead-age>3 j depuis capture</div></div>
+        <div class="kpi-card"><div class="kpi-label">Score jeu Naia</div><div class="kpi-value tabular" data-lead-score>187 / 250</div><div class="kpi-delta muted">top 18 %</div></div>
+        <div class="kpi-card"><div class="kpi-label">Capacité estimée</div><div class="kpi-value tabular" data-lead-kw>240 kW</div><div class="kpi-delta muted">1 plant déclaré</div></div>
+        <div class="kpi-card"><div class="kpi-label">RGPD · consentement</div><div class="kpi-value" style="font-size:18px"><span class="badge badge-green">Oui</span></div><div class="kpi-delta muted" data-lead-purge-eta>Auto-purge dans 23 mois</div></div>
+      </div>
+
+      <div style="display:grid; gap:14px; grid-template-columns: 1.4fr 1fr">
+
+        <!-- LEFT COLUMN -->
+        <div>
+
+          <!-- Section: Funnel -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="git-branch" style="width:15px; color:var(--brand-cyan)"></i> Parcours de conversion</div></div>
+            <div class="ld-section-body">
+              <div class="funnel-step done"><div class="funnel-dot">✓</div><div class="funnel-main"><div class="funnel-title">Lead capturé</div><div class="funnel-meta" data-lead-capture>Conf. Hydro 2026 · Lyon · 30 avril 2026 · stand · jeu Naia (score 187)</div></div></div>
+              <div class="funnel-step done"><div class="funnel-dot">✓</div><div class="funnel-main"><div class="funnel-title">Consentement RGPD</div><div class="funnel-meta">Coché sur la tablette du stand · 30 avril 2026</div></div></div>
+              <div class="funnel-step done"><div class="funnel-dot">✓</div><div class="funnel-main"><div class="funnel-title">Email post-conférence envoyé</div><div class="funnel-meta">Brevo campagne <b class="tabular">CONF-LYON-MAI-26</b> · 1 mai 2026 · ouvert ✓ · cliqué ✓</div></div></div>
+              <div class="funnel-step current"><div class="funnel-dot">4</div><div class="funnel-main"><div class="funnel-title">Demo provisionnée — actuel</div><div class="funnel-meta">Compte demo créé le 1 mai 2026 · expire 23 mai 2026 · 3 sessions de connexion</div></div></div>
+              <div class="funnel-step future"><div class="funnel-dot">5</div><div class="funnel-main"><div class="funnel-title">Promouvoir vers signature</div><div class="funnel-meta">Cliquer "Promouvoir → signature" en haut · le wizard FR-SIGNUP s'ouvrira pré-rempli avec toutes les infos du lead</div></div></div>
+              <div class="funnel-step future"><div class="funnel-dot">6</div><div class="funnel-main"><div class="funnel-title">Yousign envelope · contrat + mandats DSO</div><div class="funnel-meta">Envoyée à <span data-lead-email>antoine@doubs-hydro.fr</span> · expire +7 j · auto-relance +24 h</div></div></div>
+              <div class="funnel-step future"><div class="funnel-dot">7</div><div class="funnel-main"><div class="funnel-title">Activation · client payant</div><div class="funnel-meta">Statut <code style="font-size:11px">active · pending_payment</code> · 1ère facture NET 14 j · onboarding séquence démarrée</div></div></div>
+            </div>
+          </div>
+
+          <!-- Section: Capture context -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="filter" style="width:15px; color:var(--brand-cyan)"></i> Contexte de capture</div></div>
+            <div class="ld-section-body">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px">
+                <div>
+                  <div class="ld-info-row"><span class="lbl">Source</span><span data-lead-source>Stand conférence + jeu Naia</span></div>
+                  <div class="ld-info-row"><span class="lbl">Campagne</span><span data-lead-campaign><b class="tabular">HYDRO25</b> · Conf. Lyon</span></div>
+                  <div class="ld-info-row"><span class="lbl">Captured at</span><span data-lead-capdate>30 avril 2026 · 14:23</span></div>
+                  <div class="ld-info-row"><span class="lbl">Captured by</span><span>Bernard (admin)</span></div>
+                </div>
+                <div>
+                  <div class="ld-info-row"><span class="lbl">Game score</span><span class="tabular" data-lead-score-2>187 / 250</span></div>
+                  <div class="ld-info-row"><span class="lbl">Top % conférence</span><span class="tabular">18 %</span></div>
+                  <div class="ld-info-row"><span class="lbl">Centrales potentielles</span><span data-lead-plant-est>1 — ~ 240 kW</span></div>
+                  <div class="ld-info-row"><span class="lbl">Notes intérêt</span><span style="font-size:12px; max-width:200px; text-align:right" data-lead-notes>Cherche surtout l'analyse de pertes</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Demo activity (only when status >= demo_provisioned) -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="play-circle" style="width:15px; color:var(--brand-cyan)"></i> Activité sur le compte demo</div><span class="muted" style="font-size:12px">Compte demo expire le 23 mai 2026</span></div>
+            <div class="ld-section-body">
+              <table class="data-table" style="font-size:13px">
+                <thead><tr><th>Date</th><th>Module</th><th>Action</th><th>Durée</th></tr></thead>
+                <tbody>
+                  <tr><td class="tabular">2 mai · 10:18</td><td>Dashboard</td><td>Connexion + exploration tableau de bord</td><td class="num">14 min</td></tr>
+                  <tr><td class="tabular">2 mai · 10:32</td><td>Production</td><td>Ouverture vue 30 j d'une centrale demo</td><td class="num">8 min</td></tr>
+                  <tr><td class="tabular">3 mai · 09:05</td><td>Données</td><td>Tentative d'upload CSV (limité en demo)</td><td class="num">3 min</td></tr>
+                </tbody>
+              </table>
+              <p class="muted" style="font-size:12px; margin:14px 0 0">Activité positive — 3 sessions, focus production. Bon signal de conversion.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+
+          <!-- Identity -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="user" style="width:15px; color:var(--brand-cyan)"></i> Identité</div></div>
+            <div class="ld-section-body">
+              <div class="ld-info-row"><span class="lbl">Contact</span><span data-lead-contact>Antoine Bertin</span></div>
+              <div class="ld-info-row"><span class="lbl">Email</span><span style="font-size:12px" data-lead-email>antoine@doubs-hydro.fr</span></div>
+              <div class="ld-info-row"><span class="lbl">Téléphone</span><span class="tabular" data-lead-phone>+33 6 12 34 56 78</span></div>
+              <div class="ld-info-row"><span class="lbl">Organisation</span><span data-lead-org>Microcentrale du Doubs</span></div>
+              <div class="ld-info-row"><span class="lbl">Pays</span><span data-lead-country>France · Doubs (25)</span></div>
+            </div>
+          </div>
+
+          <!-- Linked records -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="link-2" style="width:15px; color:var(--brand-cyan)"></i> Liens</div></div>
+            <div class="ld-section-body">
+              <div class="ld-info-row"><span class="lbl">Compte demo</span><span><a class="link" href="admin-customer.html">demo-doubs-micro →</a></span></div>
+              <div class="ld-info-row"><span class="lbl">Client payant</span><span class="muted">— pas encore</span></div>
+              <div class="ld-info-row"><span class="lbl">Brevo contact</span><span><a class="link" target="_blank" href="#">contact_d8429 ↗</a></span></div>
+              <div class="ld-info-row"><span class="lbl">days_from_capture</span><span class="tabular" data-lead-days>3 jours</span></div>
+            </div>
+          </div>
+
+          <!-- GDPR -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="shield-check" style="width:15px; color:var(--brand-cyan)"></i> RGPD</div></div>
+            <div class="ld-section-body">
+              <div class="ld-info-row"><span class="lbl">Consentement</span><span><span class="badge badge-green">explicite · 30 avr.</span></span></div>
+              <div class="ld-info-row"><span class="lbl">Auto-purge si non converti</span><span class="muted">+24 mois sans contact</span></div>
+              <div class="ld-info-row"><span class="lbl">Compteur restant</span><span class="tabular" data-lead-purge-eta-2>23 mois</span></div>
+              <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" style="color:var(--accent-red); width:100%"><i data-lucide="trash-2"></i> Demande d'effacement (RGPD)</button></div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="ld-section">
+            <div class="ld-section-head"><div class="ld-section-title"><i data-lucide="zap" style="width:15px; color:var(--brand-cyan)"></i> Actions</div></div>
+            <div class="ld-section-body" style="display:flex; flex-direction:column; gap:6px">
+              <a class="btn btn-primary btn-sm" id="promote-btn-2" href="admin-abonnements.html?promote=doubs-micro" style="justify-content:flex-start"><i data-lucide="user-plus"></i> Promouvoir → signature</a>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="play-circle"></i> Prolonger la demo (+30 j)</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="mail"></i> Envoyer un email (Brevo)</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="phone"></i> Marquer "appelé"</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start"><i data-lucide="message-square"></i> Ajouter une note</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start; color:var(--accent-amber)"><i data-lucide="x-circle"></i> Marquer comme dropped</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="js/app.js"></script>
+<script>
+  // Adapt page to ?id= URL param. Falls back to "doubs-micro".
+  (function () {
+    const id = (new URLSearchParams(location.search).get("id") || "doubs-micro").toLowerCase();
+    const LEADS = {
+      'doubs-micro': { org: 'Microcentrale du Doubs',  contact: 'Antoine Bertin', email: 'antoine@doubs-hydro.fr',     phone: '+33 6 12 34 56 78', country: 'France · Doubs (25)',          score: '187 / 250', kw: '240 kW',  status: 'Demo provisionnée', statusClass: 'badge-blue',   age: '3 j depuis capture', source: 'Stand conférence + jeu Naia', campaign: '<b class="tabular">HYDRO25</b> · Conf. Lyon', capdate: '30 avril 2026 · 14:23', plantEst: '1 — ~ 240 kW', notes: 'Cherche surtout l\'analyse de pertes' },
+      'pyrenees':    { org: 'Pyrénées Hydroélec',     contact: 'Hélène Gros',    email: 'h.gros@pyr-hydro.fr',         phone: '+33 5 61 23 45 67', country: 'France · Hautes-Pyrénées (65)', score: '142 / 250', kw: '1,8 MW · 3 plants', status: 'Pending signature', statusClass: 'badge-purple', age: '5 j',                source: 'Stand conférence',                  campaign: '<b class="tabular">HYDRO25</b> · Conf. Lyon', capdate: '28 avril 2026', plantEst: '3 — ~ 1,8 MW total', notes: 'Plus sceptique sur le pricing enterprise' },
+      'ceze':        { org: 'Moulin de la Cèze',       contact: 'Jean Renard',    email: 'j.renard@ceze.fr',             phone: '—',                  country: 'France · Gard (30)',           score: '—',          kw: '80 kW',   status: 'Demo provisionnée', statusClass: 'badge-blue',   age: '12 j',               source: 'Inbound site marketing',            campaign: 'Inbound site',              capdate: '21 avril 2026', plantEst: '1 — ~ 80 kW',  notes: 'Petit moulin, demande conseil pour rénovation' },
+      'vhg':         { org: 'Vosges Hydro Group',      contact: 'Sophie Klein',   email: 'contact@vhg.fr',               phone: '+33 3 29 40 12 34', country: 'France · Vosges (88)',         score: '—',          kw: '5,4 MW · 7 plants', status: 'Contact en cours', statusClass: 'badge-amber', age: '2 j',                source: 'Inbound site marketing',            campaign: 'Inbound site',              capdate: '1 mai 2026',     plantEst: '7 — ~ 5,4 MW total', notes: 'Groupe multi-centrales, intéressé par mode entreprise' },
+      'aveyron':     { org: 'Hydraulique Aveyron',     contact: 'Marc Couteau',   email: 'm.couteau@aveyron-hydro.fr',   phone: '+33 5 65 78 90 12', country: 'France · Aveyron (12)',        score: '—',          kw: '320 kW',  status: 'Nouveau',           statusClass: 'badge-slate',  age: '1 h',                source: 'Webinaire mars 2026',               campaign: '<b class="tabular">WEBINAIRE-MARS-26</b>', capdate: '3 mai 2026 · 16:08', plantEst: '1 — ~ 320 kW', notes: 'Inscrit au webinaire mars, formulaire rempli' },
+    };
+    const lead = LEADS[id] || LEADS['doubs-micro'];
+    const promoteHref = `admin-abonnements.html?promote=${id}`;
+
+    document.title = `${lead.org} — Naia`;
+    document.querySelectorAll('[data-lead-org]').forEach(el => el.textContent = lead.org);
+    document.querySelectorAll('[data-lead-contact]').forEach(el => el.textContent = lead.contact);
+    document.querySelectorAll('[data-lead-email]').forEach(el => el.textContent = lead.email);
+    document.querySelectorAll('[data-lead-phone]').forEach(el => el.textContent = lead.phone);
+    document.querySelectorAll('[data-lead-country]').forEach(el => el.textContent = lead.country);
+    document.querySelectorAll('[data-lead-score]').forEach(el => el.textContent = lead.score);
+    document.querySelectorAll('[data-lead-score-2]').forEach(el => el.textContent = lead.score);
+    document.querySelectorAll('[data-lead-kw]').forEach(el => el.textContent = lead.kw);
+    document.querySelectorAll('[data-lead-status]').forEach(el => { el.textContent = lead.status; el.className = 'badge ' + lead.statusClass; });
+    document.querySelectorAll('[data-lead-status-kpi]').forEach(el => el.textContent = lead.status);
+    document.querySelectorAll('[data-lead-age]').forEach(el => el.textContent = lead.age + ' depuis capture');
+    document.querySelectorAll('[data-lead-source]').forEach(el => el.textContent = lead.source);
+    document.querySelectorAll('[data-lead-campaign]').forEach(el => el.innerHTML = lead.campaign);
+    document.querySelectorAll('[data-lead-capdate]').forEach(el => el.textContent = lead.capdate);
+    document.querySelectorAll('[data-lead-plant-est]').forEach(el => el.textContent = lead.plantEst);
+    document.querySelectorAll('[data-lead-notes]').forEach(el => el.textContent = lead.notes);
+    document.querySelectorAll('[data-lead-days]').forEach(el => el.textContent = lead.age);
+    document.querySelectorAll('[data-lead-purge-eta]').forEach(el => el.textContent = `Auto-purge dans 23 mois`);
+    document.querySelectorAll('[data-lead-purge-eta-2]').forEach(el => el.textContent = `23 mois`);
+    document.getElementById('promote-btn').href = promoteHref;
+    document.getElementById('promote-btn-2').href = promoteHref;
+    if (typeof initIcons === 'function') initIcons();
+  })();
+</script>
+</body></html>
