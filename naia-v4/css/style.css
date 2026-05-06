@@ -380,7 +380,14 @@ body[data-show-v2="true"] .subnav-item.v2 .v2-pill { background: rgba(217,119,6,
   transition: all 0.15s;
 }
 .centrale-tab:hover { color: var(--text-primary); }
-.centrale-tab.active { color: var(--brand-cyan); border-bottom-color: var(--brand-cyan); }
+.centrale-tab.active {
+  color: var(--brand-cyan);
+  border-bottom-color: var(--brand-cyan);
+  font-weight: 600;
+  background: linear-gradient(180deg, rgba(56,189,248,0.04), rgba(56,189,248,0.10));
+}
+.centrale-tab.active .cap { color: var(--brand-cyan); opacity: 0.8; }
+:root[data-theme="light"] .centrale-tab.active { background: linear-gradient(180deg, rgba(8,145,178,0.04), rgba(8,145,178,0.08)); }
 .centrale-tab.all { font-weight: 600; }
 .centrale-tab .cap { color: var(--text-subtle); font-size: 11px; font-weight: 400; }
 

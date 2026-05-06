@@ -23,11 +23,12 @@ const COMMUNITY_TOPICS = [
 ];
 
 const ADMIN_TOPICS = [
-  { slug: "admin-dashboard", label: "Tableau de bord", icon: "layout-dashboard", href: "admin.html" },
-  { slug: "admin-programme", label: "Programme communauté", icon: "zap",         href: "admin-programme.html" },
-  { slug: "admin-membres",   label: "Membres",             icon: "users",        href: "admin-membres.html" },
-  { slug: "admin-abonnements", label: "Abonnements",       icon: "credit-card",  href: "admin-abonnements.html" },
-  { slug: "admin-pricing",   label: "Pricing schedules",   icon: "list-ordered", href: "admin-pricing.html" },
+  { slug: "admin-dashboard",   label: "Tableau de bord",      icon: "layout-dashboard", href: "admin.html" },
+  { slug: "admin-programme",   label: "Programme communauté", icon: "zap",          href: "admin-programme.html" },
+  { slug: "admin-membres",     label: "Membres communauté",   icon: "users",        href: "admin-membres.html" },
+  { slug: "admin-abonnements", label: "Clients",              icon: "credit-card",  href: "admin-abonnements.html" },
+  { slug: "admin-leads",       label: "Leads",                icon: "filter",       href: "admin-leads.html" },
+  { slug: "admin-pricing",     label: "Pricing schedules",    icon: "list-ordered", href: "admin-pricing.html" },
 ];
 
 // ---- THEME ----
@@ -243,7 +244,6 @@ function toggleProfileDropdown() {
       <a href="profil-abonnement.html"><i data-lucide="credit-card" style="width:14px;height:14px"></i> Mon abonnement</a>
       <a href="profil-factures.html"><i data-lucide="file-text" style="width:14px;height:14px"></i> Mes factures</a>
       <a href="profil-jetons.html"><i data-lucide="coins" style="width:14px;height:14px"></i> Mes jetons</a>
-      <button onclick="alert('Mes badges — par utilisateur (Marc et Sophie ont chacun les leurs).')"><i data-lucide="award" style="width:14px;height:14px"></i> Mes badges</button>
       <button onclick="openHelp()"><i data-lucide="life-buoy" style="width:14px;height:14px"></i> Aide &amp; support</button>
       <div class="divider"></div>
       <div class="theme-row">
