@@ -23,16 +23,17 @@ const COMMUNITY_TOPICS = [
 ];
 
 const ADMIN_TOPICS = [
-  { slug: "admin-dashboard",   label: "Tableau de bord",      icon: "layout-dashboard", href: "admin.html" },
-  { slug: "admin-programme",   label: "Programme communauté", icon: "zap",          href: "admin-programme.html" },
-  { slug: "admin-membres",     label: "Membres communauté",   icon: "users",        href: "admin-membres.html" },
-  { slug: "admin-abonnements", label: "Clients",              icon: "credit-card",  href: "admin-abonnements.html" },
-  { slug: "admin-leads",       label: "Leads",                icon: "filter",       href: "admin-leads.html" },
-  { slug: "admin-pricing",     label: "Pricing schedules",    icon: "list-ordered", href: "admin-pricing.html" },
-  { slug: "admin-promotions",  label: "Promotions",           icon: "ticket",       href: "admin-promotions.html" },
-  { slug: "admin-dso",         label: "Mandats DSO",          icon: "file-signature", href: "admin-dso.html" },
-  { slug: "admin-onboarding",  label: "Onboarding emails",    icon: "send",         href: "admin-onboarding.html" },
-  { slug: "admin-audit",       label: "Audit log",            icon: "shield",       href: "admin-audit.html" },
+  { slug: "admin-dashboard",         label: "Tableau de bord",      icon: "layout-dashboard", href: "admin.html" },
+  { slug: "admin-programme",         label: "Programme communauté", icon: "zap",            href: "admin-programme.html" },
+  { slug: "admin-membres",           label: "Membres communauté",   icon: "users",          href: "admin-membres.html" },
+  { slug: "admin-audit-community",   label: "Audit · Communauté",   icon: "shield-check",   href: "admin-audit-community.html" },
+  { slug: "admin-abonnements",       label: "Clients",              icon: "credit-card",    href: "admin-abonnements.html" },
+  { slug: "admin-leads",             label: "Leads",                icon: "filter",         href: "admin-leads.html" },
+  { slug: "admin-pricing",           label: "Pricing schedules",    icon: "list-ordered",   href: "admin-pricing.html" },
+  { slug: "admin-promotions",        label: "Promotions",           icon: "ticket",         href: "admin-promotions.html" },
+  { slug: "admin-dso",               label: "Mandats DSO",          icon: "file-signature", href: "admin-dso.html" },
+  { slug: "admin-onboarding",        label: "Onboarding emails",    icon: "send",           href: "admin-onboarding.html" },
+  { slug: "admin-audit",             label: "Audit · Abonnements",  icon: "shield",         href: "admin-audit.html" },
 ];
 
 // ---- THEME ----
