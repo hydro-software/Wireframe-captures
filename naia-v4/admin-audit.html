@@ -33,8 +33,8 @@
     </header>
 
     <div class="centrale-tabs">
-      <a href="#communaute"  class="centrale-tab" data-audit-tab="communaute"  onclick="selectAuditScope('communaute'); return false"><i data-lucide="shield-check" style="width:14px;height:14px"></i> Communauté <span class="cap">community.audit_log</span></a>
-      <a href="#abonnements" class="centrale-tab" data-audit-tab="abonnements" onclick="selectAuditScope('abonnements'); return false"><i data-lucide="shield" style="width:14px;height:14px"></i> Abonnements <span class="cap">subscription.audit_log</span></a>
+      <a href="#communaute"  class="centrale-tab" data-audit-tab="communaute"  onclick="event.preventDefault(); selectAuditScope('communaute'); return false;"><i data-lucide="shield-check" style="width:14px;height:14px"></i> Communauté <span class="cap">community.audit_log</span></a>
+      <a href="#abonnements" class="centrale-tab" data-audit-tab="abonnements" onclick="event.preventDefault(); selectAuditScope('abonnements'); return false;"><i data-lucide="shield" style="width:14px;height:14px"></i> Abonnements <span class="cap">subscription.audit_log</span></a>
     </div>
 
     <!-- ============================================================ -->

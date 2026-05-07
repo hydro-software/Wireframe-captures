@@ -330,8 +330,11 @@ function onCentraleTabClick(e, slug) {
 }
 function applyCentrale(slug) {
   document.body.dataset.centrale = slug;
-  // Update active class on tabs
-  document.querySelectorAll(".centrale-tab").forEach(t => t.classList.toggle("active", t.dataset.centrale === slug));
+  // Update active class on tabs.
+  // Scope to tabs that actually carry data-centrale so we don't fight other
+  // .centrale-tab consumers (e.g. admin-audit.html reuses the visual class
+  // but uses data-audit-tab — its active state is owned by selectAuditScope).
+  document.querySelectorAll(".centrale-tab[data-centrale]").forEach(t => t.classList.toggle("active", t.dataset.centrale === slug));
   // Update centrale-aware texts in the page
   const c = CENTRALES.find(x => x.slug === slug);
   document.querySelectorAll("[data-centrale-name]").forEach(el => {
