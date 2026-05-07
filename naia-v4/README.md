@@ -74,13 +74,12 @@ Profile area at bottom-left → opens dropdown with Mon profil, Mon abonnement, 
 - `admin.html` — Cross-module dashboard with shortcuts to programme communauté + abonnements
 - `admin-programme.html` — Activity catalogue (org-level points, in-process triggers, frequency caps) + approval queue
 - `admin-membres.html` — Community-scoped member view (tier, points, conversions, activity, badges, parrainage)
-- `admin-audit-community.html` — Community audit log (points, tiers, badges, parrainage, modération, jeu) — reads `community.audit_log` only
 - `admin-abonnements.html` — Customer table (plan, status, MRR, health, dunning) — owned by Subscription module
 - `admin-pricing.html` — Pricing schedule v01 with brackets, conversion rate, version history
-- `admin-audit.html` — Subscription audit log (clients, plans, mandats DSO, factures, onboarding) — reads `subscription.audit_log` only
+- `admin-audit.html` / `admin-audit-community.html` — single sidebar entry **"Audit log"** with a tab strip at the top: **Communauté** (reads `community.audit_log`) and **Abonnements** (reads `subscription.audit_log`). Sibling pages, same visual shape, distinct data sources per PRD v1.9 FR-PAD-6.
 
 ### Audit log architecture (PRD v1.9 FR-PAD-6)
-Per-app audit logs, no unified cross-app feed. Subscription's `admin-audit.html` and Community's `admin-audit-community.html` are sibling pages with the same shape but different data sources. Auth and infra events live in a separate `platform.audit_log` (page TBD if/when platform admin surfaces are mockup'd).
+Per-app audit logs, no unified cross-app feed. The two pages are sibling tabs reachable from one sidebar entry; each tab queries its own module's audit log (`community.audit_log`, `subscription.audit_log`). Auth and infra events live in a separate `platform.audit_log` (page TBD if/when platform admin surfaces are mockup'd).
 
 ## What to click for review
 

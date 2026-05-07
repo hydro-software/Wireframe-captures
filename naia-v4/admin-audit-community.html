@@ -20,17 +20,22 @@
   .audit-arrow { color:var(--text-muted); }
 </style>
 </head>
-<body data-page="admin-audit-community" data-section="admin">
+<body data-page="admin-audit" data-section="admin">
 <div class="app-shell">
   <aside class="sidebar"></aside>
   <main class="main-area">
     <header class="topbar">
-      <div><div class="page-eyebrow">Administration · Audit log Communauté</div><div style="font-size:18px; font-weight:600">Modifications côté Communauté · qui, quoi, quand</div><div class="muted" style="font-size:12px; margin-top:2px">Scope : événements <code>community.audit_log</code> uniquement. Pour les Abonnements, voir <a class="link" href="admin-audit.html">Audit · Abonnements</a>.</div></div>
+      <div><div class="page-eyebrow">Administration · Audit log</div><div style="font-size:18px; font-weight:600">Modifications · qui, quoi, quand</div><div class="muted" style="font-size:12px; margin-top:2px">Logs séparés par app (PRD v1.9 FR-PAD-6) — sélectionnez l'onglet <i>Communauté</i> ou <i>Abonnements</i>.</div></div>
       <div style="display:flex; gap:8px">
         <button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Export CSV</button>
         <button class="btn btn-secondary btn-sm"><i data-lucide="filter"></i> Filtres avancés</button>
       </div>
     </header>
+
+    <div class="centrale-tabs">
+      <a href="admin-audit-community.html" class="centrale-tab active"><i data-lucide="shield-check" style="width:14px;height:14px"></i> Communauté <span class="cap">community.audit_log</span></a>
+      <a href="admin-audit.html" class="centrale-tab"><i data-lucide="shield" style="width:14px;height:14px"></i> Abonnements <span class="cap">subscription.audit_log</span></a>
+    </div>
 
     <div class="page-content">
 
