@@ -1544,10 +1544,10 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<rect x="${tx(0)}" y="${ty(ch)}" width="${cw*sc}" height="${ch*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.6"/>`;
       c += `<text x="${tx(cw/2)}" y="${ty(ch)+15}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
       c += `<text x="${tx(cw/2)}" y="${ty(0)-9}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
-      // Two long side panels — 20 × 97, screwed onto the 18-cm long faces,
-      // overhanging 1 cm at each edge (drawn as the outer strips).
-      c += `<rect x="${tx(0)-sideT*sc}" y="${ty(ch)-sc}" width="${sideT*sc}" height="${(ch+2)*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
-      c += `<rect x="${tx(cw)}" y="${ty(ch)-sc}" width="${sideT*sc}" height="${(ch+2)*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      // Two long side panels — screwed onto the long (56 cm) faces, i.e.
+      // the top & bottom of the cross-section, overhanging 1 cm each edge.
+      c += `<rect x="${tx(0)-sc}" y="${ty(ch)-sideT*sc}" width="${(cw+2)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      c += `<rect x="${tx(0)-sc}" y="${ty(0)}" width="${(cw+2)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
       // 10 cm closing flap — folds to the INSIDE (drawn just inside the bottom face)
       c += `<rect x="${tx(0)}" y="${ty(0)-flapT*sc}" width="${8.5*sc}" height="${flapT*sc}" fill="rgba(0,0,0,0.32)" stroke="#000" stroke-width="1"/>`;
       // Stand-fold hinges locked flat inside the long faces
@@ -1556,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Notes below
       const ny = ty(ch) + ch*sc + 24;
       c += `<text x="${tx(cw/2)}" y="${ny}" fill="#555" font-size="8" text-anchor="middle">10 cm flap folds INSIDE (~8.5 cm laps flat) &amp; screws to a long side panel</text>`;
-      c += `<text x="${tx(cw/2)}" y="${ny+14}" fill="#555" font-size="8" text-anchor="middle">2 long side panels (20 × 97) screw onto the 18-cm faces — 1 cm overlap all round</text>`;
+      c += `<text x="${tx(cw/2)}" y="${ny+14}" fill="#555" font-size="8" text-anchor="middle">2 long side panels (20 × 97) screw onto the long 56-cm faces — 1 cm overlap all round</text>`;
       c += `<text x="${tx(cw/2)}" y="${ny+28}" fill="#555" font-size="7" text-anchor="middle">○ ⊓-fold hinges (50 &amp; 108) locked flat · tube extrudes 95 cm into the page</text>`;
       svg.innerHTML = c;
     }
@@ -1930,7 +1930,7 @@ document.addEventListener('DOMContentLoaded', () => {
         laps flat) and screws to a long side panel. Two
         <strong>long side panels</strong> (20 × 97 cm — 18 + 2 by
         95 + 2, sized 1 cm oversize on each edge) screw onto the
-        18-cm faces, overlapping the borders. The two stand-fold
+        long 56-cm faces, overlapping the borders. The two stand-fold
         hinges sit inside the long faces, locked flat.
       </p>
       <svg id="stand-crate-svg"></svg>
