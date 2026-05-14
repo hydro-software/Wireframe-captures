@@ -117,22 +117,18 @@ const WIN_H_S = WIN_H;                        // window height on surface (same,
 const SHELF_Y = 38;
 const SHELF_D = 30;
 
-// Mouse shelf
-const MOUSE_OVERHANG = 25;
-const MOUSE_TOTAL_W = W + 2 * MOUSE_OVERHANG; // 108cm
-const MOUSE_D = 25;
-const MOUSE_T = T;
-const MOUSE_CURRENT = 12;  // current slot height
-const SLOT_HEIGHTS = [8, 12, 16];
-// Distance from the tilted front edge to the front of the slot. Without
-// this margin, the slot opens directly into the front-tilt cut, and the
-// wood between the slot top and the next conformat above (~26 cm of
-// vertical span at the front edge) is only held by the bridge behind
-// the slot — easy to flex during transport. 3 cm of front wood (2× the
-// panel thickness, the standard "minimum edge distance" for a load-
-// bearing cutout in plywood) restores continuous front-edge support
-// while costing the player ~3 cm of mouse-shelf reach.
-const SLOT_FRONT_MARGIN = 3;
+// Side mouse ledges — the actual build replaced the old single 108 cm
+// through-shelf with two small side-mounted ledges (17 cm out × 25 cm
+// along the side), one bracketed to the outer face of each side panel.
+// This shrank the transport crate: with no 108 cm-wide panel, the crate
+// no longer has to be 108 cm wide — it is now 95 × 56 × 18 cm (see the
+// packing section).
+const LEDGE_W = 17;            // ledge projection out from the cabinet side
+const LEDGE_D = 25;            // ledge dimension front-to-back along the side
+const LEDGE_T = T;             // 15 mm poplar ply
+const LEDGE_QTY = 2;           // one ledge per side
+const LEDGE_Y = 12;            // ledge top-face height, front-edge aligned
+const LEDGE_TOTAL_W = W + 2 * LEDGE_W; // 108 cm — cabinet + both ledges (front-view envelope)
 
 // ========================
 // SVG HELPERS
@@ -226,12 +222,14 @@ document.addEventListener('DOMContentLoaded', () => {
     content += `<path d="M${tx(0)},${ty(0)-arcR} A${arcR},${arcR} 0 0,1 ${ax},${ay}" class="angle-arc"/>`;
     content += `<text x="${tx(0)+15}" y="${ty(0)-arcR+5}" class="angle-text">20°</text>`;
 
-    // Slot markers on front edge
-    SLOT_HEIGHTS.forEach(sh => {
-      const sy = ty(sh);
-      content += `<line x1="${tx(0)-3}" y1="${sy}" x2="${tx(0)+5}" y2="${sy}" stroke="#000" stroke-width="1"/>`;
-      content += `<text x="${tx(0)-15}" y="${sy+3}" fill="#000" font-size="7" text-anchor="middle">↔${sh}</text>`;
-    });
+    // Side mouse ledge — bolts to the OUTER face of this side panel
+    // (no through-slot). Mark the ledge's mount footprint at the front edge.
+    {
+      const ly0 = ty(LEDGE_Y);
+      const ly1 = ty(LEDGE_Y + LEDGE_T);
+      content += `<rect x="${tx(0)-6}" y="${ly1}" width="6" height="${ly0-ly1}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="0.8"/>`;
+      content += `<text x="${tx(0)-26}" y="${(ly0+ly1)/2+3}" fill="#000" font-size="7" text-anchor="middle">ledge Y=${LEDGE_Y}</text>`;
+    }
 
     // Monitor shelf line
     const shelfZ = SHELF_Y * Math.tan(TILT);
@@ -468,12 +466,12 @@ document.addEventListener('DOMContentLoaded', () => {
     svg.innerHTML = content;
   }
 
-  // ---- MOUSE SHELF ----
+  // ---- SIDE MOUSE LEDGE (×2) ----
   {
     const svg = document.getElementById('mouse-panel-svg');
     const pad = 30;
-    const pw = MOUSE_TOTAL_W, ph = MOUSE_D;
-    const sw = pw*S + pad*2, sh = ph*S + pad*2;
+    const pw = LEDGE_W, ph = LEDGE_D;
+    const sw = pw*S + pad*2 + 80, sh = ph*S + pad*2 + 20;
     svg.setAttribute('viewBox', `0 0 ${sw} ${sh}`);
     svg.setAttribute('width', sw);
     svg.setAttribute('height', sh);
@@ -483,21 +481,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let content = '';
     content += `<rect x="${tx(0)}" y="${ty(ph)}" width="${pw*S}" height="${ph*S}" class="panel-fill"/>`;
+    content += `<text x="${tx(pw/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">mouse area</text>`;
 
-    // Show left overhang, cabinet width, right overhang
-    const lo = MOUSE_OVERHANG;
-    content += `<line x1="${tx(lo)}" y1="${ty(0)}" x2="${tx(lo)}" y2="${ty(ph)}" stroke="#000" stroke-width="0.5" stroke-dasharray="3,2"/>`;
-    content += `<line x1="${tx(lo+W)}" y1="${ty(0)}" x2="${tx(lo+W)}" y2="${ty(ph)}" stroke="#000" stroke-width="0.5" stroke-dasharray="3,2"/>`;
+    // The edge that bolts onto the side panel's outer face
+    content += `<line x1="${tx(0)}" y1="${ty(0)}" x2="${tx(0)}" y2="${ty(ph)}" stroke="#000" stroke-width="2.5"/>`;
+    content += `<text x="${tx(0)-7}" y="${ty(ph/2)}" fill="#000" font-size="7" text-anchor="middle" transform="rotate(-90 ${tx(0)-7} ${ty(ph/2)})">bolts to side panel</text>`;
 
-    content += `<text x="${tx(lo/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">mouse area</text>`;
-    content += `<text x="${tx(lo+W/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">through cabinet</text>`;
-    content += `<text x="${tx(lo+W+lo/2)}" y="${ty(ph/2)+4}" class="panel-label" font-size="8">mouse area</text>`;
-
-    content += svgDim(tx(0), ty(0), tx(pw), ty(0), `${MOUSE_TOTAL_W} total`, 16);
-    content += svgDim(tx(0), ty(0), tx(lo), ty(0), `${lo}`, 28);
-    content += svgDim(tx(lo), ty(0), tx(lo+W), ty(0), `${W}`, 28);
-    content += svgDim(tx(lo+W), ty(0), tx(pw), ty(0), `${lo}`, 28);
-    content += svgDim(tx(0), ty(0), tx(0), ty(ph), `${ph}`, -14);
+    content += svgDim(tx(0), ty(0), tx(pw), ty(0), `${LEDGE_W}`, 16);
+    content += svgDim(tx(0), ty(0), tx(0), ty(ph), `${LEDGE_D}`, -14);
+    content += `<text x="${tx(pw/2)}" y="${ty(0)+34}" fill="#555" font-size="9" text-anchor="middle">Cut ${LEDGE_QTY} — one per side</text>`;
 
     svg.innerHTML = content;
   }
@@ -520,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const roofArea = INNER_W * ROOF_LEN / 10000;
     const logoArea = INNER_W * LOGO_H / 10000;
     const shelfArea = INNER_W * SHELF_D / 10000;
-    const mouseArea = MOUSE_TOTAL_W * MOUSE_D / 10000;
+    const ledgeArea = LEDGE_W * LEDGE_D / 10000;  // per ledge
 
     // Logo panel lightbox: 3mm opal acrylic (front) + 3mm foamboard (back) + LED strip
     const ACRYLIC_KG_M2 = 3.6;  // 3mm opal acrylic ≈ 3.6 kg/m²
@@ -537,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ['F','Logo panel (lightbox)', 1, '57.5 × 15.3 (housing) · 54.5 × 11.5 (acrylic)', logoArea, null, 'Housing with 53×10 window cutout + 4 × ⌀6mm holes 0.7cm from each border. Acrylic 3mm opal + foamboard + LED.'],
       ['G','Soffit panel', 1, `${INNER_W} × ${SOFFIT_D.toFixed(1)}`, soffitArea, KG_PER_M2, `Horizontal at Y=${FP_TOP_Y.toFixed(1)}cm, supports lightbox`],
       ['H','Monitor shelf', 1, `${INNER_W} × ${SHELF_D}`, shelfArea, KG_PER_M2, `At Y=${SHELF_Y}cm`],
-      ['M','Mouse shelf', 1, `${MOUSE_TOTAL_W} × ${MOUSE_D}`, mouseArea, KG_PER_M2, `Slots at ${SLOT_HEIGHTS.join('/')}cm`],
+      ['L','Side mouse ledge', LEDGE_QTY, `${LEDGE_W} × ${LEDGE_D}`, ledgeArea, KG_PER_M2, `Bracketed to the outer face of each side panel at Y=${LEDGE_Y}cm`],
     ];
 
     let totalWeight = 0;
@@ -581,8 +573,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const pad = 40;
     const sc = 3.5;
     // Front view: we see the cabinet width (W=58) and height (H_FRONT=95)
-    // Plus mouse shelf overhang on each side (25cm)
-    const totalW = MOUSE_TOTAL_W; // 108
+    // Plus a side mouse ledge projecting LEDGE_W (25cm) on each side
+    const totalW = LEDGE_TOTAL_W; // 108 — cabinet + both side ledges
     const viewW = totalW * sc + pad*2;
     const viewH = H_FRONT * sc + pad*2 + 20;
     svg.setAttribute('viewBox', `0 0 ${viewW} ${viewH}`);
@@ -644,22 +636,24 @@ document.addEventListener('DOMContentLoaded', () => {
     c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H/2-4)}" fill="#000" font-size="6" text-anchor="middle">hydro</text>`;
     c += `<text x="${tx(0)}" y="${ty(H_FRONT-LOGO_H+1)}" fill="#555" font-size="5" text-anchor="middle">illuminated lightbox</text>`;
 
-    // Mouse shelf (full width 108, at Y=12)
-    // Hidden behind front panel — show center portion as dotted, overhangs solid
-    const msY = MOUSE_CURRENT;
-    // Left overhang (visible, solid)
-    c += `<rect x="${tx(-MOUSE_TOTAL_W/2)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
-    // Right overhang (visible, solid)
-    c += `<rect x="${tx(hw)}" y="${ty(msY+MOUSE_T)}" width="${MOUSE_OVERHANG*sc}" height="${MOUSE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
-    // Center portion behind front panel (dotted)
-    c += `<rect x="${tx(-hw)}" y="${ty(msY+MOUSE_T)}" width="${W*sc}" height="${MOUSE_T*sc}" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>`;
-    // Mouse pads on overhangs
-    c += `<rect x="${tx(-MOUSE_TOTAL_W/2+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
-    c += `<rect x="${tx(hw+1)}" y="${ty(msY+MOUSE_T-0.2)}" width="${(MOUSE_OVERHANG-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
+    // Side mouse ledges (×2) — one bolted to the outer face of each side
+    // panel at Y=LEDGE_Y. NOT a through-shelf: nothing crosses the cabinet.
+    // Each ledge projects LEDGE_W (25 cm) out from its side.
+    const msY = LEDGE_Y;
+    // Left ledge (solid)
+    c += `<rect x="${tx(-LEDGE_TOTAL_W/2)}" y="${ty(msY+LEDGE_T)}" width="${LEDGE_W*sc}" height="${LEDGE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
+    // Right ledge (solid)
+    c += `<rect x="${tx(hw)}" y="${ty(msY+LEDGE_T)}" width="${LEDGE_W*sc}" height="${LEDGE_T*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
+    // Mouse pad on each ledge
+    c += `<rect x="${tx(-LEDGE_TOTAL_W/2+1)}" y="${ty(msY+LEDGE_T-0.2)}" width="${(LEDGE_W-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
+    c += `<rect x="${tx(hw+1)}" y="${ty(msY+LEDGE_T-0.2)}" width="${(LEDGE_W-2)*sc}" height="${0.3*sc}" fill="#000" stroke="none"/>`;
+    // Labels
+    c += `<text x="${tx(-hw-LEDGE_W/2)}" y="${ty(msY+LEDGE_T)-3}" fill="#555" font-size="6" text-anchor="middle">side ledge ${LEDGE_W}×${LEDGE_D}</text>`;
+    c += `<text x="${tx(hw+LEDGE_W/2)}" y="${ty(msY+LEDGE_T)-3}" fill="#555" font-size="6" text-anchor="middle">side ledge ${LEDGE_W}×${LEDGE_D}</text>`;
 
     // Dimension lines
     c += svgDim(tx(-hw), ty(0), tx(hw), ty(0), `${W}`, 16);
-    c += svgDim(tx(-MOUSE_TOTAL_W/2), ty(0), tx(MOUSE_TOTAL_W/2), ty(0), `${MOUSE_TOTAL_W}`, 28);
+    c += svgDim(tx(-LEDGE_TOTAL_W/2), ty(0), tx(LEDGE_TOTAL_W/2), ty(0), `${LEDGE_TOTAL_W} over ledges`, 28);
     c += svgDim(tx(hw), ty(0), tx(hw), ty(H_FRONT), `${H_FRONT}`, 16);
     c += svgDim(tx(-hw), ty(0), tx(-hw), ty(msY), `${msY}`, -20);
 
@@ -678,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dxPerD = Math.cos(ANG) * DF * sc; // x shift per cm depth
     const dyPerD = -Math.sin(ANG) * DF * sc; // y shift per cm depth (goes up)
 
-    const viewW = W * sc + D * dxPerD / sc * sc + pad*2 + 40;
+    const viewW = W * sc + D * dxPerD / sc * sc + pad*2 + 40 + 2 * LEDGE_W * sc; // extra width for the two side ledges
     const viewH = H_FRONT * sc + D * Math.abs(dyPerD/sc) * sc + pad*2 + 20;
     svg.setAttribute('viewBox', `0 0 ${viewW} ${viewH}`);
     svg.setAttribute('width', viewW);
@@ -688,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // x_front: 0=left edge of cabinet, W=right edge
     // y_height: 0=bottom, H_FRONT=top
     // z_depth: 0=front, D=back
-    const px = (x, z) => pad + x * sc + z * dxPerD;
+    const px = (x, z) => pad + LEDGE_W * sc + x * sc + z * dxPerD; // +LEDGE_W*sc left margin for the left side ledge
     const py = (y, z) => pad + 10 + (H_FRONT - y) * sc + z * dyPerD;
 
     let c = '';
@@ -791,27 +785,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Window cutout edge in contrasting color
     c += `<path d="M${wTL[0]},${wTL[1]} L${wTR[0]},${wTR[1]} L${wBR[0]},${wBR[1]} L${wBL[0]},${wBL[1]} Z" fill="none" stroke="#000" stroke-width="1.2"/>`;
 
-    // Mouse shelf — overhangs visible, center behind front panel (dotted)
-    const msZ = 0; // mouse shelf at front edge
-    const msTop = py(MOUSE_CURRENT + MOUSE_T, msZ);
-    const msBot = py(MOUSE_CURRENT, msZ);
-    // Left overhang (solid)
-    const lox = px(0, 0) - MOUSE_OVERHANG * sc;
+    // Side mouse ledges (×2) — one bolted to the outer face of each side
+    // panel. Each is a small horizontal panel: LEDGE_W out from the side,
+    // LEDGE_D front-to-back. Nothing crosses the cabinet.
+    const ledgeTopY = LEDGE_Y + LEDGE_T;
+    // Left ledge — projects in -x from the cabinet's left face (x=0)
     quad([
-      [lox, msTop], [px(0,0), msTop],
-      [px(0,0), msBot], [lox, msBot]
-    ], 'rgba(0,0,0,0.04)', '#000', 0.8);
-    // Right overhang (solid)
-    const rox = px(W, 0) + MOUSE_OVERHANG * sc;
+      [px(0,0) - LEDGE_W*sc,       py(ledgeTopY, 0)],
+      [px(0,0),                    py(ledgeTopY, 0)],
+      [px(0,LEDGE_D),              py(ledgeTopY, LEDGE_D)],
+      [px(0,LEDGE_D) - LEDGE_W*sc, py(ledgeTopY, LEDGE_D)],
+    ], 'rgba(0,0,0,0.06)', '#000', 0.9);
+    // Right ledge — projects in +x from the cabinet's right face (x=W)
     quad([
-      [px(W,0), msTop], [rox, msTop],
-      [rox, msBot], [px(W,0), msBot]
-    ], 'rgba(0,0,0,0.04)', '#000', 0.8);
-    // Center (dotted — behind front panel)
-    c += `<rect x="${px(0,0)}" y="${msTop}" width="${(px(W,0)-px(0,0))}" height="${msBot-msTop}" fill="none" stroke="#000" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.4"/>`;
-    // Mouse pads
-    c += `<rect x="${lox+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#000"/>`;
-    c += `<rect x="${px(W,0)+3}" y="${msTop-1}" width="${(MOUSE_OVERHANG-2)*sc}" height="2" fill="#000"/>`;
+      [px(W,0),                    py(ledgeTopY, 0)],
+      [px(W,0) + LEDGE_W*sc,       py(ledgeTopY, 0)],
+      [px(W,LEDGE_D) + LEDGE_W*sc, py(ledgeTopY, LEDGE_D)],
+      [px(W,LEDGE_D),              py(ledgeTopY, LEDGE_D)],
+    ], 'rgba(0,0,0,0.06)', '#000', 0.9);
+    c += `<text x="${px(W,0) + LEDGE_W*sc/2}" y="${py(ledgeTopY,0)+11}" fill="#555" font-size="6" text-anchor="middle">side ledge ${LEDGE_W}×${LEDGE_D} (×2)</text>`;
 
     // Dimensions
     c += svgDim(px(0,0), py(0,0), px(0,0), py(H_FRONT,0), `${H_FRONT}`, -22);
@@ -831,39 +823,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const TEXTILE = 0.3;  // 3mm protective textile between panels
     const CRATE_WALL = 1.5; // 15mm plywood crate walls
 
-    // ---- LAYER PACKING (sub-assembly-based) ----
-    // The cabinet ships as two pre-built folding sub-assemblies plus the
-    // remaining loose panels. Each sub-assembly is THICKER than a single
-    // panel because it carries its own hardware:
+    // ---- LAYER PACKING ----
+    // The cabinet ships as ONE pre-built folding sub-assembly (Side R +
+    // Roof, hinged along D→E) plus the remaining loose panels — Side L
+    // included, since the cross-beams it used to carry are gone (the
+    // screwed-on front panel provides the racking stability instead).
     //
     //   Sub-A1 = Side R + Roof folded along D→E
     //          ≈ 2 × T plywood + a piano hinge ≈ 3.2 cm
-    //   Sub-A2 = Side L + Beam 1 + Beam 2 folded against the inside face
-    //          ≈ T plywood + BEAM_T cross-section ≈ 4.5 cm
     //
-    // Footprints both stay within ~50 × 95 cm (the side panel's polygon
-    // bounds — the folded roof and the folded beams sit inside the
-    // polygon footprint thanks to the LOGO_Z=10 cm recess pulling
-    // corner D inward by 10 cm).
+    // Footprints stay within ~50 × 95 cm (the side panel's polygon bounds
+    // — the folded roof sits inside the polygon footprint thanks to the
+    // LOGO_Z=10 cm recess pulling corner D inward by 10 cm).
     const RL = Math.round(ROOF_LEN*10)/10;
     const LH = Math.round(LOGO_H*10)/10;
     const SD = Math.round(SOFFIT_D*10)/10;
     const SUB_A1_T = 2*T + 0.2;            // Side R + Roof + a hair of hinge clearance
-    const SUB_A2_T = T + 3;                 // Side L + folded beam (3 cm thick stock)
 
     // Crate footprint must accept the largest single layer in each
-    // direction. Mouse shelf needs 108 cm of width; everything else fits.
-    // Length grows from 54.4 (panels-only design) to 56 cm to give the
-    // sub-assemblies a margin around their 50 cm depth.
-    const crateInW = 108;
+    // direction. With the mouse shelf gone (replaced by two 17×25 side
+    // ledges that pack flat anywhere), the widest layer is now the 95 cm
+    // sub-assembly. Length stays 56 cm to give the sub-assemblies a margin
+    // around their 50 cm depth. Dropping the 108 cm shelf is exactly what
+    // shrank the crate from 108-wide to the 95 × 56 × 18 cm target.
+    const crateInW = 95;
     const crateInL = 56;
 
     const layers = [
       { label:'Layer 1', t: SUB_A1_T, panels:[
         {id:'A2+E',name:'Sub-assembly 1 (Side R + Roof folded)', w:95, l:50, x:0, y:0}
       ]},
-      { label:'Layer 2', t: SUB_A2_T, panels:[
-        {id:'A1+B1+B2',name:'Sub-assembly 2 (Side L + 2 beams folded)', w:95, l:50, x:0, y:0}
+      { label:'Layer 2', t: T, panels:[
+        {id:'A1',name:'Side L (loose panel)', w:95, l:50, x:0, y:0}
       ]},
       { label:'Layer 3', t: T, panels:[
         {id:'D',name:'Front panel', w:82, l:INNER_W, x:0, y:0}
@@ -871,10 +862,12 @@ document.addEventListener('DOMContentLoaded', () => {
       { label:'Layer 4', t: T, panels:[
         {id:'F',name:'Logo panel', w:LH, l:INNER_W, x:0,        y:0},
         {id:'G',name:'Soffit panel', w:SD, l:INNER_W, x:LH+2,    y:0},
-        {id:'H',name:'Monitor shelf', w:SHELF_D, l:INNER_W, x:LH+SD+4, y:0}
-      ]},
-      { label:'Layer 5', t: T, panels:[
-        {id:'M',name:'Mouse shelf', w:108, l:25, x:0, y:0}
+        {id:'H',name:'Monitor shelf', w:SHELF_D, l:INNER_W, x:LH+SD+4, y:0},
+        // The two side ledges drop into this same layer next to the monitor
+        // shelf — stacked in the depth direction in the spare corner — so the
+        // crate is one layer shorter.
+        {id:'L1',name:'Side ledge (left)',  w:LEDGE_W, l:LEDGE_D, x:LH+SD+SHELF_D+8, y:0},
+        {id:'L2',name:'Side ledge (right)', w:LEDGE_W, l:LEDGE_D, x:LH+SD+SHELF_D+8, y:LEDGE_D+3}
       ]},
     ];
     const numLayers = layers.length;
@@ -1006,7 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <strong>Crate exterior:</strong> ${crateOutW} × ${crateOutL} × ${crateOutH.toFixed(1)} cm<br>
       <strong>Crate material:</strong> Pine plywood 9mm (${CRATE_WALL}cm walls, ${CRATE_KG_M2} kg/m²)<br>
       <strong>Volume:</strong> ${(volume*1000).toFixed(1)} liters<br>
-      <strong>Layers:</strong> ${numLayers} (2 sub-assemblies + ${numLayers - 2} loose-panel layers)<br>
+      <strong>Layers:</strong> ${numLayers} (1 sub-assembly + ${numLayers - 1} loose-panel layers)<br>
       <hr style="border-color:#000; margin:8px 0">
       <strong>Weight breakdown:</strong><br>
       &nbsp;&nbsp;Cabinet panels + hardware: ${panelWeight.toFixed(1)} kg<br>
@@ -1032,7 +1025,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rows = [
       ['A','Side panel (rectangle)', 2, '50 × 95',
        'Poplar ply 15 mm',
-       `Cut 1 (one continuous L-shaped jigsaw cut from the front edge): front-tilt diagonal A→B + soffit horizontal B→C + logo-recess vertical C→D — the C→D segment pulls the top-front corner ${LOGO_Z} cm inward to clear the screen sight-line. Cut 2: roof diagonal D→E. Cut 3: a 25 × 1.5 cm closed rectangular slot for the mouse shelf, set 3 cm back from the tilted front edge for strength (default height 12 cm; alternates 8 / 16 cm). Drill a starter hole inside the slot, then jigsaw the perimeter.`],
+       `Cut 1 (one continuous L-shaped jigsaw cut from the front edge): front-tilt diagonal A→B + soffit horizontal B→C + logo-recess vertical C→D — the C→D segment pulls the top-front corner ${LOGO_Z} cm inward to clear the screen sight-line. Cut 2: roof diagonal D→E. No mouse-shelf slot — the side mouse ledges (L) bracket onto the OUTER face of this panel instead.`],
       ['D','Front panel', 1, `${INNER_W} × ${FP_SURF}`,
        'Poplar ply 15 mm',
        `Cut the ${WIN_W} × ${WIN_H} cm screen window: drill a starter hole inside one corner, then jigsaw the rectangle.`],
@@ -1045,9 +1038,9 @@ document.addEventListener('DOMContentLoaded', () => {
       ['H','Monitor shelf', 1, `${INNER_W} × ${SHELF_D}`,
        'Poplar ply 15 mm',
        'No home cuts.'],
-      ['M','Mouse shelf', 1, `${MOUSE_TOTAL_W} × ${MOUSE_D}`,
+      ['L','Side mouse ledge', LEDGE_QTY, `${LEDGE_W} × ${LEDGE_D}`,
        'Poplar ply 15 mm',
-       'No home cuts (slides through the slots in the side panels).'],
+       'No home cuts. Brackets to the outer face of each side panel — one per side.'],
       ['F','Logo panel — front face', 1, '57.5 × 15.3 housing · 54.5 × 11.5 acrylic',
        'Opaque housing + opal acrylic 3 mm + foam + LED (sourced separately)',
        'Housing has a 53 × 10 cm window cutout and 4 mounting holes ⌀6 mm at 0.7 cm from each border. Acrylic glued behind, overlaps window by 0.75 cm on each side.'],
@@ -1079,9 +1072,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // The roof column doubles as the home for the soffit (sits flush on
       // top of the roof) and monitor shelf (stacks above the soffit). That
       // turns the previously empty 43 cm gap above the 52.2 cm roof into
-      // useful real estate. The mouse shelf slides over to the top band
-      // above the side panels — its 108 cm width clears them with room to
-      // spare. The kerf gap (~3 mm) between panels is below the SVG
+      // useful real estate. The two side mouse ledges (17 × 25 cm each)
+      // sit in the top band above the side panels. The kerf gap (~3 mm)
+      // between panels is below the SVG
       // resolution, so we draw flush.
       const ROOF_COL_X = 100 + INNER_W;
       const placements = [
@@ -1093,8 +1086,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Roof column continues upward: soffit on top of the roof, monitor shelf above the soffit
         {id:'G',  name:'Soffit',        x:ROOF_COL_X, y:ROOF_LEN,                          w:INNER_W, h:SOFFIT_D, col:'#000'},
         {id:'H',  name:'Monitor shelf', x:ROOF_COL_X, y:ROOF_LEN + SOFFIT_D,               w:INNER_W, h:SHELF_D,  col:'#000'},
-        // Top band over the side panels — mouse shelf at the front edge
-        {id:'M',  name:'Mouse shelf',   x:0,          y:95,                                w:MOUSE_TOTAL_W, h:MOUSE_D, col:'#000'},
+        // Top band over the side panels — two side mouse ledges, laid
+        // landscape so the pair (2 × 25 = 50 cm) matches panel A1's breadth.
+        {id:'L1', name:'Side ledge L',  x:0,          y:95,                                w:LEDGE_D, h:LEDGE_W, col:'#000'},
+        {id:'L2', name:'Side ledge R',  x:LEDGE_D,    y:95,                                w:LEDGE_D, h:LEDGE_W, col:'#000'},
       ];
 
       let c = '';
@@ -1122,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const usedArea = placements.reduce((s, p) => s + p.w * p.h, 0);
       const sheetArea = SHEET_W * SHEET_H;
       const wastePct = ((sheetArea - usedArea) / sheetArea * 100).toFixed(0);
-      c += `<text x="${tx(SHEET_W/2)}" y="${ty(0)+34}" fill="#555" font-size="10" text-anchor="middle">${wastePct}% offcuts (keep them — useful for shims and the mouse-shelf slot inserts)</text>`;
+      c += `<text x="${tx(SHEET_W/2)}" y="${ty(0)+34}" fill="#555" font-size="10" text-anchor="middle">${wastePct}% offcuts (keep them — useful for shims and the side-ledge mounting brackets)</text>`;
 
       svg.innerHTML = c;
     }
@@ -1184,38 +1179,14 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<line x1="${tx(LOGO_Z)}" y1="${ty(FP_TOP_Y)}" x2="${tx(LOGO_Z)}" y2="${ty(H_FRONT)}" stroke="#000" stroke-width="2"/>`;
       c += `<line x1="${tx(LOGO_Z)}" y1="${ty(H_FRONT)}" x2="${tx(50)}" y2="${ty(H_BACK)}" stroke="#000" stroke-width="2"/>`;
 
-      // Mouse shelf slot — closed rectangle cut from the panel, sitting
-      // SLOT_FRONT_MARGIN (3 cm) behind the tilted front edge so the
-      // wood along the front face stays continuous between conformats.
-      // Slot is MOUSE_D (25 cm) deep × MOUSE_T (1.5 cm) tall. Cut at one
-      // of three reference heights (8 / 12 / 16 cm); 12 cm is the design
-      // default. Drill a starter hole inside the rectangle, then jigsaw
-      // the perimeter (top + back + bottom + front) so the rectangular
-      // waste piece falls out.
-      const slotChoiceY = MOUSE_CURRENT;       // 12 cm — design default
-      const slotThick = MOUSE_T;                // 1.5 cm
-      const slotDepth = MOUSE_D;                // 25 cm
-      const slotFrontX = slotChoiceY * Math.tan(TILT) + SLOT_FRONT_MARGIN;  // tilt + 3 cm strength margin
-      const slotTopY = slotChoiceY + slotThick/2;
-      const slotBotY = slotChoiceY - slotThick/2;
-      const slotBackX = slotFrontX + slotDepth;
-      // Show alternative heights as faint dashed slot outlines.
-      SLOT_HEIGHTS.filter(sh => sh !== slotChoiceY).forEach(sh => {
-        const fx = sh * Math.tan(TILT) + SLOT_FRONT_MARGIN;
-        c += `<rect x="${tx(fx)}" y="${ty(sh + slotThick/2)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="none" stroke="#000" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.45"/>`;
-        c += `<text x="${tx(fx + slotDepth) + 4}" y="${ty(sh)+3}" fill="#000" font-size="6" opacity="0.6">alt h=${sh}</text>`;
-      });
-      // Default slot (12 cm) — drawn solid + filled so it reads as the
-      // intended cut. Slot waste is a closed rectangle.
-      c += `<rect x="${tx(slotFrontX)}" y="${ty(slotTopY)}" width="${slotDepth*sc}" height="${slotThick*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1.2"/>`;
-      // Four cut lines for the slot: top, bottom, front, back — closed
-      // rectangle. Highlight all four so the builder knows it's a
-      // jigsawn rectangle, not a notch.
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotTopY)}" stroke="#000" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotBotY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotFrontX)}" y1="${ty(slotTopY)}" x2="${tx(slotFrontX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
-      c += `<line x1="${tx(slotBackX)}" y1="${ty(slotTopY)}" x2="${tx(slotBackX)}" y2="${ty(slotBotY)}" stroke="#000" stroke-width="1.6"/>`;
-      c += `<text x="${tx(slotFrontX + slotDepth/2)}" y="${ty(slotChoiceY)+12}" fill="#000" font-size="8" text-anchor="middle">cut 3: mouse slot · ${slotDepth} × ${slotThick} · h=${slotChoiceY} · ${SLOT_FRONT_MARGIN} cm front margin</text>`;
+      // No mouse-shelf slot in this panel any more — the actual build
+      // replaced the through-shelf with two side-mounted mouse ledges (L)
+      // that bracket onto the OUTER face of the side panel. The ledge
+      // mount footprint is marked at the front edge for reference.
+      const ledgeMTop = ty(LEDGE_Y + LEDGE_T);
+      const ledgeMBot = ty(LEDGE_Y);
+      c += `<rect x="${tx(0)}" y="${ledgeMTop}" width="6" height="${ledgeMBot - ledgeMTop}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(0)+11}" y="${(ledgeMTop+ledgeMBot)/2+3}" fill="#000" font-size="7">side ledge bolts here (outer face, Y=${LEDGE_Y})</text>`;
 
       // Vertex labels
       const labels = ['A','B','C','D','E','F'];
@@ -1237,8 +1208,8 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${tx(0)+14}" y="${legendY-1}" fill="#333" font-size="9">keep</text>`;
       c += `<rect x="${tx(0)+55}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/>`;
       c += `<text x="${tx(0)+71}" y="${legendY-1}" fill="#333" font-size="9">waste</text>`;
-      c += `<rect x="${tx(0)+115}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="1"/>`;
-      c += `<text x="${tx(0)+131}" y="${legendY-1}" fill="#333" font-size="9">mouse slot</text>`;
+      c += `<rect x="${tx(0)+115}" y="${legendY-9}" width="10" height="9" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(0)+131}" y="${legendY-1}" fill="#333" font-size="9">ledge mount</text>`;
 
       svg.innerHTML = c;
     }
@@ -1247,17 +1218,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========================
   // KNOCK-DOWN ASSEMBLY
   // ========================
-  // Folding-roof + 2 hinged beams + French-cleat front. The cabinet's
-  // structural skeleton is two side panels + roof + two cross-rails;
-  // shelves and front panel hang off this frame.
+  // Folding roof + screwed-on front. The structural skeleton is just the
+  // two side panels + roof; the front panel screws across the side-panel
+  // front edges to square the frame. Shelves + ledges hang off this frame.
   {
-    // Beam dimensions — kept as constants so a future change here ripples
-    // through both the diagram and the hardware list.
-    const BEAM_X = 4;        // beam cross-section (cm) — width seen on Side R's plane
-    const BEAM_T = 3;        // beam cross-section (cm) — thickness (perpendicular to Side R)
-    const BEAM_LEN = INNER_W; // beam length spans the cabinet interior = 54.4 cm
-    const CLEAT_H = 4;        // cleat depth (cm) — height of the bevelled strip
-    const CLEAT_T = 1.5;      // cleat thickness (cm) — same as plywood
+    // The cross-beams and French cleat from earlier iterations are gone.
+    // The actual build found the screwed-on front panel gives enough
+    // racking stability on its own, so the structural skeleton is just
+    // the two side panels + the folding roof, tied together by the front
+    // panel screwed across the side-panel front edges.
 
     // Side panel polygon shared by both sub-assembly diagrams.
     const POLY_A  = [0, 0];
@@ -1289,8 +1258,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ---- Skeleton — 45° perspective view (deployed) ----
-    // The 4 structural pieces only: 2 side panels, roof, 2 cross-rails.
-    // Reuses the same projection math as the full perspective view.
+    // The 3 structural pieces only: 2 side panels + roof. The front panel
+    // (drawn in the other views) screws across the front edges to square
+    // the frame. Reuses the same projection math as the full perspective view.
     {
       const svg = document.getElementById('kd2-skeleton-svg');
       const padSk = 30;
@@ -1349,62 +1319,22 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${roofCx}" y="${roofCy+3}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">Roof</text>`;
       c += `<text x="${roofCx}" y="${roofCy+13}" fill="#555" font-size="7" text-anchor="middle">hinged to Side R (D→E)</text>`;
 
-      // Beam helper: draws a 3D-looking box spanning between Side L and Side R
-      // at the given (zMin, yMin) corner with thickness BEAM_T × BEAM_X.
-      function drawBeam(zMin, yMin, label) {
-        const zMax = zMin + BEAM_T;
-        const yMax = yMin + BEAM_X;
-        const front = [
-          [px(0, zMin), py(yMax, zMin)],
-          [px(W, zMin), py(yMax, zMin)],
-          [px(W, zMin), py(yMin, zMin)],
-          [px(0, zMin), py(yMin, zMin)],
-        ];
-        const top = [
-          [px(0, zMin), py(yMax, zMin)],
-          [px(W, zMin), py(yMax, zMin)],
-          [px(W, zMax), py(yMax, zMax)],
-          [px(0, zMax), py(yMax, zMax)],
-        ];
-        const right = [
-          [px(W, zMin), py(yMax, zMin)],
-          [px(W, zMin), py(yMin, zMin)],
-          [px(W, zMax), py(yMin, zMax)],
-          [px(W, zMax), py(yMax, zMax)],
-        ];
-        quad(top,   'rgba(0,0,0,0.10)', '#000', 0.8);
-        quad(right, 'rgba(0,0,0,0.14)', '#000', 0.8);
-        quad(front, 'rgba(0,0,0,0.18)', '#000', 1);
-        c += `<text x="${(front[0][0]+front[1][0])/2}" y="${(front[0][1]+front[2][1])/2 + 3}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">${label}</text>`;
-      }
-      drawBeam(0, 0, 'Beam 1');
-      drawBeam(FP_TOP_Z - BEAM_T, FP_TOP_Y, 'Beam 2');
-
-      // Hinge marks on Side L (where the beams hinge) and on Side R (roof).
+      // Hinge mark on Side R — the roof's piano hinge along D→E.
       function hingeMark3D(x, y, z, label) {
         const cxp = px(x, z), cyp = py(y, z);
         c += `<circle cx="${cxp}" cy="${cyp}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
         c += `<text x="${cxp + 6}" y="${cyp + 3}" fill="#555" font-size="7">${label}</text>`;
       }
-      hingeMark3D(0, 0, 0, 'hinge');
-      hingeMark3D(0, FP_TOP_Y, FP_TOP_Z, 'hinge');
       hingeMark3D(W, H_FRONT, LOGO_Z, 'piano hinge');
 
-      // Bolted-end markers on Side R (where the free beam ends bolt with wing nuts).
-      function boltMark3D(x, y, z) {
-        const cxp = px(x, z), cyp = py(y, z);
-        c += `<circle cx="${cxp}" cy="${cyp}" r="3" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
-      }
-      boltMark3D(W, BEAM_X/2, BEAM_T/2);
-      boltMark3D(W, FP_TOP_Y + BEAM_X/2, FP_TOP_Z - BEAM_T/2);
-
-      // Caption + legend
-      c += `<text x="${padSk + (viewW - padSk*2)/2}" y="${padSk - 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Skeleton — 4 structural pieces</text>`;
+      // Caption + legend. The two side panels are tied square by the front
+      // panel (screwed across their front edges) + the roof — there are no
+      // cross-beams in the actual build.
+      c += `<text x="${padSk + (viewW - padSk*2)/2}" y="${padSk - 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Skeleton — 3 structural pieces</text>`;
       const legY = viewH - 8;
       c += `<circle cx="${padSk + 6}" cy="${legY-3}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${padSk + 16}" y="${legY}" fill="#333" font-size="8">hinge (folds for transport)</text>`;
-      c += `<circle cx="${padSk + 175}" cy="${legY-3}" r="3" fill="#000" stroke="#fff" stroke-width="0.8"/>`;
-      c += `<text x="${padSk + 184}" y="${legY}" fill="#333" font-size="8">bracket + wing-nut bolt</text>`;
+      c += `<text x="${padSk + 16}" y="${legY}" fill="#333" font-size="8">piano hinge (roof folds for transport)</text>`;
+      c += `<text x="${padSk + 184}" y="${legY}" fill="#333" font-size="8">front panel = rigid tie</text>`;
 
       svg.innerHTML = c;
     }
@@ -1456,10 +1386,10 @@ document.addEventListener('DOMContentLoaded', () => {
       svg.innerHTML = c.s;
     }
 
-    // ---- Sub-assembly 2: Side L with 2 cross-rails folded ----
-    // Side L is the mirror of Side R but the polygon shape (interior view)
-    // matches; the beams hinge at the analogous A and B corners and fold
-    // entirely within Side L's footprint.
+    // ---- Side L — ships as a loose panel ----
+    // Earlier iterations folded two cross-rails onto Side L; those beams
+    // are gone, so Side L now travels as a plain loose panel — the same
+    // 50 × 95 cm polygon as Side R, mirrored.
     {
       const svg = document.getElementById('kd2-folded-l-svg');
       const sc = 3.6;
@@ -1476,182 +1406,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const c = { s: '' };
       drawSidePolygon(c, tx, ty);
 
-      // Beam 1 folded — vertical strip at depth 0, y=0 up to y=BEAM_LEN.
-      c.s += `<rect x="${tx(0)}" y="${ty(BEAM_LEN)}" width="${BEAM_X*sc}" height="${BEAM_LEN*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="0.8"/>`;
-      c.s += `<text x="${tx(BEAM_X/2)}" y="${ty(BEAM_LEN/2)+3}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(BEAM_X/2)} ${ty(BEAM_LEN/2)})">Beam 1 (folded)</text>`;
-
-      // Beam 2 folded — vertical strip at depth 28, y=77.1 down to y=77.1-BEAM_LEN.
-      c.s += `<rect x="${tx(FP_TOP_Z - BEAM_X/2)}" y="${ty(FP_TOP_Y)}" width="${BEAM_X*sc}" height="${BEAM_LEN*sc}" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="0.8"/>`;
-      c.s += `<text x="${tx(FP_TOP_Z)}" y="${ty(FP_TOP_Y - BEAM_LEN/2)+3}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(FP_TOP_Z)} ${ty(FP_TOP_Y - BEAM_LEN/2)})">Beam 2 (folded)</text>`;
-
-      // Hinge marks at A and B.
-      function hingeMark(p, label, ox, oy) {
-        c.s += `<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
-        c.s += `<text x="${tx(p[0])+ox}" y="${ty(p[1])+oy}" fill="#555" font-size="7">${label}</text>`;
-      }
-      hingeMark(POLY_A, 'butt hinge', -8, 18);
-      hingeMark(POLY_B, 'butt hinge', 8, 4);
-
-      // Deploy-direction arrows — small annotations showing which way each
-      // beam swings out when assembling. Drawn outside the polygon so they
-      // don't clutter the folded view.
-      c.s += `<text x="${tx(45)}" y="${ty(60)}" fill="#555" font-size="7">deploy:</text>`;
-      c.s += `<text x="${tx(45)}" y="${ty(60)-9}" fill="#555" font-size="7">B1 swings down,</text>`;
-      c.s += `<text x="${tx(45)}" y="${ty(60)-18}" fill="#555" font-size="7">B2 swings up</text>`;
-      c.s += `<text x="${tx(45)}" y="${ty(60)-27}" fill="#555" font-size="7">to horizontal</text>`;
-
-      c.s += `<text x="${tx(25)}" y="${padPx + 6}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">Sub-assembly 2 — Side L + cross-rails</text>`;
+      c.s += `<text x="${tx(D/2)}" y="${ty(H_FRONT/2)+3}" fill="#555" font-size="9" text-anchor="middle">ships flat — no hardware attached</text>`;
+      c.s += `<text x="${tx(25)}" y="${padPx + 6}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">Side L — loose panel</text>`;
 
       // Legend
       const legY = h - 18;
-      let legX = padPx;
-      c.s += `<rect x="${legX}" y="${legY-9}" width="10" height="9" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="0.8"/>`;
-      c.s += `<text x="${legX+14}" y="${legY-1}" fill="#333" font-size="8">Side L polygon</text>`;
-      legX += 105;
-      c.s += `<rect x="${legX}" y="${legY-9}" width="10" height="9" fill="rgba(0,0,0,0.12)" stroke="#000" stroke-width="0.8"/>`;
-      c.s += `<text x="${legX+14}" y="${legY-1}" fill="#333" font-size="8">Beam (folded)</text>`;
+      c.s += `<rect x="${padPx}" y="${legY-9}" width="10" height="9" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="0.8"/>`;
+      c.s += `<text x="${padPx+14}" y="${legY-1}" fill="#333" font-size="8">Side L polygon (50 × 95 cm)</text>`;
 
       svg.innerHTML = c.s;
     }
 
-    // ---- French cleat detail ----
-    // Beam 2 sits behind the front panel and is mounted at the SAME 20°
-    // tilt as Front D, so its front face is parallel to the panel's back.
-    // The wall cleat (on the beam's tilted front face) and the cabinet
-    // cleat (on Front D's back) are therefore both tilted 20° in the
-    // global frame — they sit on parallel surfaces and mate at the same
-    // diagonal angle.
-    //
-    // Implementation: draw the entire cleat assembly (beam + 2 cleats +
-    // Front D) in a "horizontal" local frame, then wrap everything in an
-    // SVG rotation group at the cleat anchor point. Lighter on the math
-    // than computing every tilted coordinate by hand.
-    {
-      const svg = document.getElementById('kd2-cleat-svg');
-      const sc = 14;
-      const padPx = 30;
-      const drawW = 16, drawH = 18;
-      const w = drawW*sc + padPx*2 + 60;
-      const h = drawH*sc + padPx*2 + 40;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      svg.setAttribute('width', w);
-      svg.setAttribute('height', h);
-
-      const tx = (depth)  => padPx + (depth + 4) * sc;
-      const ty = (height) => padPx + 24 + (drawH - height) * sc;
-
-      let c = '';
-
-      // Local-frame coordinates (un-tilted) — everything will be rotated
-      // 20° around the pivot at the end.
-      const beamFront = 6;
-      const beamBack  = beamFront + BEAM_T;
-      const beamTop   = 12;
-      const beamBot   = beamTop - BEAM_X;
-      const wcOuterX  = beamFront - CLEAT_H;
-      const wcBotY    = beamTop - CLEAT_H;
-
-      // Caption + axis labels (drawn outside group, in the global frame).
-      c += `<text x="${tx(7)}" y="${padPx + 6}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Cross-section · French cleat (locked, tilted 20°)</text>`;
-      c += `<text x="${tx(0)}" y="${ty(0) + 24}" fill="#555" font-size="7">← player side  ·  cabinet interior →</text>`;
-
-      // Pivot at the cleat anchor (top-near-Front-D corner). Vertical
-      // dashed reference line at the pivot makes the 20° tilt visible.
-      const pivotZ = wcOuterX;
-      const pivotY = beamTop;
-      const pivotSvgX = tx(pivotZ);
-      const pivotSvgY = ty(pivotY);
-      c += `<line x1="${pivotSvgX}" y1="${pivotSvgY - 6*sc}" x2="${pivotSvgX}" y2="${pivotSvgY + 7*sc}" stroke="#999" stroke-width="0.6" stroke-dasharray="3,2"/>`;
-      c += `<text x="${pivotSvgX + 4}" y="${pivotSvgY - 6*sc + 8}" fill="#999" font-size="6">vertical ref.</text>`;
-
-      // 20° angle arc at the pivot (drawn outside the rotation group so it
-      // shows the tilt explicitly between the vertical reference and Front D).
-      const arcR = 4*sc;
-      const arcRad = TILT;   // 20° from the script's master constant
-      const arcEndSvgX = pivotSvgX + arcR * Math.sin(arcRad);
-      const arcEndSvgY = pivotSvgY - arcR * Math.cos(arcRad);
-      c += `<path d="M${pivotSvgX},${pivotSvgY - arcR} A${arcR},${arcR} 0 0,1 ${arcEndSvgX},${arcEndSvgY}" fill="none" stroke="#000" stroke-width="0.8"/>`;
-      c += `<text x="${pivotSvgX + arcR*0.45}" y="${pivotSvgY - arcR*0.92}" fill="#000" font-size="9" text-anchor="middle" font-weight="700">20°</text>`;
-
-      // Open rotation group — tilts beam + cleats + Front D by 20°
-      // clockwise (in screen), matching the front panel's "top tilts
-      // into cabinet" direction.
-      c += `<g transform="rotate(${TILT_DEG} ${pivotSvgX} ${pivotSvgY})">`;
-
-      // Integrated Beam 2 — single trapezoidal cross-section that combines
-      // the rectangular beam with the wall cleat ripped into its front
-      // edge as a 45° bevel. One piece of stock + one rip cut on a table
-      // saw at 45° = no glue joint, no separate cleat strip.
-      // Cross-section vertices (local frame, going CCW):
-      //   bottom-left : (wcOuterX,  wcBotY)   — toe of the bevel, far from cabinet interior
-      //   bottom-right: (beamBack,  wcBotY)   — back-bottom corner
-      //   top-right   : (beamBack,  beamTop)  — back-top corner (where the bracket bolts attach)
-      //   top-left    : (beamFront, beamTop)  — apex of the bevel
-      // The bevel face runs from top-left DOWN-AND-OUT to bottom-left.
-      const beamCleat = [
-        [wcOuterX,  wcBotY],
-        [beamBack,  wcBotY],
-        [beamBack,  beamTop],
-        [beamFront, beamTop],
-      ];
-      c += `<polygon points="${beamCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.13)" stroke="#000" stroke-width="1.2"/>`;
-      // Beam label centered on the rectangular (non-bevelled) part.
-      const beamLblZ = (beamFront + beamBack)/2;
-      const beamLblY = (beamTop + wcBotY)/2;
-      c += `<text x="${tx(beamLblZ)}" y="${ty(beamLblY)+3}" fill="#000" font-size="9" text-anchor="middle">Beam 2</text>`;
-      c += `<text x="${tx(beamLblZ)}" y="${ty(beamLblY)-9}" fill="#555" font-size="7" text-anchor="middle">stock 7 × 4 cm · bevel rip 45°</text>`;
-      // "integrated cleat A" annotation pointing at the bevel face
-      c += `<text x="${tx((wcOuterX + beamFront)/2 - 0.4)}" y="${ty((wcBotY + beamTop)/2 + 0.6)}" fill="#000" font-size="7" text-anchor="end" font-weight="700">cleat A</text>`;
-      c += `<text x="${tx((wcOuterX + beamFront)/2 - 0.4)}" y="${ty((wcBotY + beamTop)/2 + 0.6)+9}" fill="#555" font-size="6" text-anchor="end">(integrated)</text>`;
-
-      // Cabinet cleat (cleat B) — upper-left triangle of the cleat square,
-      // glued to Front D's tilted back face. Mirror of cleat A; hypotenuses
-      // share the same diagonal in the local frame, so the cleats interlock.
-      const fdBack = wcOuterX;
-      const cabCleat = [
-        [beamFront, beamTop],
-        [fdBack,    beamTop],
-        [fdBack,    wcBotY],
-      ];
-      c += `<polygon points="${cabCleat.map(p => `${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="rgba(0,0,0,0.14)" stroke="#000" stroke-width="1"/>`;
-      c += `<text x="${tx((fdBack + beamFront)/2)}" y="${ty(beamTop)-3}" fill="#000" font-size="8" text-anchor="middle" font-weight="700">cleat B</text>`;
-      c += `<text x="${tx(fdBack)+3}" y="${ty(beamTop)-12}" fill="#555" font-size="6">on Front D back</text>`;
-
-      // Front D — vertical thin rectangle in local frame; the group's
-      // 20° rotation tilts it the same way the actual front panel tilts.
-      // Back face passes through the pivot (z = fdBack = wcOuterX).
-      const fdFront = fdBack - CLEAT_T;
-      const fdTop = beamTop + 5;
-      const fdBot = wcBotY - 6;
-      c += `<rect x="${tx(fdFront)}" y="${ty(fdTop)}" width="${CLEAT_T*sc}" height="${(fdTop-fdBot)*sc}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(fdFront - 0.3)}" y="${ty((fdTop+fdBot)/2)}" fill="#000" font-size="9" text-anchor="end">Front D</text>`;
-
-      // Drop-direction arrow inside the rotation group — runs along
-      // Front D's front face and tilts with it.
-      const arrTopX = fdFront - 0.6;
-      const arrTopYL = fdTop + 1;
-      const arrBotYL = beamTop + 0.8;
-      c += `<line x1="${tx(arrTopX)}" y1="${ty(arrTopYL)}" x2="${tx(arrTopX)}" y2="${ty(arrBotYL)}" stroke="#000" stroke-width="1.2"/>`;
-      c += `<polygon points="${tx(arrTopX)-4},${ty(arrBotYL)+6} ${tx(arrTopX)+4},${ty(arrBotYL)+6} ${tx(arrTopX)},${ty(arrBotYL)}" fill="#000"/>`;
-      c += `<text x="${tx(arrTopX) - 4}" y="${ty((arrTopYL+arrBotYL)/2) + 3}" fill="#000" font-size="8" text-anchor="end">drop Front D</text>`;
-
-      // Close rotation group
-      c += `</g>`;
-
-      svg.innerHTML = c;
-    }
+    // (The French-cleat detail SVG that used to live here is gone — the
+    // actual build screws the front panel straight onto the side-panel
+    // front edges, no cleat. The kd2-cleat-svg element has been removed
+    // from the HTML body too.)
 
     // ---- Hardware shopping list ----
     {
       const tbody = document.getElementById('kd2-hardware-body');
       const rows = [
         ['Piano hinge 50 cm (Side R ↔ Roof)', '1', 'D→E edge of Side R'],
-        ['Butt hinge 40 mm (beams ↔ Side L)', '4', '2 per beam, both at Side L'],
-        ['Corner bracket 40 × 40 mm (4 holes)', '8', '2 at the free beam ends (Side R); rest for shelves'],
-        ['Wing-nut bolt M6 × 30 mm (incl. nut)', '16', '2 per bracket'],
-        ['Cross-dowel barrel nut M6', '16', 'embedded in side panels for the wing-nut threads'],
-        ['Hardwood 7 × 4 cm × 1.2 m', '1', 'rip 45° bevel along front edge → integrated Beam 2 + cleat A in one piece (cut into 2 × 54 cm)'],
-        ['Hardwood 5 × 2 cm × 1.2 m', '1', 'rip at 45° for cleat B (the strip glued to Front D back) + spares'],
+        ['Wood screw 4 × 50 mm', '24', 'Front panel into both side-panel front edges (~8 per side) + Roof free edge into Side L'],
+        ['Wood screw 4 × 40 mm', '16', 'Soffit + Monitor shelf into the side panels (4 each end)'],
+        ['Corner bracket 40 × 40 mm (4 holes)', '4', 'shelf-to-side reinforcement (optional)'],
+        ['Bolt M6 × 30 mm + washer + nut', '4', '2 per side mouse ledge — through the side panel'],
+        ['Cross-dowel barrel nut M6', '4', 'embedded in the side panels for the ledge bolts'],
       ];
       rows.forEach(r => {
         const tr = document.createElement('tr');
@@ -1668,12 +1448,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const SD = Math.round(SOFFIT_D*10)/10;
       const rows = [
         ['Sub-assembly 1 (Side R + Roof folded)', '50 × 95 × 3'],
-        ['Sub-assembly 2 (Side L + 2 beams folded)', `50 × 95 × ~5`],
+        ['Side L (loose panel)', `50 × 95 × ${T}`],
         ['Front D', `${INNER_W} × ${FP_SURF} × ${T}`],
         ['Soffit G', `${INNER_W} × ${SD} × ${T}`],
         ['Logo F (acrylic + foam + LED)', `${INNER_W} × ${LH} × ~1`],
         ['Monitor shelf H', `${INNER_W} × ${SHELF_D} × ${T}`],
-        ['Mouse shelf M', `${MOUSE_TOTAL_W} × ${MOUSE_D} × ${T}`],
+        ['Side mouse ledges L (×2)', `${LEDGE_W} × ${LEDGE_D} × ${T}`],
       ];
       rows.forEach(r => {
         const tr = document.createElement('tr');
@@ -1684,215 +1464,178 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================
-  // CRATE AS BOOTH TABLE
+  // CRATE AS FOLDING STAND
   // ========================
-  // The crate is intentionally taller than the panel stack so it can
-  // serve double-duty as the booth table. Lid splits into two trestle
-  // legs that lock with a turning-stick latch.
+  // The transport crate folds inside-out to become the stand the arcade
+  // sits on. The crate (95 × 56 × 18 cm, holding the flat art panels) is
+  // built from a hinged panel whose hinge layout folds TWO ways: closed
+  // into the 56 × 18 cm crate tube, or open into a ⊓ stood on end so the
+  // crate's 95 cm length becomes the ~94 cm stand height. A drop-in top
+  // panel gives the 58 × 50 cm surface the arcade rests on.
   {
-    const CRATE_W = 108;          // long dimension (cm)
-    const CRATE_L = 56;           // short dimension (cm)
-    const CRATE_H = 40;           // crate body height
-    const LEG_H   = 54;           // each leg = half the lid's long dim
-    const TABLE_H = CRATE_H + LEG_H;  // 94 cm — close to the user's 90 cm target
+    const SEGS = [50, 6, 18, 34, 22, 18, 10];                // hinged panel, 158 cm
+    const PANEL_LEN = SEGS.reduce((a, b) => a + b, 0);        // 158
+    const CUM = SEGS.reduce((acc, s) => { acc.push(acc[acc.length - 1] + s); return acc; }, [0]);
+    const STAND_HINGE = [50, 108];        // 50 | 58 | 50  → ⊓ fold
+    const CRATE_HINGE = [56, 74, 130];    // 56 | 18 | 56 | 18  → tube fold
+    const STAND_H = 94, STAND_W = 58, STAND_D = 50;
 
-    // ---- Closed crate · TOP VIEW ----
+    // ---- 1. The hinged panel, laid flat — one layout, two folds ----
     {
-      const svg = document.getElementById('crate-table-top-svg');
-      const sc = 3;
-      const padPx = 30;
-      const w = CRATE_W*sc + padPx*2 + 20;
-      const h = CRATE_L*sc + padPx*2 + 30;
+      const svg = document.getElementById('stand-panel-svg');
+      const sc = 3.2, padX = 45;
+      const w = PANEL_LEN * sc + padX * 2 + 20;
+      const h = 240;
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
       svg.setAttribute('width', w);
       svg.setAttribute('height', h);
-
-      const tx = (x) => padPx + x * sc;
-      const ty = (y) => padPx + 16 + y * sc;
+      const tx = (x) => padX + x * sc;
       let c = '';
 
-      // Crate footprint
-      c += `<rect x="${tx(0)}" y="${ty(0)}" width="${CRATE_W*sc}" height="${CRATE_L*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.2"/>`;
-      // Lid split line at x = CRATE_W/2
-      c += `<line x1="${tx(CRATE_W/2)}" y1="${ty(0)}" x2="${tx(CRATE_W/2)}" y2="${ty(CRATE_L)}" stroke="#000" stroke-width="0.8" stroke-dasharray="4,2"/>`;
-      // Lid labels
-      c += `<text x="${tx(CRATE_W/4)}" y="${ty(CRATE_L/2 - 4)+3}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Lid 1</text>`;
-      c += `<text x="${tx(CRATE_W/4)}" y="${ty(CRATE_L/2 + 6)+3}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W/2} × ${CRATE_L} cm</text>`;
-      c += `<text x="${tx(3*CRATE_W/4)}" y="${ty(CRATE_L/2 - 4)+3}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Lid 2</text>`;
-      c += `<text x="${tx(3*CRATE_W/4)}" y="${ty(CRATE_L/2 + 6)+3}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W/2} × ${CRATE_L} cm</text>`;
-
-      // Hinge marks on the short sides (each lid hinges on the short side
-      // closest to its outer edge).
-      function hingeMarks(xPos, label) {
-        // 3 small hinge marks distributed along the short side
-        const ys = [0.2, 0.5, 0.8].map(t => CRATE_L * t);
-        ys.forEach(yc => {
-          c += `<rect x="${tx(xPos) - 4}" y="${ty(yc) - 3}" width="8" height="6" fill="#fff" stroke="#000" stroke-width="0.8"/>`;
-        });
-        c += `<text x="${tx(xPos)}" y="${ty(-2)}" fill="#555" font-size="7" text-anchor="middle">${label}</text>`;
-      }
-      hingeMarks(0, 'Lid 1 hinge axis');
-      hingeMarks(CRATE_W, 'Lid 2 hinge axis');
-
-      // Turning stick latches — symbol on each short side, near the lid edge
-      function stickMark(xPos, yPos, label) {
-        c += `<circle cx="${tx(xPos)}" cy="${ty(yPos)}" r="3" fill="#000"/>`;
-        c += `<text x="${tx(xPos)}" y="${ty(yPos) + 12}" fill="#555" font-size="7" text-anchor="middle">${label}</text>`;
-      }
-      stickMark(2, CRATE_L*0.25, 'stick');
-      stickMark(2, CRATE_L*0.75, 'stick');
-      stickMark(CRATE_W - 2, CRATE_L*0.25, 'stick');
-      stickMark(CRATE_W - 2, CRATE_L*0.75, 'stick');
-
-      // Dimensions
-      c += svgDim(tx(0), ty(CRATE_L)+10, tx(CRATE_W), ty(CRATE_L)+10, `${CRATE_W} cm`, 12);
-      c += svgDim(tx(CRATE_W)+10, ty(0), tx(CRATE_W)+10, ty(CRATE_L), `${CRATE_L} cm`, 12);
-
-      // Caption
-      c += `<text x="${tx(CRATE_W/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Top view · lids closed</text>`;
-
-      svg.innerHTML = c;
-    }
-
-    // ---- Table mode · SIDE VIEW (long-axis) ----
-    {
-      const svg = document.getElementById('crate-table-side-svg');
-      const sc = 3;
-      const padPx = 30;
-      const drawW = CRATE_W;
-      const drawH = TABLE_H + 12;     // a little headroom for floor + caption
-      const w = drawW*sc + padPx*2 + 30;
-      const h = drawH*sc + padPx*2 + 20;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      svg.setAttribute('width', w);
-      svg.setAttribute('height', h);
-
-      const tx = (x) => padPx + x * sc;
-      const ty = (y) => padPx + 14 + (drawH - y) * sc;
-      let c = '';
-
-      // Floor line
-      c += `<line x1="${tx(-4)}" y1="${ty(0)}" x2="${tx(CRATE_W+4)}" y2="${ty(0)}" stroke="#000" stroke-width="1.5"/>`;
-      // Hatch pattern under the floor
-      for (let i = -4; i < CRATE_W + 4; i += 3) {
-        c += `<line x1="${tx(i)}" y1="${ty(0)}" x2="${tx(i + 2)}" y2="${ty(-2)}" stroke="#555" stroke-width="0.5"/>`;
-      }
-
-      // Crate body (now flipped — original bottom is the top, now the table surface)
-      c += `<rect x="${tx(0)}" y="${ty(TABLE_H)}" width="${CRATE_W*sc}" height="${CRATE_H*sc}" fill="rgba(0,0,0,0.05)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H + CRATE_H/2)}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Crate body (now upside-down)</text>`;
-      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H + CRATE_H/2) + 13}" fill="#555" font-size="8" text-anchor="middle">${CRATE_W} × ${CRATE_L} × ${CRATE_H} cm · stores PC + monitor + cables in transit</text>`;
-      // Table-surface highlight
-      c += `<rect x="${tx(0)}" y="${ty(TABLE_H) - 4}" width="${CRATE_W*sc}" height="4" fill="rgba(0,0,0,0.15)" stroke="#000" stroke-width="0.6"/>`;
-      c += `<text x="${tx(CRATE_W/2)}" y="${ty(TABLE_H) - 8}" fill="#555" font-size="8" text-anchor="middle">cabinet bolts here ↓</text>`;
-
-      // Legs — drawn at each short end. In side view they appear as thin
-      // strips (1.5 cm thick); we draw them slightly wider for legibility.
-      const LEG_DRAW_T = 2.2;  // visual thickness only, not real
-      // Left leg
-      c += `<rect x="${tx(0)}" y="${ty(LEG_H)}" width="${LEG_DRAW_T*sc}" height="${LEG_H*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(LEG_DRAW_T/2)}" y="${ty(LEG_H/2)}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(LEG_DRAW_T/2)} ${ty(LEG_H/2)})">Leg 1 (Lid 1)</text>`;
-      // Right leg
-      c += `<rect x="${tx(CRATE_W - LEG_DRAW_T)}" y="${ty(LEG_H)}" width="${LEG_DRAW_T*sc}" height="${LEG_H*sc}" fill="rgba(0,0,0,0.10)" stroke="#000" stroke-width="1.2"/>`;
-      c += `<text x="${tx(CRATE_W - LEG_DRAW_T/2)}" y="${ty(LEG_H/2)}" fill="#000" font-size="8" text-anchor="middle" transform="rotate(-90 ${tx(CRATE_W - LEG_DRAW_T/2)} ${ty(LEG_H/2)})">Leg 2 (Lid 2)</text>`;
-
-      // Hinge marks at the leg-crate junction (formerly the crate's top edge,
-      // now the bottom edge of the body after the flip).
-      [0, CRATE_W].forEach(xc => {
-        c += `<circle cx="${tx(xc)}" cy="${ty(LEG_H)}" r="3.5" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
+      const y0 = 58, y1 = 100;
+      c += `<text x="${tx(PANEL_LEN/2)}" y="22" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Hinged panel — 158 cm, folds two ways</text>`;
+      // Panel strip + per-segment length labels
+      c += `<rect x="${tx(0)}" y="${y0}" width="${PANEL_LEN*sc}" height="${y1-y0}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.2"/>`;
+      SEGS.forEach((s, i) => {
+        c += `<text x="${(tx(CUM[i])+tx(CUM[i+1]))/2}" y="${(y0+y1)/2+4}" fill="#000" font-size="10" text-anchor="middle" font-family="monospace">${s}</text>`;
       });
-
-      // Note about leg width into the page
-      c += `<text x="${tx(CRATE_W/2)}" y="${ty(LEG_H/3)}" fill="#555" font-size="7" text-anchor="middle">(each leg is ${CRATE_L} cm wide into the page)</text>`;
-
-      // Dimensions
-      c += svgDim(tx(CRATE_W) + 14, ty(0), tx(CRATE_W) + 14, ty(LEG_H), `${LEG_H}`, 14);
-      c += svgDim(tx(CRATE_W) + 14, ty(LEG_H), tx(CRATE_W) + 14, ty(TABLE_H), `${CRATE_H}`, 14);
-      c += svgDim(tx(-8), ty(0), tx(-8), ty(TABLE_H), `${TABLE_H} cm`, -16);
-
-      // Caption
-      c += `<text x="${tx(CRATE_W/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Side view · table mode (legs deployed, crate flipped)</text>`;
-
+      // Interior hinge lines — solid = stand fold, dashed = crate fold, dotted = flap
+      CUM.slice(1, -1).forEach(pos => {
+        const x = tx(pos);
+        const dash = STAND_HINGE.includes(pos) ? '' : CRATE_HINGE.includes(pos) ? '4,2' : '1,2';
+        c += `<line x1="${x}" y1="${y0-12}" x2="${x}" y2="${y1+6}" stroke="#000" stroke-width="${dash ? 1 : 2}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+        c += `<circle cx="${x}" cy="${y0-12}" r="3" fill="#000"/>`;
+      });
+      // Cumulative position ticks
+      CUM.forEach(pos => {
+        c += `<text x="${tx(pos)}" y="${y1+16}" fill="#555" font-size="8" text-anchor="middle" font-family="monospace">${pos}</text>`;
+      });
+      // Two fold-grouping ribbons
+      function ribbon(yTop, groups, label) {
+        c += `<text x="${tx(0)}" y="${yTop-4}" fill="#000" font-size="9" font-weight="700">${label}</text>`;
+        let acc = 0;
+        groups.forEach(g => {
+          c += `<rect x="${tx(acc)}" y="${yTop}" width="${g*sc}" height="22" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
+          c += `<text x="${tx(acc+g/2)}" y="${yTop+15}" fill="#000" font-size="9" text-anchor="middle" font-family="monospace">${g}</text>`;
+          acc += g;
+        });
+      }
+      ribbon(y1 + 36, [50, 58, 50], 'STAND fold — 50 | 58 | 50 → ⊓ footprint  (solid hinges 50 & 108)');
+      ribbon(y1 + 84, [56, 18, 56, 18, 10], 'CRATE fold — 56 | 18 | 56 | 18 + 10 flap  (dashed hinges 56 / 74 / 130)');
       svg.innerHTML = c;
     }
 
-    // ---- Turning-stick latch detail ----
+    // ---- 2. Crate mode — cross-section of the 56 × 18 tube ----
     {
-      const svg = document.getElementById('crate-table-stick-svg');
-      const sc = 14;
-      const padPx = 30;
-      // Two states drawn side by side: STOWED (transport) and ENGAGED (deployed)
-      const stateW = 14;     // each state's drawing width (cm)
-      const stateH = 9;
-      const drawW = stateW * 2 + 4;
-      const drawH = stateH;
-      const w = drawW*sc + padPx*2 + 20;
-      const h = drawH*sc + padPx*2 + 30;
+      const svg = document.getElementById('stand-crate-svg');
+      const sc = 5, padPx = 50;
+      const cw = 56, ch = 18, flapT = 1.6, sideT = 1.5;
+      const w = cw*sc + padPx*2 + 60;
+      const h = ch*sc + padPx*2 + 100;
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
       svg.setAttribute('width', w);
       svg.setAttribute('height', h);
-
-      const tx = (x) => padPx + (x + 1) * sc;
-      const ty = (y) => padPx + 16 + (drawH - y) * sc;
+      const tx = (x) => padPx + x*sc;
+      const ty = (y) => padPx + 36 + (ch - y)*sc;
       let c = '';
 
-      // Helper to draw one state at the given x-offset.
-      function drawState(xOffset, label, engaged) {
-        const wallX = xOffset + 5;        // crate wall position
-        const wallT = 1.5;                 // wall thickness
-        const legX = wallX + wallT + 0.3;  // leg sits just outside the wall
-        const legT = 1.5;                  // leg thickness
+      c += `<text x="${tx(cw/2)}" y="22" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Crate mode — 56 × 18 tube, 95 cm long</text>`;
+      // The rectangular tube cross-section (folded hinged panel: 56 | 18 | 56 | 18)
+      c += `<rect x="${tx(0)}" y="${ty(ch)}" width="${cw*sc}" height="${ch*sc}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1.6"/>`;
+      c += `<text x="${tx(cw/2)}" y="${ty(ch)+15}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
+      c += `<text x="${tx(cw/2)}" y="${ty(0)-9}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
+      // Two long side panels — 20 × 97, screwed onto the 18-cm long faces,
+      // overhanging 1 cm at each edge (drawn as the outer strips).
+      c += `<rect x="${tx(0)-sideT*sc}" y="${ty(ch)-sc}" width="${sideT*sc}" height="${(ch+2)*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      c += `<rect x="${tx(cw)}" y="${ty(ch)-sc}" width="${sideT*sc}" height="${(ch+2)*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      // 10 cm closing flap — folds to the INSIDE (drawn just inside the bottom face)
+      c += `<rect x="${tx(0)}" y="${ty(0)-flapT*sc}" width="${8.5*sc}" height="${flapT*sc}" fill="rgba(0,0,0,0.32)" stroke="#000" stroke-width="1"/>`;
+      // Stand-fold hinges locked flat inside the long faces
+      c += `<circle cx="${tx(42)}" cy="${ty(ch)}" r="3" fill="none" stroke="#000" stroke-width="1"/>`;
+      c += `<circle cx="${tx(42)}" cy="${ty(0)}" r="3" fill="none" stroke="#000" stroke-width="1"/>`;
+      // Notes below
+      const ny = ty(ch) + ch*sc + 24;
+      c += `<text x="${tx(cw/2)}" y="${ny}" fill="#555" font-size="8" text-anchor="middle">10 cm flap folds INSIDE (~8.5 cm laps flat) &amp; screws to a long side panel</text>`;
+      c += `<text x="${tx(cw/2)}" y="${ny+14}" fill="#555" font-size="8" text-anchor="middle">2 long side panels (20 × 97) screw onto the 18-cm faces — 1 cm overlap all round</text>`;
+      c += `<text x="${tx(cw/2)}" y="${ny+28}" fill="#555" font-size="7" text-anchor="middle">○ ⊓-fold hinges (50 &amp; 108) locked flat · tube extrudes 95 cm into the page</text>`;
+      svg.innerHTML = c;
+    }
 
-        // Crate wall (vertical strip)
-        c += `<rect x="${tx(wallX)}" y="${ty(stateH - 1)}" width="${wallT*sc}" height="${(stateH - 2)*sc}" fill="rgba(0,0,0,0.08)" stroke="#000" stroke-width="1"/>`;
-        c += `<text x="${tx(wallX + wallT/2)}" y="${ty(stateH - 0.4)}" fill="#555" font-size="7" text-anchor="middle">crate wall</text>`;
+    // ---- 3. Stand mode — deployed elevation ----
+    {
+      const svg = document.getElementById('stand-deployed-svg');
+      const sc = 2.7, padPx = 45;
+      const arcH = 26, topT = 3;                 // arcade + top-panel drawing heights
+      const totalH = STAND_H + topT + arcH;
+      const w = STAND_W*sc + padPx*2 + 130;
+      const h = totalH*sc + padPx*2 + 24;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+      const tx = (x) => padPx + x*sc;
+      const ty = (y) => padPx + 14 + (totalH - y)*sc;
+      let c = '';
 
-        // Leg (vertical strip outside the wall, with a notch in its middle for the engaged stick)
-        const legTop = stateH - 1;
-        const legBot = 1;
-        const notchY = (legTop + legBot)/2;
-        const notchH = 1.2;
-        // Draw leg as a path with a rectangular notch carved from the wall-side face
-        const legPath =
-          `M ${tx(legX)},${ty(legTop)} ` +
-          `L ${tx(legX + legT)},${ty(legTop)} ` +
-          `L ${tx(legX + legT)},${ty(legBot)} ` +
-          `L ${tx(legX)},${ty(legBot)} ` +
-          `L ${tx(legX)},${ty(notchY - notchH/2)} ` +
-          `L ${tx(legX + 0.6)},${ty(notchY - notchH/2)} ` +
-          `L ${tx(legX + 0.6)},${ty(notchY + notchH/2)} ` +
-          `L ${tx(legX)},${ty(notchY + notchH/2)} ` +
-          `Z`;
-        c += `<path d="${legPath}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1"/>`;
-        c += `<text x="${tx(legX + legT/2)}" y="${ty(legBot - 0.4)}" fill="#555" font-size="7" text-anchor="middle">leg</text>`;
-
-        // Turning stick — drawn either parallel to the wall (stowed) or perpendicular (engaged)
-        const stickPivotX = wallX + wallT/2;
-        const stickPivotY = notchY;
-        const stickLen = 1.8;       // length on each side of the pivot
-        const stickW   = 0.5;       // stick "thickness" perpendicular to its length
-        const pivotSvgX = tx(stickPivotX);
-        const pivotSvgY = ty(stickPivotY);
-        const stickAngle = engaged ? 0 : 90;   // 0° = horizontal (engaged through the wall), 90° = vertical (stowed)
-        c += `<g transform="rotate(${stickAngle} ${pivotSvgX} ${pivotSvgY})">`;
-        c += `<rect x="${pivotSvgX - stickLen*sc}" y="${pivotSvgY - stickW*sc/2}" width="${stickLen*2*sc}" height="${stickW*sc}" fill="#000"/>`;
-        c += `</g>`;
-        // Pivot dot
-        c += `<circle cx="${pivotSvgX}" cy="${pivotSvgY}" r="2" fill="#fff" stroke="#000" stroke-width="0.8"/>`;
-        // Annotation arrow showing which side is "inside the crate"
-        c += `<text x="${tx(wallX - 0.6)}" y="${ty(stateH - 4)+3}" fill="#555" font-size="7" text-anchor="end">interior</text>`;
-        c += `<text x="${tx(legX + legT + 0.6)}" y="${ty(stateH - 4)+3}" fill="#555" font-size="7">exterior</text>`;
-
-        // State label
-        c += `<text x="${tx(xOffset + stateW/2)}" y="${ty(stateH - 0.1) + 10}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">${label}</text>`;
+      c += `<text x="${tx(STAND_W/2)}" y="22" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Stand mode — deployed elevation</text>`;
+      // Floor
+      c += `<line x1="${tx(-5)}" y1="${ty(0)}" x2="${tx(STAND_W+5)}" y2="${ty(0)}" stroke="#000" stroke-width="1.5"/>`;
+      for (let i = -5; i < STAND_W + 5; i += 3) {
+        c += `<line x1="${tx(i)}" y1="${ty(0)}" x2="${tx(i+2)}" y2="${ty(0)+5}" stroke="#555" stroke-width="0.5"/>`;
       }
+      // Stand body — the folded crate walls, ⊓ in plan, stood on end
+      c += `<rect x="${tx(0)}" y="${ty(STAND_H)}" width="${STAND_W*sc}" height="${STAND_H*sc}" fill="rgba(0,0,0,0.03)" stroke="#000" stroke-width="1.4"/>`;
+      c += `<text x="${tx(STAND_W/2)}" y="${ty(STAND_H/2)}" fill="#000" font-size="9" text-anchor="middle">folded crate walls</text>`;
+      c += `<text x="${tx(STAND_W/2)}" y="${ty(STAND_H/2)+13}" fill="#555" font-size="7" text-anchor="middle">⊓ in plan — 58 back wall + two 50-deep</text>`;
+      c += `<text x="${tx(STAND_W/2)}" y="${ty(STAND_H/2)+23}" fill="#555" font-size="7" text-anchor="middle">side walls, open at the front</text>`;
+      // Drop-in top panel
+      c += `<rect x="${tx(0)}" y="${ty(STAND_H+topT)}" width="${STAND_W*sc}" height="${topT*sc}" fill="rgba(0,0,0,0.20)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(STAND_W)+8}" y="${ty(STAND_H+topT/2)+3}" fill="#555" font-size="7">drop-in top panel 58 × 50</text>`;
+      // Arcade
+      c += `<rect x="${tx(4)}" y="${ty(STAND_H+topT+arcH)}" width="${(STAND_W-8)*sc}" height="${arcH*sc}" fill="rgba(0,0,0,0.08)" stroke="#000" stroke-width="1.2"/>`;
+      c += `<text x="${tx(STAND_W/2)}" y="${ty(STAND_H+topT+arcH/2)+3}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">ARCADE</text>`;
+      // Dimensions
+      c += svgDim(tx(0), ty(0), tx(0), ty(STAND_H), `${STAND_H}`, -18);
+      c += svgDim(tx(0), ty(0), tx(STAND_W), ty(0), `${STAND_W}`, 16);
+      c += `<text x="${tx(STAND_W)+8}" y="${ty(STAND_H/2)+3}" fill="#555" font-size="8">${STAND_D} cm deep</text>`;
+      c += `<text x="${tx(STAND_W)+8}" y="${ty(STAND_H/2)+15}" fill="#555" font-size="7">(crate's 95 cm length,</text>`;
+      c += `<text x="${tx(STAND_W)+8}" y="${ty(STAND_H/2)+24}" fill="#555" font-size="7">stood on end ≈ 94 cm)</text>`;
+      svg.innerHTML = c;
+    }
 
-      drawState(0,           'STOWED · transport', false);
-      drawState(stateW + 4,  'ENGAGED · leg locked', true);
+    // ---- 4. Stand — suggested sheet layout ----
+    {
+      const svg = document.getElementById('stand-sheet-svg');
+      const SHEET_W = 242, SHEET_H = 120;
+      const sc = 2.3, pad = 32;
+      const w = SHEET_W*sc + pad*2;
+      const h = SHEET_H*sc + pad*2 + 20;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', w);
+      svg.setAttribute('height', h);
+      const tx = (x) => pad + x*sc;
+      const ty = (y) => pad + 16 + (SHEET_H - y)*sc;
 
-      // Caption
-      c += `<text x="${tx(drawW/2)}" y="${padPx - 4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Plan view at the leg-to-crate joint</text>`;
+      // Stand panel bill: the 158 × 95 hinged panel, the 58 × 50 drop-in
+      // top panel, and the two 20 × 97 long side panels.
+      const placements = [
+        {id:'P',  name:'Hinged panel',    x:0,   y:0,  w:158, h:95},
+        {id:'T',  name:'Top panel',       x:160, y:0,  w:58,  h:50},
+        {id:'S1', name:'Long side panel', x:0,   y:97, w:97,  h:20},
+        {id:'S2', name:'Long side panel', x:99,  y:97, w:97,  h:20},
+      ];
 
+      let c = '';
+      c += `<text x="${tx(SHEET_W/2)}" y="22" fill="#000" font-size="11" text-anchor="middle" font-weight="700">Stand — suggested sheet layout (242 × 120 cm)</text>`;
+      c += `<rect x="${tx(0)}" y="${ty(SHEET_H)}" width="${SHEET_W*sc}" height="${SHEET_H*sc}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6,3"/>`;
+      placements.forEach(p => {
+        const X = tx(p.x), Y = ty(p.y + p.h), PW = p.w*sc, PH = p.h*sc;
+        c += `<rect x="${X}" y="${Y}" width="${PW}" height="${PH}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
+        c += `<text x="${X+PW/2}" y="${Y+PH/2-4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">${p.id}</text>`;
+        c += `<text x="${X+PW/2}" y="${Y+PH/2+9}" fill="#000" font-size="8" text-anchor="middle">${p.name}</text>`;
+        c += `<text x="${X+PW/2}" y="${Y+PH/2+20}" fill="#555" font-size="8" text-anchor="middle">${p.w} × ${p.h} cm</text>`;
+      });
+      c += svgDim(tx(0), ty(0), tx(SHEET_W), ty(0), `${SHEET_W} cm`, 16);
+      c += svgDim(tx(SHEET_W), ty(0), tx(SHEET_W), ty(SHEET_H), `${SHEET_H} cm`, 16);
       svg.innerHTML = c;
     }
   }
@@ -1965,8 +1708,8 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div class="section">
-  <h2>M — Mouse Shelf (×1)</h2>
-  <p class="note">Single wide panel, slides through slots in side panels. 3 height options: 8, 12, 16cm.</p>
+  <h2>L — Side Mouse Ledges (×2)</h2>
+  <p class="note">Two small ledges (17 cm out × 25 cm along the side), one bracketed to the outer face of each side panel — replaces the old single 108 cm through-shelf. Dropping the wide shelf is what let the transport crate shrink to 95 × 56 × 18 cm.</p>
   <div class="panel-card">
     <svg id="mouse-panel-svg"></svg>
   </div>
@@ -2001,12 +1744,12 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="panels" style="margin-top: 16px">
     <div class="panel-card" style="flex: 1.5">
       <h3>Suggested sheet layout — 1 × poplar ply 242 × 120 cm</h3>
-      <p class="qty">All cabinet panels nested on a single 242 × 120 cm sheet (15 mm poplar). The soffit and monitor shelf stack in the column above the roof — that previously empty 43 cm gap above the 52.2 cm roof now carries two more panels. The mouse shelf takes the top band over the side panels. The logo panel (acrylic) is sourced separately.</p>
+      <p class="qty">All cabinet panels nested on a single 242 × 120 cm sheet (15 mm poplar). The soffit and monitor shelf stack in the column above the roof — that previously empty 43 cm gap above the 52.2 cm roof now carries two more panels. The two side mouse ledges take the top band over the side panels. The logo panel (acrylic) is sourced separately.</p>
       <svg id="sheet-layout-svg"></svg>
     </div>
     <div class="panel-card" style="flex: 1">
       <h3>Side panel — home cuts</h3>
-      <p class="qty">From a 50 × 95 cm rectangle, mark points A–F, then jigsaw the <span style="color:#ff7043">orange waste areas</span>: cut 1 is one continuous L-shaped cut A→B→C→D combining the front-tilt diagonal (A→B), the soffit horizontal (B→C), and the 10 cm logo-recess vertical (C→D) so the top-front corner sits 10 cm back from the front face for screen sight-line. Then cut 2 (roof slope D→E). Finally the <span style="color:#CE93D8">mouse-shelf slot</span> — a closed rectangle sitting 3 cm back from the tilted front so the front-edge wood stays continuous between conformats. Drill a starter hole inside the slot, then jigsaw the perimeter. Faint dashed rectangles show the alternative slot heights — pick one.</p>
+      <p class="qty">From a 50 × 95 cm rectangle, mark points A–F, then jigsaw the <span style="color:#ff7043">orange waste areas</span>: cut 1 is one continuous L-shaped cut A→B→C→D combining the front-tilt diagonal (A→B), the soffit horizontal (B→C), and the 10 cm logo-recess vertical (C→D) so the top-front corner sits 10 cm back from the front face for screen sight-line. Then cut 2 (roof slope D→E). No mouse-shelf slot any more — the side mouse ledges (L) bracket onto the outer face of this panel instead; the <span style="color:#CE93D8">ledge mount footprint</span> is marked at the front edge.</p>
       <svg id="side-home-cuts-svg"></svg>
     </div>
   </div>
@@ -2028,31 +1771,28 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div class="section">
-  <h2>Knock-Down Assembly — Folding Roof + French-Cleat Front</h2>
+  <h2>Knock-Down Assembly — Folding Roof + Screwed Front</h2>
   <p class="note">
-    Tool-free 3-minute assembly, survives many transport cycles. The
-    hinges are split across BOTH side panels so each sub-assembly stays
-    within its own polygon footprint:
-    <strong>Side R + Roof</strong> are hinged together (Roof folds flat
-    against Side R via a long piano hinge along D→E).
-    <strong>Side L + two horizontal cross-rails</strong> form the second
-    sub-assembly — the rails (~54 cm long, 4 × 3 cm cross-section) hinge
-    to Side L's interior face at corners A and B and fold up/down so
-    they sit entirely within Side L's polygon. When deployed, the rails
-    bridge across to Side R and bolt with wing nuts. The
-    <strong>Front panel</strong> hangs from a <strong>French cleat</strong>
-    on the upper rail — no fasteners, no tools, slides on under its own
-    weight.
+    Quick assembly, survives many transport cycles. The cabinet ships as
+    <strong>one folding sub-assembly</strong> — <strong>Side R + Roof</strong>,
+    hinged together so the Roof folds flat against Side R via a long piano
+    hinge along D→E — plus loose panels. <strong>Side L</strong> travels as
+    a plain loose panel. On site the two side panels are stood up facing
+    each other and the <strong>Front panel</strong> is
+    <strong>screwed straight onto their front edges</strong>: that single
+    panel ties the frame square — the earlier cross-beams and French cleat
+    turned out to be unnecessary once the front panel does the racking
+    work. The Roof's free edge then screws to Side L to lock the top.
   </p>
 
   <div class="panel-card">
     <h3>Skeleton — 45° perspective (deployed)</h3>
     <p class="qty">
-      Just the four structural pieces: two side panels, the roof
-      (hinged to Side R along D→E), and the two cross-rails (hinged
-      to Side L at corners A and B, bolted to Side R at the free
-      ends). No shelves, no front panel, no logo — this is what
-      holds the cabinet square. Everything else hangs off this frame.
+      The three structural pieces: two side panels and the roof
+      (hinged to Side R along D→E). No cross-beams — the front panel
+      (not shown here; see the front + perspective views) screws
+      across the two side-panel front edges and squares the frame.
+      Shelves, ledges and logo hang off this frame.
     </p>
     <svg id="kd2-skeleton-svg"></svg>
   </div>
@@ -2071,35 +1811,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <svg id="kd2-folded-r-svg"></svg>
     </div>
     <div class="panel-card" style="flex: 1">
-      <h3>Sub-assembly 2 · Side L + 2 cross-rails — folded</h3>
+      <h3>Side L · ships as a loose panel</h3>
       <p class="qty">
-        Beam 1 hinges at corner A (front-bottom) and folds up along
-        Side L's front edge. Beam 2 hinges at corner B (top of the
-        tilted-front cut) and folds down. Both rails sit entirely
-        within Side L's polygon — no overhang, sub-assembly bounding
-        box ≈ 50 × 95 cm.
+        Earlier iterations folded two cross-rails onto Side L; the
+        actual build dropped the beams (the screwed-on front panel
+        provides the racking stability), so Side L now travels as a
+        plain loose panel — the same 50 × 95 cm polygon as Side R,
+        mirrored.
       </p>
       <svg id="kd2-folded-l-svg"></svg>
-    </div>
-    <div class="panel-card" style="flex: 1.05">
-      <h3>French-cleat detail · Beam 2 ↔ Front D</h3>
-      <p class="qty">
-        Cross-section in the depth-height plane at the top of the front
-        panel. <strong>Beam 2 has the wall cleat ripped directly into
-        its front edge</strong> as a 45° bevel — one piece of stock
-        (7 × 4 cm hardwood, 54 cm long) with one rip cut on a table
-        saw replaces the previous beam + glued-cleat-strip approach.
-        No glue joint at this cleat, stronger, faster to make.
-        <strong>Cleat B</strong> (the wedge glued to Front D's back)
-        stays a separate strip — that joint is permanent and never
-        comes apart. Beam 2 is mounted with the same 20° tilt as
-        Front D so the bevel face and cleat B sit on parallel tilted
-        surfaces and mate at the same diagonal angle. Drop Front D
-        in: cabinet cleat slides down onto the integrated bevel,
-        gravity locks them. The vertical reference + 20° angle arc
-        next to the pivot make the tilt explicit.
-      </p>
-      <svg id="kd2-cleat-svg"></svg>
     </div>
   </div>
 
@@ -2111,20 +1831,19 @@ document.addEventListener('DOMContentLoaded', () => {
         <tbody id="kd2-hardware-body"></tbody>
       </table>
       <p class="note" style="margin-top:8px">
-        Approx €55 total. Hardhouten lat for the beams + cleats is
-        usually sold in 2 m lengths at any DIY shop; a single 4 × 3 cm
-        plank gives both beams plus offcuts. Cleats ripped from a 5 × 2
-        cm strip on a table saw at 45°.
+        Approx €20 total — a piano hinge, a box of wood screws, and
+        four ledge bolts with cross-dowel barrel nuts. No beam stock or
+        cleat strip needed any more.
       </p>
     </div>
     <div class="panel-card" style="flex: 1">
-      <h3>Transport packing — 7 pieces (2 sub-assemblies + 5 loose panels)</h3>
+      <h3>Transport packing — 7 pieces (1 sub-assembly + 6 loose panels)</h3>
       <table>
         <thead><tr><th>Item</th><th>Size (cm)</th></tr></thead>
         <tbody id="kd2-transport-body"></tbody>
       </table>
       <p class="note" style="margin-top:8px">
-        Total stack height ~14 cm, footprint 108 × 95 cm. Or skip the
+        Total stack height ~14 cm, footprint 95 × 56 cm. Or skip the
         crate and carry the seven pieces in textile sleeves.
       </p>
     </div>
@@ -2133,21 +1852,21 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="panel-card" style="margin-top: 16px">
     <h3>Assembly sequence</h3>
     <ol style="padding-left: 20px; font-size: 12px; line-height: 1.7;">
-      <li><strong>Open both sub-assemblies.</strong> Sub-assembly 1: unfold Roof from Side R around the D→E piano hinge. Sub-assembly 2: unfold Beam 1 (rotates down from Side L's front-bottom corner A) and Beam 2 (rotates up from Side L's tilt-top corner B), both to horizontal. ~15 sec.</li>
-      <li><strong>Stand the two side panels facing each other.</strong> The free ends of Beam 1 and Beam 2 (on Side L) reach across to Side R's interior face at the matching corners. Bolt each beam end to Side R with a corner bracket + 2 wing nuts. ~1 min.</li>
-      <li><strong>Drop Soffit (G)</strong> into the dadoes between the two side panels at Y = 77 cm. Tighten 4 wing nuts at the bracket corners. ~30 sec.</li>
-      <li><strong>Drop Monitor shelf (H)</strong> into its dadoes at Y = 38 cm. 4 more wing nuts. ~30 sec.</li>
-      <li><strong>Slide Mouse shelf (M)</strong> through the front-edge slots in both side panels. Friction-fit — no fasteners. ~10 sec.</li>
-      <li><strong>Lower Front panel (D)</strong> down onto the cleat on Beam 2. Slides into place, locks by gravity. ~5 sec.</li>
-      <li><strong>Clip Logo (F, acrylic + foamboard + LEDs)</strong> onto the back of the soffit overhang or hang from a third small cleat. ~10 sec.</li>
+      <li><strong>Unfold the Roof</strong> from Side R around the D→E piano hinge (sub-assembly 1). ~10 sec.</li>
+      <li><strong>Stand Side R (with Roof) and Side L facing each other.</strong> ~10 sec.</li>
+      <li><strong>Screw the Front panel (D)</strong> onto the front edges of both side panels — roughly 8 screws per side. This is the main structural tie: it squares the frame. ~2 min.</li>
+      <li><strong>Screw the Roof's free edge</strong> down onto Side L's top edge to lock the top. ~30 sec.</li>
+      <li><strong>Drop Soffit (G)</strong> into the dadoes between the two side panels at Y = 77 cm and screw the ends. ~45 sec.</li>
+      <li><strong>Drop Monitor shelf (H)</strong> into its dadoes at Y = 38 cm and screw the ends. ~45 sec.</li>
+      <li><strong>Bolt the side mouse ledges (L)</strong> onto the outer face of each side panel — one per side, two bolts each. ~30 sec.</li>
+      <li><strong>Clip Logo (F, acrylic + foamboard + LEDs)</strong> onto the back of the soffit overhang. ~10 sec.</li>
     </ol>
     <p class="note">
-      <strong>Total: ~3 minutes for one person, no tools beyond
-      hand-tightening wing nuts.</strong> Disassembly is the same in
-      reverse — pull the front panel off, undo 8–12 wing nuts, fold the
-      sub-assembly. Repeats indefinitely without thread wear because
-      the wing-nut threads engage barrel nuts (cross-dowels) embedded
-      in the side panels, not raw plywood.
+      <strong>Total: ~5 minutes for one person with a screwdriver / drill.</strong>
+      Disassembly is the same in reverse — back out the screws, lift off the
+      panels, fold the Roof onto Side R. The front-edge screw holes take a few
+      cycles of wear; if you expect heavy reuse, drop threaded inserts into the
+      front-edge screw line.
     </p>
   </div>
 </div>
@@ -2176,69 +1895,82 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <div class="section">
-  <h2>Crate as Booth Table</h2>
+  <h2>Crate as Folding Stand</h2>
   <p class="note">
-    The crate doubles as the booth table the cabinet sits on. Make
-    the crate <strong>40 cm tall</strong> (deeper than the panel
-    stack needs — the extra space stores the PC, monitor, cables and
-    accessories). Split the top lid into two halves; each half
-    hinges on one of the crate's <strong>short ends</strong> and
-    folds open to form a trestle-style leg. A <strong>turning-stick
-    latch</strong> on each short side locks the leg upright. Flip
-    the crate over (legs down) and you have a 90–95 cm tall booth
-    table — crate body 40 cm + leg ~54 cm.
+    The transport crate folds inside-out to become the stand the arcade
+    sits on — no separate table needed. The crate (95 × 56 × 18 cm,
+    holding the flat art panels in transit) is built from a hinged panel
+    whose hinge layout folds <strong>two ways</strong>: closed into the
+    56 × 18 cm crate tube, or open into a ⊓ stood on end. Stood up, the
+    crate's 95 cm length becomes the ~94 cm stand height; a drop-in top
+    panel gives the 58 × 50 cm surface the arcade rests on.
   </p>
 
-  <div class="panels">
+  <div class="panel-card">
+    <h3>The hinged panel — one layout, two folds</h3>
+    <p class="qty">
+      A single 158 cm panel with six hinge lines at 50 / 56 / 74 / 108 /
+      130 / 148 cm. The <strong>stand fold</strong> (solid hinges, 50 &amp;
+      108) groups it 50 | 58 | 50 — the ⊓ footprint. The <strong>crate
+      fold</strong> (dashed hinges, 56 / 74 / 130) groups it 56 | 18 | 56
+      | 18, wrapping the crate tube, with the last 10 cm as the closing
+      flap. The two hinge sets are disjoint, so each hinge only ever
+      folds in one mode and stays locked flat in the other.
+    </p>
+    <svg id="stand-panel-svg"></svg>
+  </div>
+
+  <div class="panels" style="margin-top: 16px">
     <div class="panel-card" style="flex: 1">
-      <h3>Closed · top view (transport)</h3>
+      <h3>Crate mode · transport</h3>
       <p class="qty">
-        Lid is two equal halves split across the long axis. Hinges
-        live on the short sides — flush-mount butt hinges or piano
-        hinges, mounted to the OUTSIDE so the lid can swing 180°
-        outward without binding on the crate wall.
+        Folded 56 | 18 | 56 | 18, the panel wraps a 56 × 18 cm
+        rectangular tube, 95 cm long — it holds the flat art panels.
+        The 10 cm flap folds to the <strong>inside</strong> (~8.5 cm
+        laps flat) and screws to a long side panel. Two
+        <strong>long side panels</strong> (20 × 97 cm — 18 + 2 by
+        95 + 2, sized 1 cm oversize on each edge) screw onto the
+        18-cm faces, overlapping the borders. The two stand-fold
+        hinges sit inside the long faces, locked flat.
       </p>
-      <svg id="crate-table-top-svg"></svg>
+      <svg id="stand-crate-svg"></svg>
     </div>
-    <div class="panel-card" style="flex: 1">
-      <h3>Deployed · table mode (side view)</h3>
+    <div class="panel-card" style="flex: 1.05">
+      <h3>Stand mode · deployed</h3>
       <p class="qty">
-        Lift each lid 90° outward, rotate the turning stick to lock
-        it perpendicular, then flip the whole crate so the original
-        bottom is now the table surface. Each leg is 54 cm tall ×
-        56 cm wide × 1.5 cm thick — the wide footprint at each short
-        end gives a stable trestle base. The cabinet bolts to the top
-        surface via the same wing-nut + cross-dowel scheme as the
-        rest of the build.
+        Refolded 50 | 58 | 50, the panel opens into a ⊓ — a 58 cm back
+        wall + two 50 cm-deep side walls, open at the front. Stood on
+        end it is ~94 cm tall (the crate's 95 cm length). A loose top
+        panel (58 × 50 cm) drops onto the ⊓; the arcade sits on that.
       </p>
-      <svg id="crate-table-side-svg"></svg>
+      <svg id="stand-deployed-svg"></svg>
     </div>
   </div>
 
   <div class="panel-card" style="margin-top: 16px">
-    <h3>Turning-stick latch · two states</h3>
+    <h3>Suggested sheet layout — stand panels</h3>
     <p class="qty">
-      Plan view at the leg-to-crate joint. A short wooden pivot
-      mounts through the crate's short-side wall, with a handle on
-      the inside and a tongue on the outside. In transport, the
-      tongue lies flat against the wall (parallel) so the lid can
-      close. To deploy: rotate the handle 90°; the tongue swings
-      perpendicular and engages a small notch cut into the leg's
-      inside face, locking the leg in its upright (table-deployed)
-      position. Two latches per leg — one near the front edge of the
-      crate, one near the back — keep the leg from rocking.
+      The four stand panels nested on one 242 × 120 cm sheet:
+      <strong>P</strong> the 158 × 95 cm hinged panel,
+      <strong>T</strong> the 58 × 50 cm drop-in top panel, and
+      <strong>S1 / S2</strong> the two 20 × 97 cm long side panels
+      (18 + 2 by 95 + 2 — 1 cm oversize on each edge so they overlap
+      the tube's borders when screwed on).
     </p>
-    <svg id="crate-table-stick-svg"></svg>
+    <svg id="stand-sheet-svg"></svg>
   </div>
 
   <p class="note" style="margin-top: 12px">
     <strong>Order-of-operations on arrival:</strong>
-    (1) unlatch the lids · (2) swing each lid 90° upward to vertical
-    · (3) rotate both turning sticks to lock the legs ·
-    (4) tip the crate end-over-end so the legs land on the floor ·
-    (5) open the (now-bottom) crate door, take out the cabinet
-    sub-assemblies, monitor, PC · (6) build the cabinet on top of
-    the table. Total table-deployment: under a minute.
+    (1) unlatch the 10 cm flap and unwrap the crate tube ·
+    (2) refold the panel along the stand hinges (50 &amp; 108) into the ⊓ ·
+    (3) stand it on end · (4) drop the top panel onto the ⊓ ·
+    (5) set the arcade on top — the art panels that travelled inside the
+    crate go straight onto the cabinet.
+    <strong>Still open:</strong> the exact hardware that locks the ⊓
+    rigid and fixes the top panel — flat-locks at each hinge plus the
+    load-path for the arcade's weight still need detailing before this
+    is a build spec.
   </p>
 </div>
 
