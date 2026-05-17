@@ -1545,9 +1545,9 @@ document.addEventListener('DOMContentLoaded', () => {
       c += `<text x="${tx(cw/2)}" y="${ty(ch)+15}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
       c += `<text x="${tx(cw/2)}" y="${ty(0)-9}" fill="#000" font-size="9" text-anchor="middle">56 (face)</text>`;
       // Two long side panels — screwed onto the long (56 cm) faces, i.e.
-      // the top & bottom of the cross-section, overhanging 1 cm each edge.
-      c += `<rect x="${tx(0)-sc}" y="${ty(ch)-sideT*sc}" width="${(cw+2)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
-      c += `<rect x="${tx(0)-sc}" y="${ty(0)}" width="${(cw+2)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      // the top & bottom of the cross-section, overhanging 2 cm each edge.
+      c += `<rect x="${tx(0)-2*sc}" y="${ty(ch)-sideT*sc}" width="${(cw+4)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
+      c += `<rect x="${tx(0)-2*sc}" y="${ty(0)}" width="${(cw+4)*sc}" height="${sideT*sc}" fill="rgba(0,0,0,0.18)" stroke="#000" stroke-width="1"/>`;
       // 10 cm closing flap — folds to the INSIDE (drawn just inside the bottom face)
       c += `<rect x="${tx(0)}" y="${ty(0)-flapT*sc}" width="${8.5*sc}" height="${flapT*sc}" fill="rgba(0,0,0,0.32)" stroke="#000" stroke-width="1"/>`;
       // Stand-fold hinges locked flat inside the long faces
@@ -1556,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Notes below
       const ny = ty(ch) + ch*sc + 24;
       c += `<text x="${tx(cw/2)}" y="${ny}" fill="#555" font-size="8" text-anchor="middle">10 cm flap folds INSIDE (~8.5 cm laps flat) &amp; screws to a long side panel</text>`;
-      c += `<text x="${tx(cw/2)}" y="${ny+14}" fill="#555" font-size="8" text-anchor="middle">2 long side panels (20 × 97) screw onto the long 56-cm faces — 1 cm overlap all round</text>`;
+      c += `<text x="${tx(cw/2)}" y="${ny+14}" fill="#555" font-size="8" text-anchor="middle">2 long side panels (22 × 99) screw onto the long 56-cm faces — 2 cm overlap all round</text>`;
       c += `<text x="${tx(cw/2)}" y="${ny+28}" fill="#555" font-size="7" text-anchor="middle">○ ⊓-fold hinges (50 &amp; 108) locked flat · tube extrudes 95 cm into the page</text>`;
       svg.innerHTML = c;
     }
@@ -1590,6 +1590,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Drop-in top panel
       c += `<rect x="${tx(0)}" y="${ty(STAND_H+topT)}" width="${STAND_W*sc}" height="${topT*sc}" fill="rgba(0,0,0,0.20)" stroke="#000" stroke-width="1"/>`;
       c += `<text x="${tx(STAND_W)+8}" y="${ty(STAND_H+topT/2)+3}" fill="#555" font-size="7">drop-in top panel 58 × 50</text>`;
+      // Drop-in bottom panel (floor of the ⊓)
+      c += `<rect x="${tx(0)}" y="${ty(topT)}" width="${STAND_W*sc}" height="${topT*sc}" fill="rgba(0,0,0,0.20)" stroke="#000" stroke-width="1"/>`;
+      c += `<text x="${tx(STAND_W)+8}" y="${ty(topT/2)+3}" fill="#555" font-size="7">drop-in bottom panel 58 × 50</text>`;
       // Arcade
       c += `<rect x="${tx(4)}" y="${ty(STAND_H+topT+arcH)}" width="${(STAND_W-8)*sc}" height="${arcH*sc}" fill="rgba(0,0,0,0.08)" stroke="#000" stroke-width="1.2"/>`;
       c += `<text x="${tx(STAND_W/2)}" y="${ty(STAND_H+topT+arcH/2)+3}" fill="#000" font-size="10" text-anchor="middle" font-weight="700">ARCADE</text>`;
@@ -1615,13 +1618,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const tx = (x) => pad + x*sc;
       const ty = (y) => pad + 16 + (SHEET_H - y)*sc;
 
-      // Stand panel bill: the 158 × 95 hinged panel, the 58 × 50 drop-in
-      // top panel, and the two 20 × 97 long side panels.
+      // Stand panel bill: the 158 × 95 hinged panel, two 58 × 50 drop-in
+      // panels (top + bottom), and the two 22 × 99 long side panels.
+      // S2 is laid vertically (rotated) to clear B in the right column.
       const placements = [
         {id:'P',  name:'Hinged panel',    x:0,   y:0,  w:158, h:95},
         {id:'T',  name:'Top panel',       x:160, y:0,  w:58,  h:50},
-        {id:'S1', name:'Long side panel', x:0,   y:97, w:97,  h:20},
-        {id:'S2', name:'Long side panel', x:99,  y:97, w:97,  h:20},
+        {id:'B',  name:'Bottom panel',    x:160, y:52, w:58,  h:50},
+        {id:'S1', name:'Long side panel', x:0,   y:97, w:99,  h:22},
+        {id:'S2', name:'Long side panel', x:220, y:0,  w:22,  h:99},
       ];
 
       let c = '';
@@ -1630,10 +1635,24 @@ document.addEventListener('DOMContentLoaded', () => {
       placements.forEach(p => {
         const X = tx(p.x), Y = ty(p.y + p.h), PW = p.w*sc, PH = p.h*sc;
         c += `<rect x="${X}" y="${Y}" width="${PW}" height="${PH}" fill="rgba(0,0,0,0.06)" stroke="#000" stroke-width="1.2"/>`;
-        c += `<text x="${X+PW/2}" y="${Y+PH/2-4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700">${p.id}</text>`;
-        c += `<text x="${X+PW/2}" y="${Y+PH/2+9}" fill="#000" font-size="8" text-anchor="middle">${p.name}</text>`;
-        c += `<text x="${X+PW/2}" y="${Y+PH/2+20}" fill="#555" font-size="8" text-anchor="middle">${p.w} × ${p.h} cm</text>`;
+        const cxL = X + PW/2, cyL = Y + PH/2;
+        // Tall narrow panels (S2 rotated) — rotate labels -90° so they fit.
+        const rot = p.h > p.w ? ` transform="rotate(-90 ${cxL} ${cyL})"` : '';
+        c += `<text x="${cxL}" y="${cyL-4}" fill="#000" font-size="11" text-anchor="middle" font-weight="700"${rot}>${p.id}</text>`;
+        c += `<text x="${cxL}" y="${cyL+9}" fill="#000" font-size="8" text-anchor="middle"${rot}>${p.name}</text>`;
+        c += `<text x="${cxL}" y="${cyL+20}" fill="#555" font-size="8" text-anchor="middle"${rot}>${p.w} × ${p.h} cm</text>`;
       });
+      // Hinge cut lines on the hinged panel — six dotted vertical lines
+      // at the hinge positions (50 / 56 / 74 / 108 / 130 / 148 cm), full
+      // height of P. These are cuts/scores the panel needs at the hinges.
+      const HINGES = [50, 56, 74, 108, 130, 148];
+      const hp = placements[0]; // P
+      const hY_top = ty(hp.y + hp.h), hY_bot = ty(hp.y);
+      HINGES.forEach(h => {
+        const hx = tx(hp.x + h);
+        c += `<line x1="${hx}" y1="${hY_top}" x2="${hx}" y2="${hY_bot}" stroke="#000" stroke-width="0.8" stroke-dasharray="3,2"/>`;
+      });
+      c += `<text x="${tx(hp.x + hp.w/2)}" y="${hY_bot + 12}" fill="#555" font-size="7" text-anchor="middle">dotted = hinge cuts (50 / 56 / 74 / 108 / 130 / 148 cm)</text>`;
       c += svgDim(tx(0), ty(0), tx(SHEET_W), ty(0), `${SHEET_W} cm`, 16);
       c += svgDim(tx(SHEET_W), ty(0), tx(SHEET_W), ty(SHEET_H), `${SHEET_H} cm`, 16);
       svg.innerHTML = c;
@@ -1928,8 +1947,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rectangular tube, 95 cm long — it holds the flat art panels.
         The 10 cm flap folds to the <strong>inside</strong> (~8.5 cm
         laps flat) and screws to a long side panel. Two
-        <strong>long side panels</strong> (20 × 97 cm — 18 + 2 by
-        95 + 2, sized 1 cm oversize on each edge) screw onto the
+        <strong>long side panels</strong> (22 × 99 cm — 18 + 4 by
+        95 + 4, sized 2 cm oversize on each edge) screw onto the
         long 56-cm faces, overlapping the borders. The two stand-fold
         hinges sit inside the long faces, locked flat.
       </p>
@@ -1940,8 +1959,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="qty">
         Refolded 50 | 58 | 50, the panel opens into a ⊓ — a 58 cm back
         wall + two 50 cm-deep side walls, open at the front. Stood on
-        end it is ~94 cm tall (the crate's 95 cm length). A loose top
-        panel (58 × 50 cm) drops onto the ⊓; the arcade sits on that.
+        end it is ~94 cm tall (the crate's 95 cm length). Two loose
+        58 × 50 cm panels drop in — the <strong>top panel</strong> the
+        arcade sits on, and a matching <strong>bottom panel</strong>
+        that closes the floor of the ⊓.
       </p>
       <svg id="stand-deployed-svg"></svg>
     </div>
@@ -1950,12 +1971,14 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="panel-card" style="margin-top: 16px">
     <h3>Suggested sheet layout — stand panels</h3>
     <p class="qty">
-      The four stand panels nested on one 242 × 120 cm sheet:
-      <strong>P</strong> the 158 × 95 cm hinged panel,
-      <strong>T</strong> the 58 × 50 cm drop-in top panel, and
-      <strong>S1 / S2</strong> the two 20 × 97 cm long side panels
-      (18 + 2 by 95 + 2 — 1 cm oversize on each edge so they overlap
-      the tube's borders when screwed on).
+      The five stand panels nested on one 242 × 120 cm sheet:
+      <strong>P</strong> the 158 × 95 cm hinged panel (dotted lines mark
+      the six hinge cuts at 50 / 56 / 74 / 108 / 130 / 148 cm),
+      <strong>T</strong> and <strong>B</strong> the 58 × 50 cm drop-in
+      top and bottom panels, and <strong>S1 / S2</strong> the two
+      22 × 99 cm long side panels (18 + 4 by 95 + 4 — 2 cm oversize on
+      each edge so they overlap the tube's borders when screwed on).
+      S2 is laid vertically to fit alongside B in the right column.
     </p>
     <svg id="stand-sheet-svg"></svg>
   </div>
