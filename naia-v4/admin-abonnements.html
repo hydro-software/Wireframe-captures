@@ -224,8 +224,10 @@
       <table class="data-table" style="font-size:12px; margin-bottom:14px">
         <thead><tr><th>Code</th><th>Effet</th><th>Période</th><th>Restantes</th><th></th></tr></thead>
         <tbody>
-          <tr><td><b class="tabular">HYDRO25</b></td><td>−20 % sur 6 mois</td><td>1 mai → 30 juin 2026</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='HYDRO25'; validatePromo('HYDRO25')">Appliquer</a></td></tr>
-          <tr><td><b class="tabular">FRIEND25</b></td><td>−1 mois (offert)</td><td>perma · parrainage</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='FRIEND25'; validatePromo('FRIEND25')">Appliquer</a></td></tr>
+          <tr><td><b class="tabular">CONF-RENOV-2026-MAI-3MO</b></td><td>2 mois payés × bracket + 1 offert<br><span class="muted" style="font-size:11px">tous brackets · ex. 250 kW–1 MW = 2 × 50 € = 100 € upfront</span></td><td>1 mai → 31 juil. 2026</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='CONF-RENOV-2026-MAI-3MO'; validatePromo('CONF-RENOV-2026-MAI-3MO')">Appliquer</a></td></tr>
+          <tr><td><b class="tabular">CONF-RENOV-2026-MAI-12MO</b></td><td>10 mois payés × bracket + 2 offerts<br><span class="muted" style="font-size:11px">tous brackets · ex. 250 kW–1 MW = 10 × 50 € = 500 € upfront</span></td><td>1 mai → 31 juil. 2026</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='CONF-RENOV-2026-MAI-12MO'; validatePromo('CONF-RENOV-2026-MAI-12MO')">Appliquer</a></td></tr>
+          <tr><td><b class="tabular">HYDRO25</b></td><td>−20 % sur 6 mois<br><span class="muted" style="font-size:11px">flat_pct_off · tous brackets</span></td><td>1 mai → 30 juin 2026</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='HYDRO25'; validatePromo('HYDRO25')">Appliquer</a></td></tr>
+          <tr><td><b class="tabular">FRIEND25</b></td><td>−1 mois (offert)<br><span class="muted" style="font-size:11px">parrainage · permanent</span></td><td>perma · parrainage</td><td>illimitées</td><td><a class="link" style="font-size:11px" onclick="document.getElementById('w-promo').value='FRIEND25'; validatePromo('FRIEND25')">Appliquer</a></td></tr>
           <tr style="opacity:0.5"><td><b class="tabular">EARLYBIRD24</b></td><td>−15 % à vie</td><td>expirée 31 déc. 2024</td><td>—</td><td class="muted">expirée</td></tr>
         </tbody>
       </table>
@@ -432,6 +434,10 @@
       return;
     }
     const promotions = {
+      // paid_plus_bonus: cash = paid_months × bracket_rate × plant_count (Q17 resolution).
+      // The mockup shows the example for the 250 kW–1 MW bracket (€50/mo).
+      'CONF-RENOV-2026-MAI-3MO':  { effect: '2 mois × bracket + 1 offert · 100 € upfront (250 kW–1 MW)', factor: 1.0, label: 'CONF-3MO' },
+      'CONF-RENOV-2026-MAI-12MO': { effect: '10 mois × bracket + 2 offerts · 500 € upfront (250 kW–1 MW)', factor: 1.0, label: 'CONF-12MO' },
       'HYDRO25':    { effect: '−20 % sur 6 mois', factor: 0.80, label: '−20 %' },
       'FRIEND25':   { effect: '−1 mois (offert)', factor: 0.0,  label: 'gratuit 1er mois' },
       'EARLYBIRD24': null, // expired

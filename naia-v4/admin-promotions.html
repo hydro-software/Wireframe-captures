@@ -46,8 +46,8 @@
           <thead><tr><th>Code</th><th>Type / impact</th><th>Schedule</th><th>Validité</th><th class="num" style="text-align:right">Redemp.</th><th class="num" style="text-align:right">MRR</th><th>Statut</th><th></th></tr></thead>
           <tbody>
             <tr style="cursor:pointer" onclick="if (event.target.tagName !== 'A' && event.target.tagName !== 'BUTTON') openOverlay('promo-edit')">
-              <td><b class="tabular">HYDRO25</b><br><span class="muted" style="font-size:11px">Conférence Hydro 2025 · Lyon</span></td>
-              <td>2 payés + 1 offert · <b>100 € HT</b><br><span class="muted" style="font-size:11px">single-plant, bracket ≤ 500 kW</span></td>
+              <td><b class="tabular">CONF-RENOV-2026-MAI-3MO</b><br><span class="muted" style="font-size:11px">Salon Renouvelables Toulouse · 3 mois</span></td>
+              <td><b>2 payés × bracket + 1 offert</b><br><span class="muted" style="font-size:11px">tous brackets · ex. 250kW–1MW = 2 × 50 € = 100 €</span></td>
               <td><a class="link" href="admin-pricing.html">v01</a></td>
               <td>15 mars → <b>30 juin 2026</b><br><span class="muted" style="font-size:11px">il reste 55 j</span></td>
               <td class="num" style="text-align:right; font-weight:600">9</td>
@@ -56,8 +56,8 @@
               <td><a class="link" style="font-size:11px">Détails →</a> · <a class="link" style="font-size:11px">Désactiver</a></td>
             </tr>
             <tr style="cursor:pointer" onclick="if (event.target.tagName !== 'A' && event.target.tagName !== 'BUTTON') openOverlay('promo-edit')">
-              <td><b class="tabular">RENOV-2026-MAI</b><br><span class="muted" style="font-size:11px">Salon Renouvelables Toulouse</span></td>
-              <td>10 payés + 2 offerts · <b>1 000 € HT</b><br><span class="muted" style="font-size:11px">per-plant, brackets confirmés Q17</span></td>
+              <td><b class="tabular">CONF-RENOV-2026-MAI-12MO</b><br><span class="muted" style="font-size:11px">Salon Renouvelables Toulouse · 12 mois</span></td>
+              <td><b>10 payés × bracket + 2 offerts</b><br><span class="muted" style="font-size:11px">tous brackets · ex. 250kW–1MW = 10 × 50 € = 500 €</span></td>
               <td><a class="link" href="admin-pricing.html">v01</a></td>
               <td>1 mai → <b>31 juil. 2026</b><br><span class="muted" style="font-size:11px">il reste 86 j</span></td>
               <td class="num" style="text-align:right; font-weight:600">5</td>
@@ -105,10 +105,10 @@
         <table class="data-table">
           <thead><tr><th>Date</th><th>Code</th><th>Client</th><th>Schedule v.</th><th>Impact appliqué</th><th>Source</th></tr></thead>
           <tbody>
-            <tr><td class="tabular">3 mai 14:22</td><td><b class="tabular">RENOV-2026-MAI</b></td><td><a class="link" href="admin-customer.html">Pyrénées Hydroélec</a></td><td>v01</td><td>10 mois × 100 € + 2 offerts</td><td><span class="badge badge-amber">HYDRO25</span> lead</td></tr>
-            <tr><td class="tabular">2 mai 09:08</td><td><b class="tabular">HYDRO25</b></td><td><a class="link" href="admin-customer.html">Microcentrale du Doubs</a></td><td>v01</td><td>2 + 1 mois · 100 €</td><td><span class="badge badge-amber">HYDRO25</span> lead</td></tr>
+            <tr><td class="tabular">3 mai 14:22</td><td><b class="tabular">CONF-RENOV-2026-MAI-12MO</b></td><td><a class="link" href="admin-customer.html">Pyrénées Hydroélec</a></td><td>v01</td><td>10 × 100 € (bracket 1–5 MW) + 2 offerts = 1 000 €</td><td><span class="badge badge-amber">RENOV2026</span> lead</td></tr>
+            <tr><td class="tabular">2 mai 09:08</td><td><b class="tabular">CONF-RENOV-2026-MAI-3MO</b></td><td><a class="link" href="admin-customer.html">Microcentrale du Doubs</a></td><td>v01</td><td>2 × 50 € (bracket 250 kW–1 MW) + 1 offert = 100 €</td><td><span class="badge badge-amber">RENOV2026</span> lead</td></tr>
             <tr><td class="tabular">28 avr. 16:40</td><td><b class="tabular">FRIEND25</b></td><td><a class="link" href="admin-customer.html">Hydromill SRL</a></td><td>v01</td><td>−1 mois offert</td><td>parrainage</td></tr>
-            <tr><td class="tabular">22 avr. 11:15</td><td><b class="tabular">HYDRO25</b></td><td><a class="link" href="admin-customer.html">Moulin de la Cèze</a></td><td>v01</td><td>2 + 1 mois · 100 €</td><td><span class="badge badge-cyan">Inbound site</span></td></tr>
+            <tr><td class="tabular">22 avr. 11:15</td><td><b class="tabular">CONF-RENOV-2026-MAI-3MO</b></td><td><a class="link" href="admin-customer.html">Moulin de la Cèze</a></td><td>v01</td><td>2 × 25 € (bracket &lt;250 kW) + 1 offert = 50 €</td><td><span class="badge badge-cyan">Inbound site</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -136,7 +136,7 @@
         <label class="field"><span class="field-label">Code</span><input class="input tabular" value="HYDRO25"></label>
         <label class="field"><span class="field-label">Statut</span><select class="select"><option>Actif</option><option>Brouillon</option><option>Expiré</option></select></label>
         <label class="field" style="grid-column: span 2"><span class="field-label">Nom interne</span><input class="input" value="Conférence Hydro 2025 · Lyon"></label>
-        <label class="field" style="grid-column: span 2"><span class="field-label">Description (visible client à la signature)</span><textarea class="input" rows="2">Offre de lancement post-Hydro 2025 : 2 mois payés + 1 mois offert pour 100 € HT. Single-plant uniquement. Période non-remboursable (FR-PROMO-8).</textarea></label>
+        <label class="field" style="grid-column: span 2"><span class="field-label">Description (visible client à la signature)</span><textarea class="input" rows="2">Offre de lancement Renouvelables Toulouse 2026 : 2 mois payés au tarif de votre tranche + 1 mois offert. Exemple bracket 250 kW–1 MW : 2 × 50 € = 100 € HT. Multi-centrale possible (cash × nombre de centrales). Période non-remboursable (FR-PROMO-8).</textarea></label>
         <label class="field"><span class="field-label">Pricing schedule</span><select class="select"><option>v01 (sept. 2024)</option><option>v02 (mars 2026)</option></select></label>
         <label class="field"><span class="field-label">Type d'impact</span><select class="select"><option>N payés + K offerts (forfait)</option><option>% off</option><option>€ off</option></select></label>
         <label class="field"><span class="field-label">Mois payés (N)</span><input class="input tabular" value="2"></label>
